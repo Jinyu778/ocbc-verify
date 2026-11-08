@@ -159,7 +159,7 @@ The app reads these values from `GET /api/config` and shows them as they are. Th
 |---|---|---|
 | Backend (pytest) | `npm run test:backend` | **90 passed**. Every risk rule and boundary (S$999.99 / 1,000 / 9,999.99 / 10,000, z = 3.0), overrides, the 30-s continue-anyway rule, server-side timers (incl. env-configured 1-minute options), role checks, evidence-log immutability, balance changes only on send, trusted-contact privacy and cooling period, add-payee validation, no demo endpoints, classifier metrics, redaction. |
 | App (Vitest) | `npm run test:web` | **15 passed**. Pause screen, signal banners, browser live-call question (asked for new payees, skipped for known ones, merged into signals), language switch, locale completeness, Easy Mode, dark mode. |
-| End to end (Playwright) | `npm run test:e2e` | E2E_RESULT |
+| End to end (Playwright) | `npm run test:e2e` | **19 passed**. All logins go through the real login screen. Scenarios 1 (browser form) to 10, the 3-tap fast path, a backend slower than 5 s, a trusted-contact timeout, invalid input and role separation. Real 1-minute waits for save-for-later and trusted-contact timeouts. A real WebRTC voice connection between customer and staff. **axe scans (WCAG 2.0/2.1/2.2 A+AA) on every main customer, trusted-contact and staff screen, light and dark: zero serious or critical violations.** No horizontal scroll at 375 px with Easy Mode and extra-large text. |
 
 First-time e2e setup: `npx playwright install chromium` (in `e2e/`). The e2e server uses `SAVE_FOR_LATER_OPTIONS_MINUTES=1,3,5` and `TRUSTED_CONTACT_TIMEOUT_MINUTES=1`, so timer tests really wait about 1 minute.
 
