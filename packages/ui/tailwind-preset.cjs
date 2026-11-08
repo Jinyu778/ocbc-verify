@@ -1,0 +1,48 @@
+/** Shared Tailwind preset: every colour comes from a CSS variable in tokens.css. */
+const v = (name) => `var(--${name})`;
+module.exports = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        primary: v("primary"),
+        "on-primary": v("on-primary"),
+        secondary: v("secondary"),
+        "on-secondary": v("on-secondary"),
+        accent: v("accent"),
+        "accent-hover": v("accent-hover"),
+        "on-accent": v("on-accent"),
+        background: v("background"),
+        card: v("card"),
+        foreground: v("foreground"),
+        muted: v("muted"),
+        "muted-foreground": v("muted-foreground"),
+        border: v("border"),
+        "border-strong": v("border-strong"),
+        danger: v("danger"),
+        "danger-soft": v("danger-soft"),
+        warning: v("warning"),
+        "warning-soft": v("warning-soft"),
+        success: v("success"),
+        "success-soft": v("success-soft"),
+        "info-soft": v("info-soft"),
+        ring: v("ring"),
+      },
+      fontFamily: { sans: v("font-sans") },
+      fontSize: {
+        sm: ["0.875rem", { lineHeight: "1.5" }],
+        base: ["1rem", { lineHeight: "1.5" }],
+        lg: ["1.125rem", { lineHeight: "1.5" }],
+        xl: ["1.25rem", { lineHeight: "1.4" }],
+        "2xl": ["1.5rem", { lineHeight: "1.3" }],
+        "3xl": ["2rem", { lineHeight: "1.2" }],
+      },
+      borderRadius: { card: "16px", btn: "12px" },
+      boxShadow: { card: v("shadow") },
+      minHeight: { btn: v("btn-h"), touch: "44px" },
+      minWidth: { touch: "44px" },
+      spacing: { gap: v("gap") },
+      transitionTimingFunction: { out: "cubic-bezier(0.16, 1, 0.3, 1)" },
+    },
+  },
+};

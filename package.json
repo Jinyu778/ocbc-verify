@@ -1,0 +1,21 @@
+{
+  "name": "safebank-shield",
+  "private": true,
+  "workspaces": [
+    "packages/ui",
+    "customer-app",
+    "staff-console",
+    "e2e"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "node scripts/run-backend.mjs",
+    "dev:customer": "npm run dev -w customer-app",
+    "dev:staff": "npm run dev -w staff-console",
+    "build": "npm run build -w customer-app && npm run build -w staff-console",
+    "test:backend": "node scripts/run-backend.mjs test",
+    "test:web": "npm run test -w packages/ui && npm run test -w customer-app",
+    "test:e2e": "npm run test -w e2e",
+    "reset": "node scripts/run-backend.mjs reset"
+  }
+}

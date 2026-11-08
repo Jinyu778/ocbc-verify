@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Used ONLY to know whether a call is in progress. We never read the number, contacts or audio. -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Android 15+: lets the app know if its own screen is being recorded or shared. -->
+    <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
+</manifest>
