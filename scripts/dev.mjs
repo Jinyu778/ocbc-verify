@@ -1,4 +1,4 @@
-// Starts API (:8000), customer app (:5173) and staff console (:5174) together.
+// Starts the API (:8000) and the SafeBank app (:5173) together.
 import { spawn } from "node:child_process";
 
 const win = process.platform === "win32";
@@ -6,8 +6,7 @@ const npm = win ? "npm.cmd" : "npm";
 const procs = [
   // node is spawned directly (no shell): its path often contains spaces ("C:\Program Files\...").
   ["api", process.execPath, ["scripts/run-backend.mjs"], false],
-  ["customer", npm, ["run", "dev", "-w", "customer-app"], win],
-  ["staff", npm, ["run", "dev", "-w", "staff-console"], win],
+  ["app", npm, ["run", "dev", "-w", "app"], win],
 ].map(([name, cmd, args, shell]) => {
   const p = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"], shell });
   p.on("exit", (code) => code && console.error(`[${name}] exited with code ${code}`));

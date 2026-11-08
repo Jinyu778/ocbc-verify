@@ -17,18 +17,16 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://safebank:safebank@db:5432/safebank
       JWT_SECRET: ${JWT_SECRET:-docker-dev-secret-change-me}
+      SAVE_FOR_LATER_OPTIONS_MINUTES: ${SAVE_FOR_LATER_OPTIONS_MINUTES:-60,360,1440}
+      TRUSTED_CONTACT_TIMEOUT_MINUTES: ${TRUSTED_CONTACT_TIMEOUT_MINUTES:-1440}
+      CONTACT_CHANGE_COOLING_MINUTES: ${CONTACT_CHANGE_COOLING_MINUTES:-1440}
     ports: ["8000:8000"]
     depends_on:
       db: {condition: service_healthy}
 
-  customer-app:
-    build: {context: ., dockerfile: customer-app/Dockerfile}
+  app:
+    build: {context: ., dockerfile: app/Dockerfile}
     ports: ["5173:80"]
-    depends_on: [api]
-
-  staff-console:
-    build: {context: ., dockerfile: staff-console/Dockerfile}
-    ports: ["5174:80"]
     depends_on: [api]
 
 volumes:
