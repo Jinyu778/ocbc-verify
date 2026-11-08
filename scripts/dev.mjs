@@ -4,11 +4,13 @@ import { spawn } from "node:child_process";
 const win = process.platform === "win32";
 const npm = win ? "npm.cmd" : "npm";
 const procs = [
-  ["api", process.execPath, ["scripts/run-backend.mjs"]],
-  ["customer", npm, ["run", "dev", "-w", "customer-app"]],
-  ["staff", npm, ["run", "dev", "-w", "staff-console"]],
-].map(([name, cmd, args]) => {
-  const p = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"], shell: win });
+  // node is spawned directly (no shell): its path often contains spaces ("C:\Program Files\...").
+  ["api", process.execPath, ["scripts/run-backend.mjs"], false],
+  ["customer", npm, ["run", "dev", "-w", "customer-app"], win],
+  ["staff", npm, ["run", "dev", "-w", "staff-console"], win],
+].map(([name, cmd, args, shell]) => {
+  const p = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"], shell });
+  p.on("exit", (code) => code && console.error(`[${name}] exited with code ${code}`));
   const tag = `[${name}] `;
   p.stdout.on("data", (d) => process.stdout.write(d.toString().replace(/^/gm, tag)));
   p.stderr.on("data", (d) => process.stderr.write(d.toString().replace(/^/gm, tag)));
