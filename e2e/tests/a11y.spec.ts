@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { answerAllNo, openAs, resetDemo, runScenario, staffLogin } from "./helpers";
+import { answerAllNo, english, login, openAs, resetData, startPayment } from "./helpers";
 
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -14,22 +14,26 @@ async function scan(page: Page, name: string) {
 }
 
 test.describe.configure({ timeout: 180_000 });
-test.beforeEach(async ({ request }) => resetDemo(request));
+test.beforeEach(() => resetData());
 
 for (const theme of ["light", "dark"] as const) {
-  test(`customer screens have no serious/critical axe violations (${theme})`, async ({ page }) => {
+  test(`customer screens: no serious/critical axe violations (${theme})`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: theme });
     await page.goto("/login");
     await scan(page, "login");
-    await page.goto("/demo");
-    await scan(page, "demo");
-    await runScenario(page, 1);
-    await scan(page, "pay amount");
-    await page.goto("/");
+    await login(page, "tan.siewlan"); // Easy Mode account
+    await english(page);
     await scan(page, "home (easy mode)");
-    await page.goto("/pay");
+    await page.goto("/customer/pay");
     await scan(page, "payee list");
-    await runScenario(page, 1);
+    await page.getByRole("button", { name: "Add a new payee" }).click();
+    await scan(page, "add payee");
+    await page.goto("/customer/pay");
+    await page.getByRole("button", { name: /MAS Safety Account/ }).click();
+    await scan(page, "live-call question");
+    await page.getByRole("button", { name: "Yes – I'm on a call" }).click();
+    await page.getByLabel("Amount (S$)").fill("8000");
+    await scan(page, "amount + call banner");
     await page.getByRole("button", { name: "Review payment" }).click();
     await expect(page.getByText("Question 1 of 4")).toBeVisible();
     await scan(page, "questions");
@@ -38,50 +42,52 @@ for (const theme of ["light", "dark"] as const) {
     await scan(page, "pause");
     await page.getByRole("button", { name: "Save for later" }).click();
     await scan(page, "save sheet");
-    await page.getByRole("button", { name: "1 hour" }).click();
+    await page.getByRole("button", { name: "1 minute", exact: true }).click();
     await scan(page, "saved");
-    await page.goto("/check?sample=ticket");
+    await page.goto("/customer/check");
+    await page.getByRole("button", { name: "Concert tickets" }).click();
+    await page.getByRole("button", { name: "Check message" }).click();
     await expect(page.getByText("Likely scam", { exact: true })).toBeVisible();
     await scan(page, "check result");
-    await page.goto("/verify");
+    await page.goto("/customer/verify");
     await expect(page.getByText("SafeBank is NOT calling you right now.")).toBeVisible();
     await scan(page, "verify");
-    await page.goto("/settings");
+    await page.goto("/customer/settings");
     await scan(page, "settings");
-    await page.goto("/guide");
+    await page.goto("/customer/guide");
     await scan(page, "guide");
   });
 }
 
-test("trusted contact and staff console have no serious/critical axe violations", async ({ page, browser }) => {
-  await runScenario(page, 5);
-  await page.getByRole("button", { name: "Review payment" }).click();
+test("trusted contact and staff console: no serious/critical axe violations", async ({ page, browser }) => {
+  await login(page, "ryan.lim");
+  await startPayment(page, "HR Onboarding – J. Wong", "600", "chatting");
   await answerAllNo(page);
   await page.getByRole("button", { name: "Ask my trusted contact" }).click();
   await scan(page, "waiting for trusted contact");
   const mom = await openAs(browser, "mrs.lim");
   await expect(mom.getByText("Ryan Lim wants to make a payment")).toBeVisible();
   await scan(mom, "trusted contact home");
-  const staff = await staffLogin(browser);
+  await mom.getByRole("button", { name: "Settings" }).click();
+  await scan(mom, "trusted contact settings");
+  const staff = await openAs(browser, "staff.anna", { width: 1440, height: 900 });
   await scan(staff, "staff queue");
   await staff.getByRole("row", { name: /Ryan Lim/ }).first().click();
   await expect(staff.getByRole("heading", { name: /Case SB-/ })).toBeVisible();
   await scan(staff, "staff case drawer");
   await staff.keyboard.press("Escape");
-  await staff.getByRole("button", { name: "Impact" }).click();
-  await scan(staff, "staff impact");
-  await staff.getByRole("button", { name: "Reported messages" }).click();
-  await scan(staff, "staff messages");
+  for (const tab of ["Impact", "Reported messages", "Audit trail"]) {
+    await staff.getByRole("link", { name: tab }).click();
+    await scan(staff, `staff ${tab}`);
+  }
   await mom.context().close();
   await staff.context().close();
 });
 
-test("layout has no horizontal scroll at 375px with extra-large text", async ({ page }) => {
-  await runScenario(page, 1);
-  await page.evaluate(() => {
-    localStorage.setItem("sb.prefs", JSON.stringify({ theme: "light", easy: true, textSize: "xl", readAloud: true }));
-  });
-  for (const path of ["/", "/pay", "/check", "/settings", "/verify"]) {
+test("no horizontal scroll at 375px with Easy Mode and extra-large text", async ({ page }) => {
+  await login(page, "tan.siewlan");
+  await page.evaluate(() => localStorage.setItem("sb.prefs", JSON.stringify({ theme: "light", easy: true, textSize: "xl", readAloud: true })));
+  for (const path of ["/customer", "/customer/pay", "/customer/check", "/customer/settings", "/customer/verify"]) {
     await page.goto(path);
     await page.waitForTimeout(400);
     const { overflow, culprits } = await page.evaluate(() => {

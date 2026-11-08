@@ -4,38 +4,68 @@
 > OCBC IGNITE Innovation Challenge 2026, Problem Statement 3: *Digital Trust – Protecting Customers from AI-Powered Scams.*
 > "How might OCBC create a useful moment of friction when acting too quickly could cause customer harm?"
 
-SafeBank Shield is a working end-to-end system. It has three parts, all on one real API and database:
+SafeBank Shield is **one real, working app** with all six features inside it. After login, each account sees its own experience:
 
-- a **customer app** (web, plus Android via Capacitor)
-- a **trusted-contact view**
-- an **OCBC-style staff fraud console**
+| Role | Area | Layout |
+|---|---|---|
+| Customer | `/customer` – Home, Pay, Check a message, Settings | phone |
+| Trusted contact | `/contact` – pending requests and history | phone |
+| Bank staff | `/staff` – fraud console, reported messages, Impact, audit trail | desktop |
 
-Logins, balances, transfers, risk scoring, pauses, approvals, live updates, voice calls and the evidence log all really work. Only the people and the money are fake.
+The app runs in the browser and as an Android app (Capacitor), on one FastAPI backend and database. Logins, balances, transfers, risk scoring, holds, approvals, live updates, voice calls and evidence logs all really work. Only the people and the money are fake.
+
+**There are no demo shortcuts:** no scenario buttons, no auto-login, no skip-timer, and no fake signal switches. You test it the way a customer would. See **[TEST_PLAN.md](TEST_PLAN.md)**.
 
 | | |
 |---|---|
-| Customer app | http://localhost:5173 (demo launcher at **/demo**) |
-| Staff console | http://localhost:5174 |
-| API + docs | http://localhost:8000/docs |
+| App | http://localhost:5173 |
+| API + interactive docs | http://localhost:8000/docs |
 
 ---
 
-## What it does
+## Test accounts (synthetic)
+
+Password for every account: **`Test1234!`** (listed here only, never shown in the app).
+
+| Username | Role | Details |
+|---|---|---|
+| `tan.siewlan` | customer | Mdm Tan Siew Lan, 68, S$42,000, 中文, Easy Mode on, trusted contact `daniel.tan` (child) |
+| `ryan.lim` | customer | Ryan Lim, 21, polytechnic student, S$2,800, English, trusted contact `mrs.lim` (parent) |
+| `aisha.rahman` | customer | Aisha Rahman, 41, working parent, S$15,500, Bahasa Melayu |
+| `daniel.tan` | trusted contact | Mdm Tan's son |
+| `mrs.lim` | trusted contact | Ryan's mother |
+| `staff.anna` | staff | Anna Koh, SafeBank fraud officer |
+
+Seeded payees: known (Tan Wei Ming (son), SP Group, Town Council S&CC, Mrs Lim (mother)) and NEW (MAS Safety Account – Lim K., Hospital – NUH Billing, HR Onboarding – J. Wong, Carousell Seller – ticketsg88). Each customer also has 6 months of normal history, which is the baseline for the unusual-amount check. Customers can **add their own payees** (Pay → Add a new payee); a new payee starts as NEW.
+
+**Reset all data** (command line only, there's no button in the app):
+```bash
+npm run reset-data          # or: make reset-data   or: cd backend && python -m app.seed --reset
+```
+
+---
+
+## Features
 
 | Feature | What happens |
 |---|---|
-| **1. Safe-Exit Pause** | The server scores every payment with a pure, tested risk engine. Low risk gets zero friction. Medium risk gets 4 one-per-screen safety questions. High risk gets a calm *"Let's pause this payment"* screen with **Cancel / Save for later / Call SafeBank in-app / Ask my trusted contact**. *Continue anyway* only appears after 30 s, and the server enforces that too. Nothing is ever blocked permanently. |
-| **2. Call- and chat-aware trigger** | On Android, a Kotlin Capacitor plugin reads **call state only** (on a call / call ended less than 10 min ago, and screen sharing on Android 15+). On the web, a Demo Controls drawer simulates these signals. A new payee plus any live signal always pauses, even if the customer answers "No" to everything. |
-| **3. Official in-app verification** | A real browser-to-browser **WebRTC voice call** with signalling over the app WebSocket. The call shows a *Verified SafeBank Fraud Team* badge and the officer's name. If audio fails it falls back to text chat, and that's logged. **Verify a call** tells the customer whether SafeBank is genuinely calling them right now, using an HMAC-signed call session. |
-| **4. Staff triage console** | Live queue sorted by risk then time. The case drawer shows the score breakdown, amount vs usual, signals, answers, call history and an append-only evidence timeline. Actions (each needs a note): Approve, Call customer in-app, Hold & escalate to the Anti-Scam Centre (printable HTML + JSON referral with masked contact details), and Mark as genuine. Keyboard shortcuts: A / C / E / G / Esc. |
-| **5. Trusted contact co-sign** | The contact sees only the customer's name, the amount band, whether the payee is new, and why it was flagged. They never see the balance. "OK" lets the payment go; "Stop" sends it to staff review, not a permanent block. Changing a trusted contact takes 24 h, so a scammer holding the phone can't swap them out. Reply window: 2 min in the demo, 24 h in real use. |
-| **6. "Is this real?" message checker** | A rule layer (13 plain-language red flags, highlighted inline, tap to see why) plus an ML layer (TF-IDF + logistic regression). A *"Not sure – check through an official channel"* verdict appears when confidence is 0.4–0.6. Customers can report a message to staff. Only redacted text is stored. |
-| **Impact panel** | Payments checked, % zero friction, % paused, % cancelled after a pause, false positives, money protected, extra seconds added to genuine payments, trusted-contact response time, message verdict split, and model metrics. |
+| **1. Safe-Exit Pause** | The server scores every payment with a pure, unit-tested risk engine. Low risk gets zero friction (≤ 3 taps). Medium risk gets 4 one-per-screen safety questions. High risk gets a calm *"Let's pause this payment"* screen with **Cancel / Save for later / Call SafeBank in-app / Ask my trusted contact**. **Save for later** offers the waiting times configured in `.env`; the server only unlocks *Send now* when that time has really passed, and the saved payment survives logout. *Continue anyway* appears after a visible 30-s countdown, and the server enforces the 30 s too. Nothing is ever blocked permanently. |
+| **2. Call- and chat-aware trigger** | **Android app:** a Kotlin Capacitor plugin reads call **state only** (on a call / call ended < 10 min ago, plus screen recording on Android 15+). **Browser:** a browser can't see calls, so for any NEW payee the app asks *"Are you on a phone call or chatting with someone about this payment right now?"* (Yes – on a call / Yes – chatting / No). Chats on WhatsApp/Telegram can never be read; they always come from the customer's answer. The server records the signal source (native vs customer answer) in the evidence log. A new payee plus any live signal always pauses. |
+| **3. Official in-app verification** | A real browser-to-browser **WebRTC voice call** with signalling over the app WebSocket, showing *Verified SafeBank Fraud Team* and the officer's name. If voice fails it falls back to text chat, and that's logged. **Verify a call** says whether SafeBank is genuinely calling you right now, based on an HMAC-signed call session. |
+| **4. Staff triage console** | Live queue sorted by risk then time. The case drawer shows the score breakdown, amount vs usual, signals and their source, answers, call history and an append-only evidence timeline. Actions (each needs a note): Approve, Call customer in-app, Hold & escalate to ASC (printable referral + JSON, contact details masked), Mark as genuine. Keyboard: A / C / E / G / Esc. |
+| **5. Trusted contact co-sign** | The contact sees only the name, the amount band, whether the payee is new, and the reasons. **OK** lets the payment be sent; **Stop** sends it to staff review, which isn't a permanent block. Changing or removing a contact waits `CONTACT_CHANGE_COOLING_MINUTES` (24 h by default). If there's no reply within `TRUSTED_CONTACT_TIMEOUT_MINUTES`, the customer can still save the payment for later or call SafeBank. |
+| **6. "Is this real?" message checker** | Rule layer (13 plain-language red flags, highlighted inline, tap to explain) plus an ML layer (TF-IDF + logistic regression). *"Not sure – check through an official channel"* appears when confidence is 0.4–0.6. Report → staff *Reported messages*. Only redacted text is stored. |
+| **Impact panel** | `/staff/impact`: payments checked, % zero friction, % paused, % cancelled after pause, false positives, money protected, extra seconds on genuine payments, trusted-contact response time, message verdicts, model metrics. |
 
-### Inclusive for every generation
-- **Seniors:** Easy Mode (20 px text, 60 px buttons, simpler Home, stronger contrast), **Read aloud** on every warning, question and verdict, 4 text sizes, numbers written in full ("S$8,000"), a Back button on every screen and no gesture-only actions.
-- **Young adults:** a zero-friction fast path (Home → payee chip → amount → Review → Send for known payees), dark mode, and youth scams covered: fake jobs, tickets, online shopping, gaming top-ups.
-- **Everyone:** English, 中文, Bahasa Melayu and தமிழ் (switch in the header or Settings), WCAG 2.2 AA, a session-timeout warning with "Stay signed in", and respect for `prefers-reduced-motion`.
+**Inclusive for every generation:**
+- Easy Mode: 20 px text, 60 px buttons, simpler Home.
+- Read aloud on every warning, question and verdict.
+- 4 text sizes; respects browser zoom (200 % tested at 375 px).
+- English / 中文 / Bahasa Melayu / தமிழ்.
+- Dark mode.
+- WCAG 2.2 AA, checked with axe.
+- Session-timeout warning with "Stay signed in".
+- Reduced motion respected.
 
 ---
 
@@ -43,206 +73,167 @@ Logins, balances, transfers, risk scoring, pauses, approvals, live updates, voic
 
 ```mermaid
 flowchart LR
-  subgraph Phone["Customer phone (React + Capacitor)"]
-    CA[Customer app]
+  subgraph APP["SafeBank app – one React app (browser + Android/Capacitor)"]
+    C["/customer<br/>Home · Pay · Check · Settings"]
+    T["/contact<br/>trusted-contact requests"]
+    S["/staff<br/>fraud console · Impact"]
     SP{{SignalProvider}}
-    NP[Kotlin CallState plugin<br/>call STATE only]
-    SIM[Simulated signals<br/>web demo]
-    CA --> SP
+    NP[NativeSignalProvider<br/>Kotlin plugin: call STATE only]
+    BP[BrowserSignalProvider<br/>customer's own answer]
+    C --> SP
     SP --> NP
-    SP --> SIM
+    SP --> BP
   end
-  TC[Trusted-contact view<br/>same app, role-based]
-  SC[Staff fraud console<br/>React]
   subgraph API["FastAPI backend (Python)"]
-    R[REST /api/*]
+    R[REST /api/*<br/>JWT + role guards]
     WS[WebSocket /api/ws<br/>live updates + WebRTC signalling]
     RE[Risk engine<br/>pure function]
     ML[Message classifier<br/>rules + TF-IDF/LR]
     EV[(Append-only<br/>evidence log)]
   end
   DB[(SQLite dev /<br/>PostgreSQL docker)]
-  CA <-->|JWT| R
-  TC <-->|JWT| R
-  SC <-->|JWT| R
-  CA <--> WS
-  TC <--> WS
-  SC <--> WS
+  APP <-->|HTTPS JSON| R
+  APP <--> WS
   R --> RE
   R --> ML
   R --> EV
   R --> DB
-  CA <-.->|WebRTC voice<br/>peer-to-peer| SC
+  C <-.->|WebRTC voice, peer-to-peer| S
 ```
 
-**Monorepo**
-
 ```
-backend/          FastAPI, SQLAlchemy 2, Alembic, JWT auth, risk engine, classifier, pytest
-  app/risk_engine.py      pure scoring function (every rule unit-tested)
-  app/routers/            auth, me, transfers, trusted, calls, staff, messages, metrics, demo, ws
-  data/messages.csv       444 labelled synthetic messages (generate_messages.py rebuilds it)
-customer-app/     React 18 + Vite + TS + Tailwind + i18next + TanStack Query; Capacitor for Android
-staff-console/    React 18 fraud console
-packages/ui/      design tokens (CSS variables), Tailwind preset, shared components, API client,
-                  WebSocket provider, WebRTC engine, locale JSON (en/zh/ms/ta)
-android-plugin/   Capacitor plugin in Kotlin (TelephonyCallback / PhoneStateListener)
-e2e/              Playwright scenarios + @axe-core/playwright accessibility scans
+backend/            FastAPI, SQLAlchemy 2, Alembic, JWT, risk engine, classifier, pytest
+  app/risk_engine.py      pure scoring function
+  app/seed.py             test accounts; `python -m app.seed --reset`
+  data/messages.csv       444 labelled synthetic messages (data/generate_messages.py rebuilds it)
+app/                ONE React 18 + Vite + TS + Tailwind + i18next + TanStack Query app, Capacitor for Android
+  src/design/             design tokens (CSS variables), Tailwind preset, shared components,
+                          API client, WebSocket provider, WebRTC engine, i18n + locales (en/zh/ms/ta)
+  src/pages/              customer + trusted-contact screens
+  src/staff/              fraud console (lazy-loaded, staff role only)
+  src/signals/            SignalProvider: NativeSignalProvider / BrowserSignalProvider
+android-plugin/     Capacitor plugin in Kotlin (TelephonyCallback / PhoneStateListener)
+e2e/                Playwright tests through the real login screen + axe scans
 ```
 
 ---
 
 ## Setup
 
-### Option A – one command with Docker
+### Option A – Docker
 ```bash
 docker compose up --build
 ```
-This starts PostgreSQL, the API on :8000 (runs migrations and seeds on start), the customer app on :5173 and the staff console on :5174.
-> ⚠️ The Dockerfiles and compose file were written but **not run** on the build machine, because Docker wasn't installed there. Option B is the tested path.
+This starts PostgreSQL, the API on :8000 (migrations + seeding on start) and the app on :5173.
+> ⚠️ Written but **not run** on the build machine (Docker isn't installed there). Option B is the tested path.
 
-### Option B – without Docker (tested on Windows 11, Python 3.14, Node 26)
+### Option B – without Docker (tested: Windows 11, Python 3.14, Node 26)
 ```bash
-# 1. backend
 cd backend
 python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt        # macOS/Linux: .venv/bin/pip
-.venv/Scripts/python -m app.classifier              # trains the model, prints metrics
+.venv/Scripts/pip install -r requirements.txt     # macOS/Linux: .venv/bin/pip
+.venv/Scripts/python -m app.classifier           # trains the model, prints metrics
 cd ..
-# 2. frontends
 npm install
-# 3. run everything (API :8000, customer :5173, staff :5174)
-npm run dev        # or: make dev
+npm run dev            # or: make dev   → API :8000 + app :5173
 ```
-The SQLite database is created and seeded on first start. Reset it at any time with `npm run reset`, or the **Reset demo data** button on `/demo`.
+> Windows PowerShell says "running scripts is disabled"? Use `npm.cmd run dev`, or run once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
-Configuration lives in `.env` (copy `.env.example`). Key settings: `DEMO_MODE`, `TRUSTED_TIMEOUT_SECONDS`, `JWT_SECRET`, and optional `TURN_URL` for WebRTC across different networks. Two devices on the same Wi-Fi work without TURN.
-
----
-
-## Demo accounts (synthetic)
-
-Password for all accounts: **`Demo1234!`** (shown on the login page in DEMO_MODE only).
-
-| Username | Role | Who |
+### Configuration (`.env`, copy from `.env.example`)
+| Setting | Default | Testing |
 |---|---|---|
-| `tan.siewlan` | customer | Mdm Tan Siew Lan, 68, S$42,000, 中文, Easy Mode, trusted contact Daniel (son) |
-| `ryan.lim` | customer | Ryan Lim, 21, poly student, S$2,800, English, trusted contact Mrs Lim (mother) |
-| `aisha.rahman` | customer | Aisha Rahman, 41, S$15,500, Bahasa Melayu, no trusted contact |
-| `daniel.tan` | trusted contact | Mdm Tan's son |
-| `mrs.lim` | trusted contact | Ryan's mother |
-| `staff.anna` | staff | Anna Koh, SafeBank fraud officer |
+| `SAVE_FOR_LATER_OPTIONS_MINUTES` | `60,360,1440` | `1,3,5` to test timers in minutes |
+| `TRUSTED_CONTACT_TIMEOUT_MINUTES` | `1440` | `2` |
+| `CONTACT_CHANGE_COOLING_MINUTES` | `1440` | – |
+| `CONTINUE_ANYWAY_SECONDS` | `30` | – |
+| `TURN_URL` / `TURN_USERNAME` / `TURN_CREDENTIAL` | empty | for calls across different networks |
+| `VITE_API_URL` | same host :8000 | laptop LAN IP for the Android app |
 
-Each customer has 6 months of seeded normal history, which gives the unusual-amount check a baseline.
-
----
-
-## Scenario walkthrough (buttons on `/demo`)
-
-| # | Scenario | Expected result |
-|---|---|---|
-| 1 | Fake MAS officer – Mdm Tan, on a call, S$8,000 → "MAS Safety Account – Lim K." | Red call banner. Questions → **Pause** (score 7: new payee 2, on call 2, amount 1, unusual 2). **Call SafeBank in-app** → staff console rings → Anna answers → voice connects with the verified badge → Anna escalates to the ASC with a note → customer sees *"Payment held for your safety"*. Balance unchanged. |
-| 2 | Genuine urgent bill – Mdm Tan, no call, S$3,200 → "Hospital – NUH Billing" | **Ask** tier (score 5) → all "No" → *Check first* → **Save for later** (1 h) → countdown → *Skip timer (demo)* → **Send now** → sent. Shows the system doesn't block genuine payments. |
-| 3 | Everyday payment – Mdm Tan, S$45 → SP Group | Score 0 → *Looks safe* → Send. No friction. |
-| 4 | Customer says No to everything – as #1 | Still paused: new payee + live call is an override. |
-| 5 | Fake job deposit – Ryan, chatting, S$600 → "HR Onboarding – J. Wong" | Chat banner → Pause (score 6 + override) → **Ask my trusted contact** → Mrs Lim's app updates live (she sees "S$100 – S$1,000", "a NEW payee", the reasons, and nothing else) → she taps **Stop** → Ryan sees *"SafeBank is reviewing"* → appears in the staff queue as *Needs staff review*. |
-| 6 | Ticket scam message – Ryan | Concert-ticket sample → **Likely scam** with "PayNow first", "no meetup" and "now" underlined; tap one for the explanation; Report → appears in the staff *Reported messages* tab. |
-| 7 | SafeBank server down | Starts a payment with the payment-checking service simulated as down → *"We can't check this payment right now"* → **never sends**. Retry, save on the phone, or cancel. (Stopping the API container or process gives the same result.) |
+The app reads these values from `GET /api/config` and shows them as they are. There are no timer buttons in the UI.
 
 ---
 
-## Tests and results (all run on the build machine)
+## Tests and results (run on the build machine)
 
 | Suite | Command | Result |
 |---|---|---|
-| Backend (pytest) | `npm run test:backend` | **82 passed**. Every risk rule and boundary (S$999.99 / 1,000 / 9,999.99 / 10,000, z = 3.0), the overrides, the 30-s continue-anyway rule, server-side timers, role checks, evidence-log immutability (ORM refuses update/delete), balance changes only on send, trusted-contact privacy and the 24 h change delay, staff notes, classifier metrics, and redaction. |
-| Frontend (Vitest) | `npm run test:web` | **12 passed**. Pause screen (heading, reasons, 4 actions, 30-s countdown, "Are you sure?" sheet focusing *Go back*), signal banners, language switch (zh + `<html lang>`), all locale keys present in every language, Easy Mode and dark mode. |
-| End to end (Playwright) | `npm run test:e2e` | **18 passed**. Scenarios 1–7, Scenario 3 in 中文, a real network failure, a backend slower than 5 s, invalid input, Verify a call, a staff-initiated call with fallback to text chat, a **real WebRTC voice connection** between the two apps, and **axe scans (WCAG 2.0/2.1/2.2 A+AA) on every main screen in light and dark mode with zero serious or critical violations**. Also: no horizontal scroll at 375 px with Easy Mode and extra-large text. |
+| Backend (pytest) | `npm run test:backend` | **90 passed**. Every risk rule and boundary (S$999.99 / 1,000 / 9,999.99 / 10,000, z = 3.0), overrides, the 30-s continue-anyway rule, server-side timers (incl. env-configured 1-minute options), role checks, evidence-log immutability, balance changes only on send, trusted-contact privacy and cooling period, add-payee validation, no demo endpoints, classifier metrics, redaction. |
+| App (Vitest) | `npm run test:web` | **15 passed**. Pause screen, signal banners, browser live-call question (asked for new payees, skipped for known ones, merged into signals), language switch, locale completeness, Easy Mode, dark mode. |
+| End to end (Playwright) | `npm run test:e2e` | E2E_RESULT |
 
-First-time e2e setup: `npm run install-browsers -w e2e`. To capture review screenshots: `TOUR=1 npx playwright test tour` (from `e2e/`).
+First-time e2e setup: `npx playwright install chromium` (in `e2e/`). The e2e server uses `SAVE_FOR_LATER_OPTIONS_MINUTES=1,3,5` and `TRUSTED_CONTACT_TIMEOUT_MINUTES=1`, so timer tests really wait about 1 minute.
 
 ### Message classifier (held-out data)
-Trained on `backend/data/messages.csv`: 444 synthetic messages (245 scam, 199 legitimate) covering seniors' and young people's scams, mostly English with some 中文 and Bahasa Melayu.
+444 synthetic messages (245 scam / 199 legitimate), mostly English, some 中文 and Bahasa Melayu.
 
 | Split | Accuracy | Scam precision | Scam recall |
 |---|---|---|---|
 | Random 25 % hold-out (n = 111) | 1.000 | 1.000 | 1.000 |
-| **Harder: whole templates held out** (the model never saw the sentence shape) | **0.901** | **0.873** | **0.969** |
+| **Whole templates held out** (unseen sentence shapes) | **0.901** | **0.873** | **0.969** |
 
-The random split is optimistic because the messages are generated from templates. The grouped split is the more honest number, and it still meets the recall target (≥ 0.9). Real-world performance will be lower; see the limitations below.
+The random split is optimistic because the data is template-generated. The grouped split is the honest number, and it still meets the recall target of ≥ 0.9.
 
 ---
 
 ## Android build (call detection)
-> Not built on the development machine (no Android SDK or Java there). The plugin code is complete, but the APK hasn't been tested on a device.
+> Not built on the development machine (no Android SDK/Java there). The plugin code is complete but untested on a device.
 
-1. Install Android Studio (with SDK 35 and JDK 17).
-2. Set `VITE_API_URL=http://<your-laptop-LAN-IP>:8000` in `.env`. Phone and laptop must be on the same Wi-Fi.
+1. Install Android Studio (SDK 35, JDK 17).
+2. In `.env` set `VITE_API_URL=http://<laptop-LAN-IP>:8000`. The phone must be on the same Wi-Fi.
 3. ```bash
-   cd customer-app
+   cd app
    npx cap add android        # first time only
-   npm run cap:sync           # builds the web app and runs `npx cap sync android`
-   npx cap open android       # opens Android Studio → Run ▶ (or Build → Build APK)
+   npm run cap:sync           # builds the app and runs `npx cap sync android`
+   npx cap open android       # Android Studio → Run ▶ or Build → Build APK
    ```
-4. Install the APK. In the app go to **Settings → Call detection → Allow**, which grants `READ_PHONE_STATE` after a plain-language explanation. If you deny it, the app treats signals as unknown, asks the safety questions, and logs `signal_unavailable`.
+4. Install the APK and sign in. Then **Settings → Call detection → Allow** to grant `READ_PHONE_STATE`, after the plain-language explanation. If you deny it, the app asks the live-call question instead and logs "signal unavailable".
 
 ---
 
 ## Privacy: what is and isn't collected
-
 | Collected | Never collected |
 |---|---|
-| Whether a call is in progress, whether one ended in the last 10 min, and whether the screen is being shared (Android 15+) | Call audio, caller or callee **numbers**, contacts, call logs |
-| The customer's own Yes/No answers | Content of WhatsApp, Telegram, SMS or any chat |
-| Payment amount, payee, risk score and reasons | Location or device identifiers |
-| Checked messages **redacted** (phone numbers and emails masked, links cut to the domain) | Raw pasted message text |
+| Whether a call is in progress or ended < 10 min ago; screen recording on Android 15+ | Call audio, phone **numbers**, contacts, call logs |
+| The customer's own answers (live-call question, safety questions) | Content of WhatsApp, Telegram, SMS or any chat |
+| Amount, payee, risk score, reasons, signal source | Location, device identifiers |
+| Checked messages, **redacted** (phone numbers and emails masked, links cut to the domain) | Raw pasted message text |
 | Evidence events and staff notes (append-only) | |
 
-The trusted contact sees only the name, the amount band, whether the payee is new, and the reasons. The ASC referral masks customer contact details. All data is synthetic.
+Trusted contacts see only the name, amount band, payee type and reasons, never the balance or account numbers. ASC referrals mask customer contact details.
 
 ---
 
-## Requirement checklist (brief → where it's met)
-
+## Requirement checklist
 | Brief requirement | Where |
 |---|---|
-| Build, don't just describe | Full stack, seeded accounts, 112 automated tests |
-| Analyse simulated messages / call context | Feature 2 (signals), Feature 6 (checker) |
-| Identify warning signals & inconsistencies | Risk-engine reasons, highlighted red flags, unusual-amount z-score |
-| Official verification journey | Feature 3 (verified in-app call + Verify a call) |
-| Pause-and-verify step | Feature 1 |
-| Explain risks, recommend safe actions | Plain-language reasons + safe-action buttons on every warning |
-| Customer: check suspicious communication | Feature 6 |
-| Customer: understand warning signals | Reasons, flag explanations, first-run "How you're protected" guide |
-| Customer: verify via official channel | Feature 3 |
-| Employee: triage a reported case | Feature 4 (+ Reported messages tab) |
-| System: record evidence & escalation | Append-only `evidence_events`, `staff_actions` audit trail, ASC referral export |
-| Back end Python | FastAPI |
-| AI: classification / anomaly | TF-IDF + LR classifier; z-score unusual-amount check |
-| Security: identity & verification | bcrypt passwords, JWT access + refresh, role guards, rate-limited login, HMAC-signed call sessions |
-| Data: synthetic scam & legit scenarios | Seed data + 444-message labelled dataset |
-| Out of scope: surveillance | Call state only (see Privacy) |
-| Out of scope: blocking without review | Every hold ends in the customer's choice after a delay, or staff review |
-| Failure scenarios | Backend down / slow, permission denied, false positive, low ML confidence, trusted-contact timeout, WebRTC failure, invalid input – all implemented and most covered by e2e |
-| Measure value | Impact panel (`GET /api/metrics`) |
-| Inclusive of all generations | Easy Mode, read aloud, 4 languages, dark mode, fast path, WCAG 2.2 AA scans |
-
----
+| Build, don't just describe | One full-stack app, seeded accounts, tests through the real UI |
+| Analyse messages / call context | Feature 2, Feature 6 |
+| Warning signals & inconsistencies | Risk reasons, highlighted red flags, unusual-amount z-score |
+| Official verification journey | Feature 3 |
+| Pause-and-verify | Feature 1 |
+| Explain risks, recommend safe actions | Reasons + safe-action buttons on every warning |
+| Customer: check / understand / verify | Features 6, 1 (+ first-run guide), 3 |
+| Employee: triage | Feature 4 |
+| System: evidence & escalation | `evidence_events` (append-only), `staff_actions`, ASC referral |
+| Python back end, AI | FastAPI; TF-IDF/LR classifier + z-score anomaly |
+| Identity & verification | bcrypt, JWT access + refresh, role guards (API + UI), rate-limited login, HMAC-signed calls |
+| Synthetic data | Seed accounts + 444-message dataset |
+| No surveillance / no permanent blocks | See Privacy; every hold ends in the customer's choice after a delay, or staff review |
+| Failure scenarios | Backend down/slow, permission denied, false positive, low confidence, trusted-contact timeout, WebRTC failure, invalid input |
+| Measure value | Impact panel |
+| All generations | Easy Mode, read aloud, 4 languages, dark mode, fast path |
 
 ## API
-Interactive reference at **http://localhost:8000/docs** (OpenAPI). Main groups:
-`/api/auth`, `/api/me`, `/api/transfers` (create, answers, send, continue-anyway, save, skip-timer, cancel, ask-trusted), `/api/trusted`, `/api/calls`, `/api/staff` (summary, cases, actions, referral, messages, audit), `/api/messages`, `/api/metrics`, `/api/demo/reset`, `/api/ws`.
-
----
+Interactive reference: **http://localhost:8000/docs**. Groups: `/api/auth`, `/api/me` (account, payees incl. add, activity, trusted contacts, preferences), `/api/transfers` (create, answers, send, continue-anyway, save, cancel, ask-trusted), `/api/trusted`, `/api/calls`, `/api/staff`, `/api/messages`, `/api/metrics`, `/api/config`, `/api/ws`.
 
 ## Known limitations
-- **Synthetic, template-generated message data.** The classifier's real-world accuracy is unknown. A real system needs labelled real scam reports, with consent.
-- **Translations** in 中文, Bahasa Melayu and தமிழ் are machine-assisted and marked for native-speaker review (`_meta.review` in each locale file). The demo launcher text is English-only.
-- **Read aloud** depends on the device having a voice for the language. Tamil voices are often missing; the app says so instead of failing silently.
-- **Docker and the Android APK** were written but not executed on the build machine (see above).
-- **WebRTC across different networks** needs a TURN server (`TURN_URL`); on the same Wi-Fi it works with STUN or host candidates.
-- In-memory login rate limiting and WebSocket hub: these work for a single server process only.
-- "Chatting about this payment" can't be detected on a real phone (by design, we never read chats). It comes from safety question (d), or from the demo toggle.
-- Not a security-audited system. Don't reuse the JWT secret or demo passwords anywhere real.
+- **Synthetic, template-generated messages.** Real-world classifier accuracy is unknown.
+- **Translations** (中文, Bahasa Melayu, தமிழ்) are machine-assisted and flagged for native-speaker review in each locale file. The staff console is English only.
+- In the **browser**, call/chat signals depend on the customer answering honestly. That's why a new payee plus "Yes" always pauses, and the 4 safety questions still run.
+- **Read aloud** needs a voice for the language on the device (Tamil is often missing). If there isn't one, the app says so.
+- **Docker** and the **Android APK** were written but not run on the build machine.
+- WebRTC across different networks needs a TURN server.
+- Login rate limiting and the WebSocket hub are in-memory, so they work for a single server process only.
+- Not security-audited. Don't reuse the JWT secret or test passwords anywhere real.
 
 No OCBC logos or trademarks are used. The brand in the app is **SafeBank**.

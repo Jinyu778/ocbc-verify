@@ -1,4 +1,7 @@
-"""Synthetic demo data. Nothing here is a real person or account."""
+"""Synthetic test accounts and data. Nothing here is a real person or account.
+
+Reset from the command line only:  python -m app.seed --reset
+"""
 
 from __future__ import annotations
 
