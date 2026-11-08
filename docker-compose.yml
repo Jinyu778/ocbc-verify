@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: safebank
+      POSTGRES_PASSWORD: safebank
+      POSTGRES_DB: safebank
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safebank"]
+      interval: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    env_file: [.env.example]
+    environment:
+      DATABASE_URL: postgresql+psycopg://safebank:safebank@db:5432/safebank
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret-change-me}
+    ports: ["8000:8000"]
+    depends_on:
+      db: {condition: service_healthy}
+
+  customer-app:
+    build: {context: ., dockerfile: customer-app/Dockerfile}
+    ports: ["5173:80"]
+    depends_on: [api]
+
+  staff-console:
+    build: {context: ., dockerfile: staff-console/Dockerfile}
+    ports: ["5174:80"]
+    depends_on: [api]
+
+volumes:
+  pgdata:

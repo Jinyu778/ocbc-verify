@@ -1,0 +1,14 @@
+{
+  "n_total": 444,
+  "n_train": 333,
+  "n_test": 111,
+  "accuracy": 1.0,
+  "precision_scam": 1.0,
+  "recall_scam": 1.0,
+  "grouped_by_template": {
+    "n_test": 111,
+    "accuracy": 0.901,
+    "precision_scam": 0.873,
+    "recall_scam": 0.969
+  }
+}
