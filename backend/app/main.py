@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager
+﻿from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from .config import get_settings
 from .models import EvidenceImmutableError
-from .routers import auth, calls, demo, me, messages, metrics, staff, transfers, trusted, ws
+from .routers import auth, calls, me, messages, metrics, public, staff, transfers, trusted, ws
 from .seed import ensure_seeded
 
 
@@ -53,5 +53,5 @@ def health():
     return {"ok": True}
 
 
-for r in (auth, me, transfers, trusted, calls, staff, messages, metrics, demo, ws):
+for r in (auth, me, transfers, trusted, calls, staff, messages, metrics, public, ws):
     app.include_router(r.router)

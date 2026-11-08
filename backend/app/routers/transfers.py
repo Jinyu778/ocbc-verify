@@ -36,7 +36,9 @@ class SignalsIn(BaseModel):
     chatting: bool = False
     screen_sharing: bool = False
     available: bool = True
-    source: Literal["native", "simulated", "none"] = "simulated"
+    # native = Android call-state plugin; customer_answer = the customer's own answer in the
+    # browser; not_asked = browser, known payee (no question shown); none = permission denied/failed
+    source: Literal["native", "customer_answer", "not_asked", "none"] = "not_asked"
 
 
 class CreateIn(BaseModel):
@@ -53,7 +55,7 @@ class AnswersIn(BaseModel):
 
 
 class SaveIn(BaseModel):
-    hours: Literal[1, 6, 24]
+    minutes: int
 
 
 def field_error(field: str, message: str):
@@ -110,6 +112,7 @@ def create_transfer(body: CreateIn, user: User = Depends(customer_only), db: Ses
     result = _score(db, t, None)
     _apply(t, result)
     log_event(db, t.id, "customer", "transfer_created", {"amount": str(amount), "payee": payee.name})
+    log_event(db, t.id, "system", "signal_source", {"source": body.signals.source})
     if not body.signals.available:
         log_event(db, t.id, "system", "signal_unavailable", {"source": body.signals.source})
     log_event(db, t.id, "system", "risk_scored", {"score": result.score, "tier": result.tier,
@@ -212,23 +215,12 @@ def save_for_later(transfer_id: int, body: SaveIn, user: User = Depends(customer
         raise HTTPException(409, "Your trusted contact asked to stop this payment. SafeBank will review it with you.")
     if t.status == "checking" and t.risk_tier != "none" and t.answers_json is None:
         raise HTTPException(409, "Please answer the safety questions first.")
+    options = get_settings().save_options
+    if body.minutes not in options:
+        field_error("minutes", "Please choose one of the waiting times shown.")
     t.status = "saved_for_later"
-    t.wait_until = utcnow() + timedelta(hours=body.hours)
-    log_event(db, t.id, "customer", "saved_for_later", {"hours": body.hours, "wait_until": str(t.wait_until)})
-    db.commit()
-    notify_transfer(db, t)
-    return transfer_out(db, t)
-
-
-@router.post("/{transfer_id}/skip-timer")
-def skip_timer(transfer_id: int, user: User = Depends(customer_only), db: Session = Depends(get_db)):
-    if not get_settings().demo_mode:
-        raise HTTPException(404, "Not found")
-    t = get_owned_transfer(db, transfer_id, user)
-    if t.status != "saved_for_later":
-        raise HTTPException(409, "There is no timer to skip.")
-    t.wait_until = utcnow()
-    log_event(db, t.id, "customer", "demo_timer_skipped", {"demo_only": True})
+    t.wait_until = utcnow() + timedelta(minutes=body.minutes)
+    log_event(db, t.id, "customer", "saved_for_later", {"minutes": body.minutes, "wait_until": str(t.wait_until)})
     db.commit()
     notify_transfer(db, t)
     return transfer_out(db, t)

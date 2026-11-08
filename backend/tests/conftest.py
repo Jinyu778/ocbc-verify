@@ -1,7 +1,9 @@
 import os
 
 os.environ["DATABASE_URL"] = "sqlite://"
-os.environ["DEMO_MODE"] = "true"
+os.environ["SAVE_FOR_LATER_OPTIONS_MINUTES"] = "60,360,1440"
+os.environ["TRUSTED_CONTACT_TIMEOUT_MINUTES"] = "1440"
+os.environ["CONTACT_CHANGE_COOLING_MINUTES"] = "1440"
 os.environ["JWT_SECRET"] = "test-secret"
 
 from datetime import timedelta  # noqa: E402
@@ -13,7 +15,7 @@ from app import db as db_module  # noqa: E402
 from app.main import app  # noqa: E402
 from app.models import Transfer  # noqa: E402
 from app.security import reset_rate_limits  # noqa: E402
-from app.seed import DEMO_PASSWORD, reset_database  # noqa: E402
+from app.seed import TEST_PASSWORD, reset_database  # noqa: E402
 
 
 @pytest.fixture()
@@ -25,7 +27,7 @@ def client():
 
 
 def login(client, username):
-    r = client.post("/api/auth/login", json={"username": username, "password": DEMO_PASSWORD})
+    r = client.post("/api/auth/login", json={"username": username, "password": TEST_PASSWORD})
     assert r.status_code == 200, r.text
     return {"Authorization": f"Bearer {r.json()['access_token']}"}
 

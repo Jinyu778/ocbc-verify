@@ -87,7 +87,7 @@ def transfer_out(db: Session, t: Transfer) -> dict:
         "pause_shown_at": pause_at,
         "continue_anyway_at": pause_at + timedelta(seconds=s.continue_anyway_seconds) if pause_at else None,
         "trusted_requested_at": trusted_at,
-        "trusted_timeout_at": trusted_at + timedelta(seconds=s.trusted_timeout_seconds) if trusted_at else None,
+        "trusted_timeout_at": trusted_at + timedelta(minutes=s.trusted_contact_timeout_minutes) if trusted_at else None,
         "trusted_decision": t.trusted_decision,
         "trusted_contact_name": tc.contact.display_name if tc else None,
         "active_call_id": call.id if call else None,

@@ -46,7 +46,7 @@ def request_view(t: Transfer) -> dict:
         "payee_type": "new" if new_payee else "known",
         "reason_keys": reasons,
         "requested_at": requested,
-        "timeout_at": requested + timedelta(seconds=s.trusted_timeout_seconds) if requested else None,
+        "timeout_at": requested + timedelta(minutes=s.trusted_contact_timeout_minutes) if requested else None,
         "decision": t.trusted_decision,
         "decided_at": as_utc(t.trusted_decided_at),
         "status": t.status if t.status in ("waiting_trusted_contact",) else "closed",

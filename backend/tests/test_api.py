@@ -32,12 +32,12 @@ def test_login_wrong_password(client):
 def test_login_rate_limited(client):
     for _ in range(5):
         client.post("/api/auth/login", json={"username": "ryan.lim", "password": "nope"})
-    r = client.post("/api/auth/login", json={"username": "ryan.lim", "password": "Demo1234!"})
+    r = client.post("/api/auth/login", json={"username": "ryan.lim", "password": "Test1234!"})
     assert r.status_code == 429
 
 
 def test_refresh_token(client):
-    r = client.post("/api/auth/login", json={"username": "ryan.lim", "password": "Demo1234!"}).json()
+    r = client.post("/api/auth/login", json={"username": "ryan.lim", "password": "Test1234!"}).json()
     r2 = client.post("/api/auth/refresh", json={"refresh_token": r["refresh_token"]})
     assert r2.status_code == 200 and r2.json()["user"]["username"] == "ryan.lim"
     assert client.post("/api/auth/refresh", json={"refresh_token": r["access_token"]}).status_code == 401
@@ -139,27 +139,27 @@ def test_scenario2_genuine_bill_ask_save_send(client, auth):
     assert client.post(f"/api/transfers/{t['id']}/send", headers=h).status_code == 409
     a = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
     assert a["risk_tier"] == "ask" and a["next_step"] == "confirm"
-    s = client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"hours": 1}).json()
+    s = client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 60}).json()
     assert s["status"] == "saved_for_later"
     r = client.post(f"/api/transfers/{t['id']}/send", headers=h)
     assert r.status_code == 409  # timer enforced on the server
-    client.post(f"/api/transfers/{t['id']}/skip-timer", headers=h)
+    backdate(t["id"], "wait_until", 3601)  # time really passes
     sent = client.post(f"/api/transfers/{t['id']}/send", headers=h).json()
     assert sent["status"] == "sent"
     assert Decimal(balance(client, h)) == before - Decimal("3200")
 
 
-def test_save_hours_validated(client, auth):
+def test_save_minutes_must_be_a_configured_option(client, auth):
     h = auth("tan.siewlan")
     t = create(client, h, "SP Group", "45").json()
-    assert client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"hours": 2}).status_code == 422
+    assert client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 2}).status_code == 422
 
 
 def test_timer_elapses_naturally(client, auth):
     h = auth("tan.siewlan")
     t = create(client, h, "Hospital – NUH Billing", "3200").json()
     client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
-    client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"hours": 1})
+    client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 60})
     backdate(t["id"], "wait_until", 3601)
     assert client.post(f"/api/transfers/{t['id']}/send", headers=h).json()["status"] == "sent"
 
@@ -275,7 +275,7 @@ def test_trusted_timeout_customer_can_still_save(client, auth):
     client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
     w = client.post(f"/api/transfers/{t['id']}/ask-trusted", headers=h).json()
     assert w["trusted_timeout_at"]
-    s = client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"hours": 24})
+    s = client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 1440})
     assert s.json()["status"] == "saved_for_later"
 
 
@@ -335,7 +335,7 @@ def test_balance_changes_only_on_send(client, auth):
     before = balance(client, h)
     t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
     client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
-    client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"hours": 1})
+    client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 60})
     client.post(f"/api/transfers/{t['id']}/ask-trusted", headers=h)
     assert balance(client, h) == before
     with db_module.SessionLocal() as s:
@@ -431,10 +431,70 @@ def test_empty_message_rejected(client, auth):
     assert client.post("/api/messages/check", headers=auth("ryan.lim"), json={"text": "   "}).status_code == 422
 
 
-# --- demo ---------------------------------------------------------------------------------------
-def test_demo_reset(client, auth):
+# --- no demo shortcuts, config, self-service payees -------------------------------------------
+def test_no_demo_shortcuts_exist(client):
+    paths = client.get("/openapi.json").json()["paths"]
+    assert not any("demo" in p or "skip" in p for p in paths)
+    assert client.post("/api/demo/reset").status_code in (404, 405)
+
+
+def test_public_config_reflects_env(client):
+    c = client.get("/api/config").json()
+    assert c["save_for_later_options_minutes"] == [60, 360, 1440]
+    assert c["trusted_contact_timeout_minutes"] == 1440
+    assert c["contact_change_cooling_minutes"] == 1440
+    assert "password" not in str(c).lower()
+
+
+def test_short_timer_options_from_env(client, auth, monkeypatch):
+    from app.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "save_for_later_options_minutes", "1,3,5")
+    assert client.get("/api/config").json()["save_for_later_options_minutes"] == [1, 3, 5]
     h = auth("tan.siewlan")
-    create(client, h, "SP Group", "45")
-    assert client.post("/api/demo/reset").json() == {"ok": True}
-    assert client.get("/api/me/activity", headers=auth("tan.siewlan")).json()[0]["payee"]["name"]
-    assert client.get("/api/config").json()["demo_mode"] is True
+    t = create(client, h, "Hospital – NUH Billing", "3200").json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    assert client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 60}).status_code == 422
+    s = client.post(f"/api/transfers/{t['id']}/save", headers=h, json={"minutes": 1}).json()
+    assert s["status"] == "saved_for_later"
+    assert client.post(f"/api/transfers/{t['id']}/send", headers=h).status_code == 409
+    backdate(t["id"], "wait_until", 61)
+    assert client.post(f"/api/transfers/{t['id']}/send", headers=h).json()["status"] == "sent"
+
+
+def test_add_payee_starts_new_and_is_scored_as_new(client, auth):
+    h = auth("ryan.lim")
+    r = client.post("/api/me/payees", headers=h, json={"name": "HR Onboarding – J. Wong 2", "account_ref": "123-456-789"})
+    assert r.status_code == 201 and r.json()["is_new"] is True and r.json()["account_ref"] == "123456789"
+    pid = r.json()["id"]
+    t = client.post("/api/transfers", headers=h, json={"payee_id": pid, "amount": "600",
+                                                       "signals": {"chatting": True, "source": "customer_answer"}}).json()
+    assert any(x["key"] == "new_payee" for x in t["reasons"])
+    assert "signal_source" in events(t["id"])
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused"
+
+
+@pytest.mark.parametrize("body,field", [({"name": "A", "account_ref": "12345678"}, "name"),
+                                        ({"name": "Seller", "account_ref": "12"}, "account_ref"),
+                                        ({"name": "Seller", "account_ref": "12$45678"}, "account_ref")])
+def test_add_payee_validation(client, auth, body, field):
+    r = client.post("/api/me/payees", headers=auth("ryan.lim"), json=body)
+    assert r.status_code == 422 and r.json()["detail"]["field"] == field
+
+
+def test_add_payee_duplicate_and_role(client, auth):
+    h = auth("ryan.lim")
+    client.post("/api/me/payees", headers=h, json={"name": "Seller", "account_ref": "99887766"})
+    assert client.post("/api/me/payees", headers=h, json={"name": "Seller2", "account_ref": "99887766"}).status_code == 422
+    assert client.post("/api/me/payees", headers=auth("staff.anna"), json={"name": "X Y", "account_ref": "99887766"}).status_code == 403
+
+
+def test_reset_is_a_cli_script():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    out = subprocess.run([sys.executable, "-m", "app.seed", "--help-not-a-flag"], cwd=Path(__file__).parents[1],
+                         capture_output=True, text=True, env={**__import__("os").environ, "DATABASE_URL": "sqlite://"})
+    assert out.returncode == 0 and "--reset" in out.stdout

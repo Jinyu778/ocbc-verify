@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 from typing import Literal
 
@@ -48,6 +49,31 @@ def payees(user: User = Depends(customer_only), db: Session = Depends(get_db)):
     return out
 
 
+class PayeeIn(BaseModel):
+    name: str
+    account_ref: str
+
+
+@router.post("/payees", status_code=201)
+def add_payee(body: PayeeIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    name = " ".join(body.name.split())
+    ref = re.sub(r"[\s-]", "", body.account_ref).upper()
+    if not 2 <= len(name) <= 60:
+        raise HTTPException(422, {"field": "name", "message": "Please enter a name between 2 and 60 characters."})
+    if not re.fullmatch(r"[A-Z0-9]{6,20}", ref):
+        raise HTTPException(422, {"field": "account_ref",
+                                  "message": "Please enter an account number of 6 to 20 letters or digits."})
+    exists = db.scalar(select(Payee).where(Payee.owner_user_id == user.id, Payee.account_ref == ref))
+    if exists:
+        raise HTTPException(422, {"field": "account_ref", "message": f"You already have this account saved as '{exists.name}'."})
+    p = Payee(owner_user_id=user.id, name=name, account_ref=ref)
+    db.add(p)
+    log_event(db, None, "customer", "payee_added", {"customer_id": user.id, "payee_name": name})
+    db.commit()
+    db.refresh(p)
+    return {"id": p.id, "name": p.name, "account_ref": p.account_ref, "is_new": True}
+
+
 @router.get("/activity")
 def activity(user: User = Depends(customer_only), db: Session = Depends(get_db), limit: int = 20):
     rows = db.scalars(
@@ -83,7 +109,7 @@ def list_trusted(user: User = Depends(customer_only), db: Session = Depends(get_
     now = utcnow()
     rows = db.scalars(select(TrustedContact).where(TrustedContact.customer_user_id == user.id)).all()
     rows = [r for r in rows if r.pending_removal_at is None or as_utc(r.pending_removal_at) > now]
-    return {"contacts": [_tc_out(r, now) for r in rows], "change_delay_hours": get_settings().contact_change_hours}
+    return {"contacts": [_tc_out(r, now) for r in rows], "change_delay_minutes": get_settings().contact_change_cooling_minutes}
 
 
 @router.post("/trusted-contacts")
@@ -95,7 +121,7 @@ def add_trusted(body: TrustedIn, user: User = Depends(customer_only), db: Sessio
     current = active_trusted_contact(db, user.id, now)
     # First contact is immediate. Changing an existing contact waits 24 h, so a scammer who
     # has taken over the phone can't quietly swap in their own "trusted contact".
-    delay = timedelta(hours=get_settings().contact_change_hours) if current else timedelta(0)
+    delay = timedelta(minutes=get_settings().contact_change_cooling_minutes) if current else timedelta(0)
     if current:
         if current.contact_user_id == contact.id:
             raise HTTPException(422, "This person is already your trusted contact.")
@@ -116,7 +142,7 @@ def remove_trusted(tc_id: int, user: User = Depends(customer_only), db: Session 
     if not tc or tc.customer_user_id != user.id:
         raise HTTPException(404, "Trusted contact not found.")
     now = utcnow()
-    tc.pending_removal_at = now + timedelta(hours=get_settings().contact_change_hours)
+    tc.pending_removal_at = now + timedelta(minutes=get_settings().contact_change_cooling_minutes)
     log_event(db, None, "customer", "trusted_contact_removal_requested",
               {"customer_id": user.id, "contact_id": tc.contact_user_id, "takes_effect": str(tc.pending_removal_at)})
     db.commit()

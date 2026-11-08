@@ -14,7 +14,7 @@ from .db import Base
 from .models import Account, Payee, Transfer, TrustedContact, User
 from .security import hash_password
 
-DEMO_PASSWORD = "Demo1234!"
+TEST_PASSWORD = "Test1234!"  # listed in the README only; never shown in the app
 
 USERS = [
     dict(username="tan.siewlan", role="customer", display_name="Mdm Tan Siew Lan", age=68,
@@ -52,7 +52,7 @@ def _money(x: float) -> Decimal:
 def seed(db: Session, rng_seed: int = 2026) -> None:
     rng = random.Random(rng_seed)
     now = datetime.now(timezone.utc)
-    pw = hash_password(DEMO_PASSWORD)
+    pw = hash_password(TEST_PASSWORD)
     users: dict[str, User] = {}
     for spec in USERS:
         spec = dict(spec)
@@ -110,5 +110,11 @@ def ensure_seeded() -> None:
 
 
 if __name__ == "__main__":
-    reset_database()
-    print("Database reset and seeded.")
+    import sys
+
+    if "--reset" in sys.argv:
+        reset_database()
+        print("Database wiped and re-seeded with the test accounts.")
+    else:
+        ensure_seeded()
+        print("Database ready (seeded only if empty). Use --reset to wipe and re-seed.")
