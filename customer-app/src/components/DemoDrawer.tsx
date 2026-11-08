@@ -61,10 +61,11 @@ export function DemoDrawer() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-24 right-3 z-30 inline-flex min-h-touch items-center gap-2 rounded-full border-2 border-dashed border-border-strong bg-card px-3 text-sm font-semibold text-foreground shadow-card"
+        title={t("demo.drawer")}
+        className="fixed bottom-24 right-2 z-30 inline-flex min-h-touch min-w-touch items-center justify-center gap-1 rounded-full border-2 border-dashed border-border-strong bg-card px-2 text-sm font-semibold text-foreground opacity-90 shadow-card hover:opacity-100"
       >
-        <FlaskConical aria-hidden className="h-4 w-4" />
-        {t("demo.drawer")}
+        <FlaskConical aria-hidden className="h-5 w-5" />
+        <span className="sr-only">{t("demo.drawer")}</span>
         {active > 0 && <span className="rounded-full bg-danger px-1.5 text-xs text-white dark:text-primary">{active}</span>}
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title={t("demo.drawer")} sheet closeLabel={t("common.close")}>

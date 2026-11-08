@@ -76,7 +76,11 @@ export function onSessionChange(l: Listener): () => void {
   };
 }
 
-/** Demo-only: pretend the API is down (Scenario 7) without stopping the server. */
+/**
+ * Demo-only: pretend SafeBank's payment-checking service is down (Scenario 7) without stopping
+ * the server. Reads that were already possible (config, sign-in, lists) keep working so the
+ * presenter can reach the Review step; every action and payment check fails like a real outage.
+ */
 export function isSimulatedOffline(): boolean {
   try {
     return localStorage.getItem("sb.demo.offline") === "1";
@@ -94,7 +98,9 @@ export function setSimulatedOffline(on: boolean) {
 }
 
 async function rawFetch(path: string, init: RequestInit, timeoutMs: number): Promise<Response> {
-  if (isSimulatedOffline() && !path.startsWith("/api/config") && !path.startsWith("/api/auth")) {
+  const method = (init.method ?? "GET").toUpperCase();
+  const blocked = method !== "GET" || path.startsWith("/api/transfers") || path.startsWith("/api/calls");
+  if (isSimulatedOffline() && blocked && !path.startsWith("/api/auth")) {
     await new Promise((r) => setTimeout(r, 600));
     throw new ApiError("We can't reach SafeBank right now.", 0, "offline");
   }

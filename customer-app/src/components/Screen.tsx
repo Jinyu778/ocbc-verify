@@ -6,14 +6,26 @@ import { useSignals } from "../signals";
 import { BackButton } from "./Layout";
 
 /** One screen: back button, focused heading (announced on route change), content. */
-export function Screen({ title, back, children, actions }: { title?: ReactNode; back?: string | true; children: ReactNode; actions?: ReactNode }) {
+export function Screen({
+  title,
+  back,
+  onBack,
+  children,
+  actions,
+}: {
+  title?: ReactNode;
+  back?: string | true;
+  onBack?: () => void;
+  children: ReactNode;
+  actions?: ReactNode;
+}) {
   const h = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     h.current?.focus();
   }, []);
   return (
     <div className="sb-screen mx-auto w-full max-w-xl space-y-gap px-4 py-5">
-      {back && <BackButton to={back === true ? undefined : back} />}
+      {onBack ? <BackButton onClick={onBack} /> : back && <BackButton to={back === true ? undefined : back} />}
       {title && (
         <div className="flex flex-wrap items-start justify-between gap-2">
           <h1 ref={h} tabIndex={-1} className="outline-none">

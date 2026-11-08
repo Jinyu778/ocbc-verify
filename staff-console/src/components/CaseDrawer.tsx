@@ -4,6 +4,7 @@ import { CheckCircle2, Download, FileText, PhoneCall, ShieldAlert, ThumbsUp, X }
 import { Banner, Button, Dialog, RiskChip, Skeleton, api, apiText, cx, formatSGD, useToast, type Tier } from "@safebank/ui";
 import { STATUS_LABEL, TIER_LABEL, type CaseDetail } from "../types";
 import { Timeline } from "./Timeline";
+import { claimCall } from "../lib/claims";
 
 type Action = "approve" | "call" | "escalate" | "genuine";
 const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircle2; variant: "primary" | "navy" | "outline" | "danger"; help: string }[] = [
@@ -59,7 +60,8 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
     setBusy(true);
     setErr(null);
     try {
-      await api(`/api/staff/cases/${id}/actions`, { method: "POST", body: { action: pending, note } });
+      const r = await api<{ call: { id: number } | null }>(`/api/staff/cases/${id}/actions`, { method: "POST", body: { action: pending, note } });
+      if (r.call) claimCall(r.call.id);
       toast(`${ACTIONS.find((a) => a.id === pending)?.label} – saved to the evidence log`);
       setPending(null);
       setNote("");
@@ -90,6 +92,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
   };
 
   return (
+    <>
     <div className="fixed inset-0 z-30 flex justify-end bg-black/30" onClick={onClose}>
       <div
         ref={ref}
@@ -206,6 +209,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
           </div>
         )}
       </div>
+    </div>
 
       <Dialog
         open={!!pending}
@@ -232,7 +236,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
         />
         {err && <Banner tone="danger" alert className="mt-2"><span id="note-err">{err}</span></Banner>}
       </Dialog>
-    </div>
+    </>
   );
 }
 

@@ -20,8 +20,8 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
       </a>
       <Disclaimer text={t("common.disclaimer")} />
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-xl items-center gap-2 px-4 py-2">
-          <span className="flex items-center gap-2 text-lg font-bold text-foreground">
+        <div className="mx-auto flex max-w-xl flex-wrap items-center gap-2 px-4 py-2">
+          <span className="flex min-w-0 items-center gap-2 text-lg font-bold text-foreground">
             <ShieldCheck aria-hidden className="h-7 w-7 text-accent" />
             {t("common.appName")}
           </span>
@@ -86,7 +86,7 @@ function BottomNav() {
   ];
   return (
     <nav aria-label={t("nav.main")} className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto grid max-w-xl grid-cols-4 gap-2 px-2">
+      <ul className="mx-auto grid max-w-xl grid-cols-4 gap-1 px-1">
         {items.map(({ to, icon: Icon, label, end, aria }) => (
           <li key={to}>
             <NavLink
@@ -95,7 +95,7 @@ function BottomNav() {
               aria-label={aria}
               className={({ isActive }) =>
                 cx(
-                  "flex min-h-btn flex-col items-center justify-center gap-0.5 rounded-btn py-1 text-sm font-medium no-underline",
+                  "flex min-h-btn min-w-0 flex-col items-center justify-center gap-0.5 rounded-btn px-0.5 py-1 text-center text-sm font-medium leading-tight no-underline [overflow-wrap:anywhere]",
                   isActive ? "text-accent" : "text-muted-foreground hover:text-foreground",
                 )
               }
@@ -156,13 +156,13 @@ function HelpSheet({ open, onClose, customer }: { open: boolean; onClose: () => 
   );
 }
 
-export function BackButton({ to, label }: { to?: string; label?: string }) {
+export function BackButton({ to, label, onClick }: { to?: string; label?: string; onClick?: () => void }) {
   const { t } = useTranslation();
   const nav = useNavigate();
   return (
     <button
       type="button"
-      onClick={() => (to ? nav(to) : nav(-1))}
+      onClick={() => (onClick ? onClick() : to ? nav(to) : nav(-1))}
       className="-ml-2 inline-flex min-h-touch items-center gap-1 rounded-btn px-2 font-semibold text-foreground hover:bg-muted"
     >
       <ArrowLeft aria-hidden className="h-5 w-5" />

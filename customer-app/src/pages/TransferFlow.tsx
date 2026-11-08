@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -115,16 +115,18 @@ export function TransferFlow() {
 function PaymentSummary({ tr }: { tr: Transfer }) {
   const { t } = useTranslation();
   return (
-    <Card className="flex items-center justify-between gap-3">
-      <div className="min-w-0">
+    <Card className="space-y-3">
+      <div>
         <p className="text-sm text-muted-foreground">{t("review.to")}</p>
-        <p className="font-semibold">{tr.payee.name}</p>
+        <p className="flex flex-wrap items-center gap-2 font-semibold">
+          <span>{tr.payee.name}</span>
+          {tr.payee.is_new && <NewChip />}
+        </p>
       </div>
-      <div className="text-right">
+      <div>
         <p className="text-sm text-muted-foreground">{t("review.amount")}</p>
-        <p className="tabular text-2xl font-bold">{formatSGD(tr.amount)}</p>
+        <p className="tabular text-3xl font-bold">{formatSGD(tr.amount)}</p>
       </div>
-      {tr.payee.is_new && <NewChip />}
     </Card>
   );
 }
@@ -450,17 +452,20 @@ function InCall({ tr }: { tr: Transfer }) {
   const { t } = useTranslation();
   const nav = useNavigate();
   const { run, busy } = useTransferActions(tr.id);
-  useEffect(() => {
-    if (tr.active_call_id) nav(`/call/${tr.active_call_id}`, { replace: true });
-  }, [tr.active_call_id, nav]);
   return (
     <Screen title={t("status.in_verification_call")} back="/">
       <PaymentSummary tr={tr} />
       <Banner tone="info" icon={PhoneCall}>{t("call.endedBody")}</Banner>
       <div className="flex flex-col gap-3">
-        <Button icon={PhoneCall} block onClick={async () => nav(`/call/${(await startSafeBankCall(tr.id)).id}`)}>
-          {t("pause.call")}
-        </Button>
+        {tr.active_call_id ? (
+          <Button icon={PhoneCall} block onClick={() => nav(`/call/${tr.active_call_id}`)}>
+            {t("verify.open")}
+          </Button>
+        ) : (
+          <Button icon={PhoneCall} block onClick={async () => nav(`/call/${(await startSafeBankCall(tr.id)).id}`)}>
+            {t("pause.call")}
+          </Button>
+        )}
         <Button variant="outline" icon={X} block loading={busy === "cancel"} onClick={() => run("cancel", "cancel")}>
           {t("pause.cancel")}
         </Button>

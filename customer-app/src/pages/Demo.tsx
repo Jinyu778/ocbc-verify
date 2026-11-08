@@ -66,9 +66,9 @@ export function Demo() {
 
   const reset = async () => {
     setBusy("reset");
+    setSimulatedOffline(false);
     try {
       await api("/api/demo/reset", { method: "POST", auth: false });
-      setSimulatedOffline(false);
       writeSim(NO_SIGNALS);
       qc.clear();
       toast(t("demo.resetDone"));

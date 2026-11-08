@@ -28,8 +28,8 @@ export function Home() {
   return (
     <Screen title={t("home.greeting", { name: user?.display_name })}>
       <Card className="bg-primary text-on-primary dark:bg-card dark:text-foreground">
-        <div className="flex items-start justify-between gap-3">
-          <div>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
             <p className="opacity-90">{t("home.balance")}</p>
             {account.isLoading ? (
               <Skeleton className="mt-2 h-9 w-40" label={t("common.loading")} />

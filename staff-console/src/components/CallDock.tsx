@@ -1,12 +1,15 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, MessageSquare, Mic, MicOff, PhoneIncoming, PhoneOff, Send } from "lucide-react";
 import { Banner, Button, api, formatDuration, getSession, useCallEngine, useNow } from "@safebank/ui";
+import { claimCall, isClaimed, onClaimsChange } from "../lib/claims";
 import type { CallInfo } from "../types";
 
 /** Bottom-right dock: ringing customer calls to answer, and the live call (WebRTC voice or text fallback). */
 export function CallDock() {
   const me = getSession()?.user.id;
+  const [, force] = useState(0);
+  useEffect(() => onClaimsChange(() => force((x) => x + 1)), []);
   const q = useQuery({ queryKey: ["calls"], queryFn: () => api<{ calls: CallInfo[] }>("/api/calls/active"), refetchInterval: 5000 });
   const calls = q.data?.calls ?? [];
   const mine = calls.find((c) => c.staff?.id === me && c.status !== "ended");
@@ -14,7 +17,13 @@ export function CallDock() {
   if (!mine && !ringing.length) return null;
   return (
     <div className="fixed bottom-4 right-4 z-40 w-[min(24rem,calc(100vw-2rem))] space-y-3">
-      {mine ? <LiveCall call={mine} /> : null}
+      {mine && isClaimed(mine.id) ? <LiveCall call={mine} /> : null}
+      {mine && !isClaimed(mine.id) ? (
+        <section aria-label="Call in another window" className="rounded-card border border-border bg-card p-4 shadow-card">
+          <p className="font-semibold">Your call with {mine.customer.display_name} is open in another window.</p>
+          <Button className="mt-2" size="sm" variant="outline" onClick={() => claimCall(mine.id)}>Take over the call here</Button>
+        </section>
+      ) : null}
       {!mine && ringing.map((c) => <Ringing key={c.id} call={c} />)}
     </div>
   );
@@ -36,6 +45,7 @@ function Ringing({ call }: { call: CallInfo }) {
         onClick={async () => {
           setBusy(true);
           try {
+            claimCall(call.id);
             await api(`/api/calls/${call.id}/accept`, { method: "POST" });
             qc.invalidateQueries({ queryKey: ["calls"] });
             qc.invalidateQueries({ queryKey: ["cases"] });

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ChevronRight, CircleUserRound, RefreshCw, Save, ShieldAlert, Sparkles, X } from "lucide-react";
+import { ChevronRight, CircleUserRound, RefreshCw, Save, ShieldAlert, Sparkles, X } from "lucide-react";
 import { ApiError, Banner, Button, Card, Skeleton, api, cx, formatSGD } from "@safebank/ui";
 import { Screen, SignalBanners } from "../components/Screen";
 import { signalProvider } from "../signals";
@@ -170,20 +170,16 @@ export function Pay() {
 
   const amountErr = error?.field === "amount" ? error.msg : null;
   return (
-    <Screen title={t("pay.title")}>
-      <button type="button" onClick={() => setPayee(null)} className="-ml-2 inline-flex min-h-touch items-center gap-1 rounded-btn px-2 font-semibold hover:bg-muted">
-        <ArrowLeft aria-hidden className="h-5 w-5" />
-        {t("common.back")}
-      </button>
+    <Screen title={t("pay.title")} onBack={() => setPayee(null)}>
       <SignalBanners />
-      <Card className="flex items-center gap-3">
-        <CircleUserRound aria-hidden className="h-10 w-10 shrink-0 text-muted-foreground" />
-        <div className="min-w-0 flex-1">
+      <Card className="space-y-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <CircleUserRound aria-hidden className="h-8 w-8 shrink-0 text-muted-foreground" />
           <p className="font-semibold">{payee.name}</p>
-          <p className="text-sm text-muted-foreground">{payee.account_ref}</p>
-          {payee.is_new && <p className="mt-1 text-sm">{t("pay.newPayeeHint")}</p>}
+          {payee.is_new && <NewChip />}
         </div>
-        {payee.is_new && <NewChip />}
+        <p className="text-sm text-muted-foreground">{payee.account_ref}</p>
+        {payee.is_new && <p className="text-sm">{t("pay.newPayeeHint")}</p>}
       </Card>
       <form onSubmit={submit} noValidate className="space-y-4">
         <div className="text-center">
