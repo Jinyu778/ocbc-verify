@@ -1,10 +1,10 @@
-# SafeBank Shield
+# OCBC Verify
 
-> **Student proof of concept – synthetic data – not an OCBC product.**
+> **Student prototype for OCBC IGNITE 2026, not an official OCBC product.**
 > OCBC IGNITE Innovation Challenge 2026, Problem Statement 3: *Digital Trust – Protecting Customers from AI-Powered Scams.*
 > "How might OCBC create a useful moment of friction when acting too quickly could cause customer harm?"
 
-SafeBank Shield is **one real, working app** with all six features inside it. After login, each account sees its own experience:
+OCBC Verify is **one real, working app** with all six features inside it. After login, each account sees its own experience:
 
 | Role | Area | Layout |
 |---|---|---|
@@ -34,7 +34,7 @@ Password for every account: **`Test1234!`** (listed here only, never shown in th
 | `aisha.rahman` | customer | Aisha Rahman, 41, working parent, S$15,500, Bahasa Melayu |
 | `daniel.tan` | trusted contact | Mdm Tan's son |
 | `mrs.lim` | trusted contact | Ryan's mother |
-| `staff.anna` | staff | Anna Koh, SafeBank fraud officer |
+| `staff.anna` | staff | Anna Koh, OCBC fraud officer |
 
 Seeded payees: known (Tan Wei Ming (son), SP Group, Town Council S&CC, Mrs Lim (mother)) and NEW (MAS Safety Account – Lim K., Hospital – NUH Billing, HR Onboarding – J. Wong, Carousell Seller – ticketsg88). Each customer also has 6 months of normal history, which is the baseline for the unusual-amount check. Customers can **add their own payees** (Pay → Add a new payee); a new payee starts as NEW.
 
@@ -49,12 +49,14 @@ npm run reset-data          # or: make reset-data   or: cd backend && python -m 
 
 | Feature | What happens |
 |---|---|
-| **1. Safe-Exit Pause** | The server scores every payment with a pure, unit-tested risk engine. Low risk gets zero friction (≤ 3 taps). Medium risk gets 4 one-per-screen safety questions. High risk gets a calm *"Let's pause this payment"* screen with **Cancel / Save for later / Call SafeBank in-app / Ask my trusted contact**. **Save for later** offers the waiting times configured in `.env`; the server only unlocks *Send now* when that time has really passed, and the saved payment survives logout. *Continue anyway* appears after a visible 30-s countdown, and the server enforces the 30 s too. Nothing is ever blocked permanently. |
+| **1. Safe-Exit Pause** | The server scores every payment with a pure, unit-tested risk engine. Low risk gets zero friction (≤ 3 taps). Medium risk gets 4 one-per-screen safety questions. High risk gets a calm *"Let's pause this payment"* screen with **Cancel / Save for later / Call OCBC in-app / Ask my trusted contact**. **Answers can only raise risk, never lower it:** a NEW payee + an amount far above the customer's usual (z ≥ 3) + S$5,000 or more always pauses, even if a coached victim answers "No" to everything. **Save for later** offers the waiting times configured in `.env`; the server only unlocks *Send now* when that time has really passed, and the saved payment survives logout. *Continue anyway* appears after a visible 30-s countdown, and the server enforces the 30 s too. Nothing is ever blocked permanently. |
 | **2. Call- and chat-aware trigger** | **Android app:** a Kotlin Capacitor plugin reads call **state only** (on a call / call ended < 10 min ago, plus screen recording on Android 15+). **Browser:** a browser can't see calls, so for any NEW payee the app asks *"Are you on a phone call or chatting with someone about this payment right now?"* (Yes – on a call / Yes – chatting / No). Chats on WhatsApp/Telegram can never be read; they always come from the customer's answer. The server records the signal source (native vs customer answer) in the evidence log. A new payee plus any live signal always pauses. |
-| **3. Official in-app verification** | A real browser-to-browser **WebRTC voice call** with signalling over the app WebSocket, showing *Verified SafeBank Fraud Team* and the officer's name. If voice fails it falls back to text chat, and that's logged. **Verify a call** says whether SafeBank is genuinely calling you right now, based on an HMAC-signed call session. |
+| **3. Official in-app verification** | A real browser-to-browser **WebRTC voice call** with signalling over the app WebSocket, showing *Verified OCBC Fraud Team* and the officer's name. If voice fails it falls back to text chat, and that's logged. **Verify a call** says whether OCBC is genuinely calling you right now, based on an HMAC-signed call session. |
 | **4. Staff triage console** | Live queue sorted by risk then time. The case drawer shows the score breakdown, amount vs usual, signals and their source, answers, call history and an append-only evidence timeline. Actions (each needs a note): Approve, Call customer in-app, Hold & escalate to ASC (printable referral + JSON, contact details masked), Mark as genuine. Keyboard: A / C / E / G / Esc. |
-| **5. Trusted contact co-sign** | The contact sees only the name, the amount band, whether the payee is new, and the reasons. **OK** lets the payment be sent; **Stop** sends it to staff review, which isn't a permanent block. Changing or removing a contact waits `CONTACT_CHANGE_COOLING_MINUTES` (24 h by default). If there's no reply within `TRUSTED_CONTACT_TIMEOUT_MINUTES`, the customer can still save the payment for later or call SafeBank. |
-| **6. "Is this real?" message checker** | Rule layer (13 plain-language red flags, highlighted inline, tap to explain) plus an ML layer (TF-IDF + logistic regression). *"Not sure – check through an official channel"* appears when confidence is 0.4–0.6. Report → staff *Reported messages*. Only redacted text is stored. |
+| **5. Trusted contact co-sign** | The contact sees only the name, the amount band, whether the payee is new, and the reasons. **The trusted contact can pause a payment for staff review, but can never block it permanently:** **OK** lets the payment be sent; **Pause for OCBC review** holds it until OCBC staff review it with the customer, who can still cancel or call OCBC meanwhile. Changing or removing a contact waits `CONTACT_CHANGE_COOLING_MINUTES` (24 h by default). If there's no reply within `TRUSTED_CONTACT_TIMEOUT_MINUTES`, the customer can still save the payment for later or call OCBC. |
+| **6. "Is this real?" message checker** | Rule layer (13 plain-language red flags, highlighted inline, tap to explain) plus an ML layer (TF-IDF + logistic regression). *"Not sure – check through an official channel"* appears when confidence is 0.4–0.6. Report → staff *Reported messages*. **Add this message to my payment** attaches it (redacted) to a payment case, so staff see it in the case and its evidence timeline. Includes youth patterns such as a **Pokémon card pre-order** (pre-order + pay first + no meetup). Only redacted text is stored. |
+| **Family code word** | The customer, or their trusted contact, sets a secret family word (Settings). When a paused payment has a live call, or an attached "family emergency / new number" message, the pause screen says **"Ask the caller for your family code word."** This counters AI voice cloning. Stored only as a bcrypt hash; never returned by the API, logged, or shown in the console. |
+| **Payee intelligence** | If other customers' cases on the same account number were escalated to the ASC, or had a scam message attached, the payment gets +4 risk and the pause screen and console show **"This account was reported by other customers."** The seeded scam payees share one account number across customers, as mule accounts do. |
 | **Impact panel** | `/staff/impact`: payments checked, % zero friction, % paused, % cancelled after pause, false positives, money protected, extra seconds on genuine payments, trusted-contact response time, message verdicts, model metrics. |
 
 **Inclusive for every generation:**
@@ -73,7 +75,7 @@ npm run reset-data          # or: make reset-data   or: cd backend && python -m 
 
 ```mermaid
 flowchart LR
-  subgraph APP["SafeBank app – one React app (browser + Android/Capacitor)"]
+  subgraph APP["OCBC Verify app – one React app (browser + Android/Capacitor)"]
     C["/customer<br/>Home · Pay · Check · Settings"]
     T["/contact<br/>trusted-contact requests"]
     S["/staff<br/>fraud console · Impact"]
@@ -157,21 +159,23 @@ The app reads these values from `GET /api/config` and shows them as they are. Th
 
 | Suite | Command | Result |
 |---|---|---|
-| Backend (pytest) | `npm run test:backend` | **90 passed**. Every risk rule and boundary (S$999.99 / 1,000 / 9,999.99 / 10,000, z = 3.0), overrides, the 30-s continue-anyway rule, server-side timers (incl. env-configured 1-minute options), role checks, evidence-log immutability, balance changes only on send, trusted-contact privacy and cooling period, add-payee validation, no demo endpoints, classifier metrics, redaction. |
-| App (Vitest) | `npm run test:web` | **15 passed**. Pause screen, signal banners, browser live-call question (asked for new payees, skipped for known ones, merged into signals), language switch, locale completeness, Easy Mode, dark mode. |
-| End to end (Playwright) | `npm run test:e2e` | **19 passed**. All logins go through the real login screen. Scenarios 1 (browser form) to 10, the 3-tap fast path, a backend slower than 5 s, a trusted-contact timeout, invalid input and role separation. Real 1-minute waits for save-for-later and trusted-contact timeouts. A real WebRTC voice connection between customer and staff. **axe scans (WCAG 2.0/2.1/2.2 A+AA) on every main customer, trusted-contact and staff screen, light and dark: zero serious or critical violations.** No horizontal scroll at 375 px with Easy Mode and extra-large text. |
+| Backend (pytest) | `npm run test:backend` | **124 passed**. Includes the coached-victim override (S$8,000 to a new payee with every answer No pauses; the S$3,200 bill stays "ask"; answers can never lower the tier), family code word (hashed, never returned or logged), message-to-case evidence, payee intelligence, the Pokémon pre-order rule, and a static check of the Android VoIP code (not a device test). Every risk rule and boundary (S$999.99 / 1,000 / 9,999.99 / 10,000, z = 3.0), overrides, the 30-s continue-anyway rule, server-side timers (incl. env-configured 1-minute options), role checks, evidence-log immutability, balance changes only on send, trusted-contact privacy and cooling period, add-payee validation, no demo endpoints, classifier metrics, redaction. |
+| App (Vitest) | `npm run test:web` | **27 passed**. Includes the code-word prompt and form (never displays the word), the reported-payee banner, trusted-contact "pause for review, never block" wording, attach-to-payment, and the Pokémon sample. Pause screen, signal banners, browser live-call question (asked for new payees, skipped for known ones, merged into signals), language switch, locale completeness, Easy Mode, dark mode. |
+| End to end (Playwright) | `npm run test:e2e` | **23 passed** (incl. 4 for the judge fixes: coached victim, family code word, message-to-case + reported payee, Pokémon pre-order). All logins go through the real login screen. Scenarios 1 (browser form) to 10, the 3-tap fast path, a backend slower than 5 s, a trusted-contact timeout, invalid input and role separation. Real 1-minute waits for save-for-later and trusted-contact timeouts. A real WebRTC voice connection between customer and staff. **axe scans (WCAG 2.0/2.1/2.2 A+AA) on every main customer, trusted-contact and staff screen, light and dark: zero serious or critical violations.** No horizontal scroll at 375 px with Easy Mode and extra-large text. |
 
 First-time e2e setup: `npx playwright install chromium` (in `e2e/`). The e2e server uses `SAVE_FOR_LATER_OPTIONS_MINUTES=1,3,5` and `TRUSTED_CONTACT_TIMEOUT_MINUTES=1`, so timer tests really wait about 1 minute.
 
-### Message classifier (held-out data)
-444 synthetic messages (245 scam / 199 legitimate), mostly English, some 中文 and Bahasa Melayu.
+### Message classifier: a placeholder, honestly measured
+**Scam recall on unseen message types: 0.972** (whole message templates held out, n = 117; accuracy 0.915, scam precision 0.897).
+
+This model is a **placeholder trained on synthetic data**: 466 template-generated messages (256 scam / 210 legitimate), mostly English with some 中文 and Bahasa Melayu. A production model would be trained on **real scam report data** (for example reports to OCBC and ScamShield), with consent and proper review, and its real-world accuracy is unknown until then. The rule layer works independently of the model and explains every flag in plain words.
 
 | Split | Accuracy | Scam precision | Scam recall |
 |---|---|---|---|
-| Random 25 % hold-out (n = 111) | 1.000 | 1.000 | 1.000 |
-| **Whole templates held out** (unseen sentence shapes) | **0.901** | **0.873** | **0.969** |
+| **Whole templates held out** (the model never saw that sentence shape) – the honest number | **0.915** | **0.897** | **0.972** |
+| Random 25 % hold-out (n = 117) – optimistic, because similar sentences appear in training | 0.983 | 0.970 | 1.000 |
 
-The random split is optimistic because the data is template-generated. The grouped split is the honest number, and it still meets the recall target of ≥ 0.9.
+*(The earlier figure of 0.969 was measured before the Pokémon pre-order samples were added; this table is the current, re-run result.)*
 
 ---
 
@@ -236,4 +240,4 @@ Interactive reference: **http://localhost:8000/docs**. Groups: `/api/auth`, `/ap
 - Login rate limiting and the WebSocket hub are in-memory, so they work for a single server process only.
 - Not security-audited. Don't reuse the JWT secret or test passwords anywhere real.
 
-No OCBC logos or trademarks are used. The brand in the app is **SafeBank**.
+No OCBC logo is used. **OCBC Verify** is a student prototype for OCBC IGNITE 2026, not an official OCBC product. All people, accounts and money in it are synthetic.

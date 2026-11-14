@@ -1,4 +1,4 @@
-/** Fail-safe drafts: when SafeBank is unreachable, the payment is saved on the phone, never sent. */
+/** Fail-safe drafts: when OCBC is unreachable, the payment is saved on the phone, never sent. */
 export interface OfflineDraft {
   payee_id: number;
   payee_name: string;

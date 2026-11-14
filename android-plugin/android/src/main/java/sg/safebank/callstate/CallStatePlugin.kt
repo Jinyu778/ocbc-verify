@@ -2,6 +2,7 @@ package sg.safebank.callstate
 
 import android.Manifest
 import android.content.Context
+import android.media.AudioManager
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
@@ -36,10 +37,13 @@ class CallStatePlugin : Plugin() {
     private var telephonyCallback: Any? = null
     private var legacyListener: PhoneStateListener? = null
     private var screenRecordingCallback: Any? = null
+    private var voipActive = false
+    private var modeListener: Any? = null
 
     override fun load() {
         if (getPermissionState("phone") == PermissionState.GRANTED) startListening()
         startScreenRecordingDetection()
+        startVoipDetection()
     }
 
     @PluginMethod
@@ -74,8 +78,40 @@ class CallStatePlugin : Plugin() {
         call.resolve(snapshot())
     }
 
+    /*
+     * VoIP calls (WhatsApp, Telegram, Signal, Zoom...) are NOT visible to TelephonyManager, which
+     * only sees cellular calls. While any app is in a voice call, Android normally switches the
+     * audio mode to MODE_IN_COMMUNICATION, so we also treat that mode as "in a call". This only
+     * tells us THAT some app is in a call - never which app, who, or what is said.
+     *
+     * UNTESTED ON A REAL DEVICE: written and reviewed only; it has not been compiled or run on an
+     * Android phone. Check on hardware that WhatsApp/Telegram calls set this mode on your Android
+     * versions, and note that OCBC's own in-app WebRTC call will also set it.
+     */
+    private fun audioManager(): AudioManager? = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+
+    private fun isVoipCallNow(): Boolean = audioManager()?.mode == AudioManager.MODE_IN_COMMUNICATION
+
+    private fun startVoipDetection() {
+        voipActive = isVoipCallNow()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return // older Android: checked on each getCallState()
+        try {
+            val am = audioManager() ?: return
+            val l = AudioManager.OnModeChangedListener { mode ->
+                val nowVoip = mode == AudioManager.MODE_IN_COMMUNICATION
+                if (voipActive && !nowVoip && !onCall) lastCallEndedAt = System.currentTimeMillis()
+                voipActive = nowVoip
+                notifyListeners("callStateChange", snapshot())
+            }
+            am.addOnModeChangedListener(context.mainExecutor, l)
+            modeListener = l
+        } catch (e: Exception) {
+            modeListener = null
+        }
+    }
+
     private fun snapshot(): JSObject = JSObject().apply {
-        put("onCall", onCall)
+        put("onCall", onCall || voipActive || isVoipCallNow())
         put("lastCallEndedAt", lastCallEndedAt)
         put("screenShared", screenShared)
     }
@@ -131,6 +167,9 @@ class CallStatePlugin : Plugin() {
     }
 
     override fun handleOnDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (modeListener as? AudioManager.OnModeChangedListener)?.let { audioManager()?.removeOnModeChangedListener(it) }
+        }
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (telephonyCallback as? TelephonyCallback)?.let { tm?.unregisterTelephonyCallback(it) }

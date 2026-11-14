@@ -4,8 +4,8 @@
     "review": "source language"
   },
   "common": {
-    "appName": "SafeBank",
-    "disclaimer": "Student proof of concept – synthetic data – not an OCBC product",
+    "appName": "OCBC Verify",
+    "disclaimer": "Student prototype for OCBC IGNITE 2026, not an official OCBC product",
     "back": "Back",
     "next": "Next",
     "cancel": "Cancel",
@@ -23,7 +23,7 @@
     "newChip": "NEW",
     "newPayeeA11y": "New payee – you have never paid them before",
     "errorGeneric": "Something went wrong. Please try again.",
-    "offlineTitle": "We can't reach SafeBank right now",
+    "offlineTitle": "We can't reach OCBC right now",
     "offlineBody": "Please check your internet connection, then try again.",
     "liveOff": "Live updates paused – reconnecting"
   },
@@ -38,13 +38,13 @@
   "help": {
     "title": "Get help",
     "body": "Not sure about a call, message or payment? Stop and check with us first.",
-    "callInApp": "Call SafeBank in-app",
+    "callInApp": "Call OCBC in-app",
     "helpline": "ScamShield Helpline 1799",
     "helplineDesc": "Free, 24 hours. Run by the National Crime Prevention Council.",
     "verify": "Verify a call"
   },
   "login": {
-    "title": "Sign in to SafeBank",
+    "title": "Sign in to OCBC",
     "username": "Username",
     "password": "Password",
     "showPassword": "Show password",
@@ -60,14 +60,14 @@
     "balanceHidden": "Balance hidden",
     "pay": "Pay someone",
     "verifyCall": "Verify a call",
-    "verifyCallDesc": "Someone says they're from SafeBank? Check here.",
+    "verifyCallDesc": "Someone says they're from OCBC? Check here.",
     "checkMessage": "Is this message real?",
     "recent": "Recent activity",
     "noActivity": "No payments yet.",
     "savedTitle": "Saved for later",
     "savedBody": "{{amount}} to {{payee}}",
     "savedOpen": "Open",
-    "offlineDraft": "Not sent – saved on this phone while SafeBank was unreachable",
+    "offlineDraft": "Not sent – saved on this phone while OCBC was unreachable",
     "offlineDraftRetry": "Check it now",
     "offlineDraftRemove": "Remove"
   },
@@ -78,11 +78,11 @@
     "paused": "Paused",
     "saved_for_later": "Saved for later",
     "waiting_trusted_contact": "Waiting for trusted contact",
-    "in_verification_call": "On a call with SafeBank",
-    "under_staff_review": "SafeBank is reviewing",
+    "in_verification_call": "On a call with OCBC",
+    "under_staff_review": "OCBC is reviewing",
     "cancelled": "Cancelled",
     "escalated": "Held for your safety",
-    "approved_by_staff": "Approved by SafeBank"
+    "approved_by_staff": "Approved by OCBC"
   },
   "pay": {
     "title": "Pay someone",
@@ -119,7 +119,9 @@
     "q_online": "You have only met this person online or by phone.",
     "q_chat": "You said someone is messaging you, telling you to pay.",
     "override_new_payee_live": "A new payee while you are on a call or chat is a common scam pattern.",
-    "signals_unavailable": "We could not check your phone for calls, so we're asking a few questions."
+    "signals_unavailable": "We could not check your phone for calls, so we're asking a few questions.",
+    "payee_reported": "This account was reported by other customers.",
+    "override_new_payee_unusual_large": "A large, unusual payment to someone new is how most scams end. We always pause these."
   },
   "questions": {
     "title": "A few quick safety questions",
@@ -149,7 +151,7 @@
     "whatNext": "What would you like to do?",
     "cancel": "Cancel payment",
     "save": "Save for later",
-    "call": "Call SafeBank in-app",
+    "call": "Call OCBC in-app",
     "trusted": "Ask my trusted contact",
     "trustedNone": "Add a trusted contact in Settings first",
     "continueIn": "Continue anyway (available in {{s}} s)",
@@ -157,7 +159,8 @@
     "sheetTitle": "Scammers often tell you to ignore warnings. Are you sure?",
     "sheetBody": "If anyone is telling you what to do right now, stop. A real bank, MAS or police officer will never rush you.",
     "goBack": "Go back",
-    "sendAnyway": "Send anyway"
+    "sendAnyway": "Send anyway",
+    "reportedBody": "Other OCBC customers reported this account in a scam case. Please don't send money until you have checked."
   },
   "save": {
     "title": "Save for later",
@@ -174,23 +177,23 @@
     "waitingBody": "We've asked {{name}} to look at this payment. Please call them now and talk it through.",
     "timeLeft": "Time left for a reply: {{time}}",
     "timeoutTitle": "{{name}} hasn't answered yet",
-    "timeoutBody": "You can still save this payment for later or call SafeBank.",
+    "timeoutBody": "You can still save this payment for later or call OCBC.",
     "okTitle": "{{name}} said OK",
     "okBody": "They've talked to you about this payment. You can send it now.",
-    "stopTitle": "{{name}} asked to stop this payment",
-    "stopBody": "SafeBank will review it with you. Nothing has been sent and your money is safe."
+    "stopTitle": "{{name}} paused this payment for OCBC review",
+    "stopBody": "OCBC staff will review it with you. It is not blocked permanently, and nothing has been sent."
   },
   "result": {
     "sent": "Payment sent",
     "sentBody": "{{amount}} sent to {{payee}}.",
-    "approved_by_staff": "SafeBank approved this payment",
-    "approvedBody": "{{amount}} sent to {{payee}} after a SafeBank check.",
+    "approved_by_staff": "OCBC approved this payment",
+    "approvedBody": "{{amount}} sent to {{payee}} after a OCBC check.",
     "cancelled": "Payment cancelled",
     "cancelledBody": "Nothing was sent. Your money is safe.",
-    "under_staff_review": "SafeBank is reviewing this payment",
-    "reviewBody": "Nothing has been sent. A SafeBank officer will contact you in the app. You can also call us now.",
+    "under_staff_review": "OCBC is reviewing this payment",
+    "reviewBody": "Nothing has been sent. A OCBC officer will contact you in the app. You can also call us now.",
     "escalated": "Payment held for your safety",
-    "escalatedBody": "SafeBank has held this payment and reported it to the Anti-Scam Centre. Nothing was sent. We will contact you in the app.",
+    "escalatedBody": "OCBC has held this payment and reported it to the Anti-Scam Centre. Nothing was sent. We will contact you in the app.",
     "home": "Back to Home"
   },
   "banners": {
@@ -200,18 +203,18 @@
     "unavailable": "We can't check for calls on this phone, so we'll ask you a few questions."
   },
   "signals": {
-    "permissionTitle": "Let SafeBank check if you're on a call?",
+    "permissionTitle": "Let OCBC check if you're on a call?",
     "permissionBody": "We only check whether you're on a call, never who you're talking to or what is said. This helps us warn you if a scammer is on the line.",
     "allow": "Allow",
     "notNow": "Not now"
   },
   "call": {
-    "title": "Call SafeBank",
-    "verified": "Verified SafeBank Fraud Team",
+    "title": "Call OCBC",
+    "verified": "Verified OCBC Fraud Team",
     "officer": "{{name}}",
-    "waitingStaff": "Calling SafeBank… an officer will answer shortly.",
-    "incoming": "SafeBank is calling you",
-    "incomingBody": "This is a genuine call from the SafeBank Fraud Team inside the app.",
+    "waitingStaff": "Calling OCBC… an officer will answer shortly.",
+    "incoming": "OCBC is calling you",
+    "incomingBody": "This is a genuine call from the OCBC Fraud Team inside the app.",
     "answer": "Answer",
     "end": "End call",
     "mute": "Mute",
@@ -223,19 +226,19 @@
     "typeMessage": "Type a message",
     "send": "Send",
     "ended": "Call ended",
-    "endedBody": "Thank you. Your payment stays paused until you or SafeBank decide.",
-    "noMessages": "Messages you send here go only to the SafeBank officer."
+    "endedBody": "Thank you. Your payment stays paused until you or OCBC decide.",
+    "noMessages": "Messages you send here go only to the OCBC officer."
   },
   "verify": {
     "title": "Verify a call",
-    "intro": "Someone on the phone says they're from SafeBank? Check here.",
-    "genuine": "This is a genuine SafeBank call",
-    "genuineBody": "{{name}} from the SafeBank Fraud Team is calling you in this app.",
+    "intro": "Someone on the phone says they're from OCBC? Check here.",
+    "genuine": "This is a genuine OCBC call",
+    "genuineBody": "{{name}} from the OCBC Fraud Team is calling you in this app.",
     "open": "Go to the call",
-    "notCalling": "SafeBank is NOT calling you right now.",
-    "notCallingBody": "If someone says they're from SafeBank, MAS or the Police, hang up and call us in-app.",
+    "notCalling": "OCBC is NOT calling you right now.",
+    "notCallingBody": "If someone says they're from OCBC, MAS or the Police, hang up and call us in-app.",
     "checkAgain": "Check again",
-    "callUs": "Call SafeBank in-app"
+    "callUs": "Call OCBC in-app"
   },
   "check": {
     "title": "Is this real?",
@@ -265,8 +268,8 @@
     "tapExplain": "Underlined words are warning signs. Tap one to see why.",
     "confidence": "Our checker thinks there's a {{p}}% chance this is a scam.",
     "safeActions": "What you can do",
-    "report": "Report this to SafeBank",
-    "reported": "Reported. Thank you – SafeBank staff will look at it.",
+    "report": "Report this to OCBC",
+    "reported": "Reported. Thank you – OCBC staff will look at it.",
     "privacy": "We only keep a copy with phone numbers hidden and links shortened.",
     "flags": {
       "urgency": "Rushing you",
@@ -281,7 +284,8 @@
       "earn_per_day": "'Earn $X per day'",
       "move_chat": "Moves you to Telegram / WhatsApp",
       "paynow_first": "'Pay first, no meetup'",
-      "family_new_number": "Family member with a new number"
+      "family_new_number": "Family member with a new number",
+      "preorder_scam": "Pay-first pre-order, no meetup"
     },
     "explain": {
       "urgency": "Scammers rush you so you don't have time to think or check.",
@@ -290,14 +294,21 @@
       "secrecy": "Being told to keep a payment secret is a big warning sign.",
       "link": "Links in messages can lead to fake websites that steal your details.",
       "install_app": "Installing an app from a link can let scammers control your phone.",
-      "credentials": "Never share your OTP, PIN or password. SafeBank will never ask for them.",
+      "credentials": "Never share your OTP, PIN or password. OCBC will never ask for them.",
       "gift_crypto_gold": "Requests for gift cards, crypto or gold, or 'guaranteed' profits, are common scams.",
       "upfront_fee": "Real jobs and prizes never ask you to pay a fee first.",
       "earn_per_day": "Offers to 'earn $X per day' for easy tasks are almost always scams.",
       "move_chat": "Scammers move you to Telegram or WhatsApp where they are harder to trace.",
       "paynow_first": "'Pay first, no meetup' is how most online shopping and ticket scams work.",
-      "family_new_number": "A 'family member' with a new number asking for money: call their old number first."
-    }
+      "family_new_number": "A 'family member' with a new number asking for money: call their old number first.",
+      "preorder_scam": "A 'pre-order' you must pay for first, with no meetup, is a common collectibles scam (e.g. Pokémon cards)."
+    },
+    "s_pokemon": "Pokémon card pre-order",
+    "attachTitle": "Add this message to my payment",
+    "attachBody": "Is this message about a payment you're making? Add it, so OCBC staff can see it when they review that payment.",
+    "attachPick": "Which payment?",
+    "attachButton": "Add message to this payment",
+    "attached": "Added. OCBC staff will see this message with your payment to {{payee}}."
   },
   "settings": {
     "title": "Settings",
@@ -322,11 +333,11 @@
     },
     "safety": "Safety",
     "trustedContact": "Trusted contact",
-    "trustedHelper": "Someone we can ask before a risky payment goes out. A student can choose a parent; a senior can choose an adult child.",
+    "trustedHelper": "Someone we can ask before a risky payment goes out. A student can choose a parent; a senior can choose an adult child. They can pause a risky payment for OCBC staff review, but can never block it permanently.",
     "noContact": "You don't have a trusted contact yet.",
     "addContact": "Add trusted contact",
     "changeContact": "Change trusted contact",
-    "contactUsername": "Their SafeBank username",
+    "contactUsername": "Their OCBC username",
     "relationship": "They are my…",
     "relationships": {
       "parent": "Parent",
@@ -344,7 +355,7 @@
     "remove": "Remove",
     "saved": "Saved. {{note}}",
     "callDetection": "Call detection",
-    "callDetectionDesc": "On the Android app, SafeBank can check if you're on a phone call when you pay. We never read who you're talking to, the number, or what is said. A web browser can't see calls, so for new payees we simply ask you.",
+    "callDetectionDesc": "On the Android app, OCBC can check if you're on a phone call when you pay. We never read who you're talking to, the number, or what is said. A web browser can't see calls, so for new payees we simply ask you.",
     "callDetectionStatus": "Status: {{status}}",
     "callStatus": {
       "native": "On (Android)",
@@ -364,9 +375,9 @@
     "c1Title": "We pause risky payments",
     "c1Body": "If a payment looks like a scam, we stop it for a moment so you can check. You're always in control.",
     "c2Title": "We'll never ask you to move money to a 'safe account'",
-    "c2Body": "Not SafeBank, not MAS, not the Police. Anyone who asks is a scammer.",
+    "c2Body": "Not OCBC, not MAS, not the Police. Anyone who asks is a scammer.",
     "c3Title": "Verify any call here",
-    "c3Body": "Someone says they're from SafeBank? Tap 'Verify a call' on Home to see if it's really us."
+    "c3Body": "Someone says they're from OCBC? Tap 'Verify a call' on Home to see if it's really us."
   },
   "contact": {
     "title": "Requests from family",
@@ -379,13 +390,13 @@
     "payeeType": "Paying",
     "newPayee": "a NEW payee",
     "knownPayee": "someone they've paid before",
-    "why": "Why SafeBank is asking you",
+    "why": "Why OCBC is asking you",
     "callFirst": "Please call them before you decide.",
     "ok": "I've talked to them – OK",
-    "stop": "Stop this payment",
-    "stopNote": "This doesn't block them forever. SafeBank staff will review it with them.",
+    "stop": "Pause for OCBC review",
+    "stopNote": "This pauses the payment so OCBC staff can review it with them. It never blocks it permanently.",
     "decidedOk": "You said OK",
-    "decidedStop": "You asked to stop it",
+    "decidedStop": "You paused it for OCBC review",
     "noAnswer": "Not answered",
     "timeLeft": "Time left: {{time}}",
     "newRequest": "New request from {{name}}"
@@ -421,5 +432,23 @@
     "minutes_other": "{{count}} minutes",
     "hours_one": "{{count}} hour",
     "hours_other": "{{count}} hours"
+  },
+  "codeWord": {
+    "title": "Family code word",
+    "intro": "Agree a secret word with your family. If someone calls saying they are your child or grandchild in trouble, ask them for the word. A cloned voice won't know it.",
+    "introContact": "Set a secret family word for the person you look after. If a caller claims to be family, they should ask for it. Cloned voices won't know it.",
+    "label": "New code word",
+    "change": "Change the code word",
+    "helper": "3 to 40 letters. It is stored scrambled and never shown again, not even to OCBC staff.",
+    "isSet": "A code word is set",
+    "notSet": "No code word yet",
+    "save": "Save code word",
+    "saved": "Saved. Tell your family the word in person, not by message.",
+    "errLength": "Please use a code word of 3 to 40 characters.",
+    "show": "Show what I typed",
+    "hide": "Hide what I typed",
+    "prompt": "Ask the caller for your family code word.",
+    "promptBody": "If they can't say it, hang up. Voices can be faked with AI.",
+    "promptNotSet": "You haven't set a family code word yet. You can set one in Settings with your trusted contact."
   }
 }

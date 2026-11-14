@@ -214,7 +214,7 @@ def save_for_later(transfer_id: int, body: SaveIn, user: User = Depends(customer
     t = get_owned_transfer(db, transfer_id, user)
     require_not_done(t)
     if t.status == "waiting_trusted_contact" and t.trusted_decision == "stop":
-        raise HTTPException(409, "Your trusted contact asked to stop this payment. SafeBank will review it with you.")
+        raise HTTPException(409, "Your trusted contact asked to stop this payment. OCBC will review it with you.")
     if t.status == "checking" and t.risk_tier != "none" and t.answers_json is None:
         raise HTTPException(409, "Please answer the safety questions first.")
     options = get_settings().save_options

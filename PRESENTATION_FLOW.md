@@ -1,11 +1,11 @@
-# SafeBank Shield – 70-second live presentation
+# OCBC Verify – 70-second live presentation
 
 Real app, real accounts, no shortcuts. Order: **Scenario 3 → 1 → 5**.
 
 ## Who holds what
 | Person | Device | Signed in as |
 |---|---|---|
-| Presenter A | Android phone with the SafeBank app (or a phone browser) | `tan.siewlan`, then `ryan.lim` (second tab) |
+| Presenter A | Android phone with the OCBC Verify app (or a phone browser) | `tan.siewlan`, then `ryan.lim` (second tab) |
 | Presenter B | Laptop on the projector, 1440 px | `staff.anna` |
 | Presenter C | Second phone | makes the "scam" call; also signed in as `mrs.lim` in a browser |
 
@@ -22,9 +22,9 @@ Password for all: `Test1234!`. All devices on the same Wi-Fi; the app is at `htt
 | Time | Say | Do |
 |---|---|---|
 | 0–10 s | "Everyday payments stay instant." | A (Mdm Tan): Pay → **SP Group** → 45 → Review → **Send S$45** → *Payment sent*. |
-| 10–40 s | "Now a fake MAS officer calls her and says move S$8,000 to a 'safety account'." | C calls A; A answers and stays on the line. A: Pay → **MAS Safety Account – Lim K.** → 8000 → Review. The red call banner shows. **No** ×4 → *Let's pause this payment* → **Call SafeBank in-app**. |
-| | "One tap reaches the real bank, with a verified badge." | B: **Answer** → voice connects, *Verified SafeBank Fraud Team · Anna Koh*. B opens the case, presses **E**, types "Caller claimed MAS", Confirm. A: End call → *Payment held for your safety*. |
-| 40–70 s | "Young people are targeted too. Ryan is being messaged about a 'job deposit'." | A (Ryan tab): Pay → **HR Onboarding – J. Wong** → **Yes – someone is messaging me** → 600 → Review → **No** ×4 → **Ask my trusted contact**. C (Mrs Lim) gets the request live, sees only the amount band and "a NEW payee", and taps **Stop this payment**. A shows *SafeBank is reviewing*; B's queue shows *Needs staff review*. |
+| 10–40 s | "Now a fake MAS officer calls her and says move S$8,000 to a 'safety account'." | C calls A; A answers and stays on the line. A: Pay → **MAS Safety Account – Lim K.** → 8000 → Review. The red call banner shows. **No** ×4 → *Let's pause this payment* → **Call OCBC in-app**. |
+| | "One tap reaches the real bank, with a verified badge." | B: **Answer** → voice connects, *Verified OCBC Fraud Team · Anna Koh*. B opens the case, presses **E**, types "Caller claimed MAS", Confirm. A: End call → *Payment held for your safety*. |
+| 40–70 s | "Young people are targeted too. Ryan is being messaged about a 'job deposit'." | A (Ryan tab): Pay → **HR Onboarding – J. Wong** → **Yes – someone is messaging me** → 600 → Review → **No** ×4 → **Ask my trusted contact**. C (Mrs Lim) gets the request live, sees only the amount band and "a NEW payee", and taps **Pause for OCBC review** (it can pause for staff review, never block permanently). A shows *OCBC is reviewing*; B's queue shows *Needs staff review*. |
 
 Close with: "Friction only when the risk is real, never a permanent block, and every step goes into an evidence log." B clicks **Impact**.
 

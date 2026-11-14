@@ -54,7 +54,7 @@ export default function StaffApp() {
       <div className="flex flex-1 flex-col md:flex-row">
         <aside className="bg-primary text-on-primary md:w-60 md:shrink-0">
           <div className="flex items-center gap-2 px-4 py-4 text-lg font-bold">
-            <ShieldCheck aria-hidden className="h-7 w-7 text-accent" /> SafeBank
+            <ShieldCheck aria-hidden className="h-7 w-7 text-accent" /> OCBC Verify
             <span className="ml-auto text-sm font-normal opacity-80 md:hidden">{user?.display_name}</span>
           </div>
           <nav aria-label="Console">

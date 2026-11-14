@@ -57,7 +57,7 @@ export function CallScreen() {
           <BadgeCheck aria-hidden className="h-5 w-5 text-accent" />
           {t("call.verified")}
         </p>
-        <p className="mt-3 text-2xl font-bold">{c.staff?.display_name ?? "SafeBank"}</p>
+        <p className="mt-3 text-2xl font-bold">{c.staff?.display_name ?? "OCBC"}</p>
         <p className="tabular mt-1 text-lg opacity-90" aria-live="off">
           {c.status === "ended" ? t("call.ended") : formatDuration(elapsed)}
         </p>
@@ -89,7 +89,7 @@ export function CallScreen() {
             {engine.chat.length === 0 && <li className="text-sm text-muted-foreground">{t("call.noMessages")}</li>}
             {engine.chat.map((m, i) => (
               <li key={i} className={m.from === "me" ? "ml-8 rounded-btn bg-info-soft p-2" : "mr-8 rounded-btn bg-muted p-2"}>
-                <span className="sr-only">{m.from === "me" ? "You:" : `${c.staff?.display_name ?? "SafeBank"}:`}</span>
+                <span className="sr-only">{m.from === "me" ? "You:" : `${c.staff?.display_name ?? "OCBC"}:`}</span>
                 {m.text}
               </li>
             ))}

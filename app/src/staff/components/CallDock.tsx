@@ -74,7 +74,7 @@ function LiveCall({ call }: { call: CallInfo }) {
   return (
     <section aria-label="Live call" className="sb-fade-up rounded-card border border-border bg-card shadow-card">
       <div className="rounded-t-card bg-primary p-4 text-on-primary">
-        <p className="flex items-center gap-2 text-sm"><BadgeCheck aria-hidden className="h-4 w-4 text-accent" /> Verified SafeBank Fraud Team (you)</p>
+        <p className="flex items-center gap-2 text-sm"><BadgeCheck aria-hidden className="h-4 w-4 text-accent" /> Verified OCBC Fraud Team (you)</p>
         <p className="text-lg font-bold">{call.customer.display_name}</p>
         <p className="tabular text-sm opacity-90">
           {call.status === "ringing" ? "Ringing customer…" : textMode ? "Text chat" : engine.media === "connected" ? `Voice connected · ${formatDuration(elapsed)}` : "Connecting audio…"}

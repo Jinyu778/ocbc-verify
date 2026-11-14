@@ -117,7 +117,7 @@ def list_trusted(user: User = Depends(customer_only), db: Session = Depends(get_
 def add_trusted(body: TrustedIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
     contact = db.scalar(select(User).where(User.username == body.contact_username.strip().lower()))
     if not contact or contact.role != "trusted_contact" or contact.id == user.id:
-        raise HTTPException(422, "We couldn't find a SafeBank user with that username. Ask them for their username.")
+        raise HTTPException(422, "We couldn't find a OCBC user with that username. Ask them for their username.")
     now = utcnow()
     current = active_trusted_contact(db, user.id, now)
     # First contact is immediate. Changing an existing contact waits 24 h, so a scammer who

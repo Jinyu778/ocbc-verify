@@ -78,7 +78,7 @@ def decide(transfer_id: int, body: DecisionIn, user: User = Depends(contact_only
     t.trusted_decision = body.decision
     t.trusted_decided_at = utcnow()
     if body.decision == "stop":
-        # Not a permanent block: SafeBank staff review it with the customer.
+        # Not a permanent block: OCBC staff review it with the customer.
         t.status = "under_staff_review"
     log_event(db, t.id, "trusted_contact", f"trusted_contact_{body.decision}",
               {"contact_id": user.id, "seconds_to_respond":

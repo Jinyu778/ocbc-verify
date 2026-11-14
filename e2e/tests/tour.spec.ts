@@ -26,7 +26,7 @@ test("visual tour", async ({ page, browser }) => {
   await page.waitForTimeout(300);
   await shot("04-pause-dark");
   await page.emulateMedia({ colorScheme: "light" });
-  await page.getByRole("button", { name: "Call SafeBank in-app" }).click();
+  await page.getByRole("button", { name: "Call OCBC in-app" }).click();
   const staff = await openAs(browser, "staff.anna", { width: 1440, height: 900 });
   await staff.getByRole("button", { name: "Answer" }).click();
   await page.waitForTimeout(1500);

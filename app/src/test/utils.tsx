@@ -7,7 +7,7 @@ import { PrefsProvider } from "../state/prefs";
 import { SessionProvider } from "../state/session";
 
 export function mockFetch(routes: Record<string, unknown> = {}) {
-  const fn = vi.fn(async (url: string) => {
+  const fn = vi.fn(async (url: string, _init?: RequestInit) => {
     const path = String(url).replace(/^https?:\/\/[^/]+/, "");
     const hit = Object.entries(routes).find(([k]) => path.startsWith(k));
     const body = hit

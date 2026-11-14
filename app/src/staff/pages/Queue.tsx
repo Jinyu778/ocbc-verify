@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Ban, Clock, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { Ban, Clock, Flag, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { Banner, Button, RiskChip, Skeleton, api, cx, formatSGD, timeAgo, useNow, type Tier } from "@/design";
 import { STATUS_LABEL, TIER_LABEL, type CaseRow, type Summary } from "../types";
 import { CaseDrawer } from "../components/CaseDrawer";
@@ -109,6 +109,11 @@ export function Queue() {
                     {c.is_new_payee && (
                       <span className="inline-flex items-center gap-0.5 rounded-full border border-warning px-1.5 text-xs font-bold text-warning">
                         <Sparkles aria-hidden className="h-3 w-3" />NEW
+                      </span>
+                    )}
+                    {c.payee_reported && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full border border-danger px-1.5 text-xs font-bold text-danger">
+                        <Flag aria-hidden className="h-3 w-3" />REPORTED
                       </span>
                     )}
                   </span>

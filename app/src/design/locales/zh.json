@@ -4,8 +4,8 @@
     "review": "TODO: machine-assisted translation – needs native-speaker review"
   },
   "common": {
-    "appName": "SafeBank",
-    "disclaimer": "学生概念验证 – 模拟数据 – 并非华侨银行产品",
+    "appName": "OCBC Verify",
+    "disclaimer": "OCBC IGNITE 2026 学生原型，并非华侨银行官方产品",
     "back": "返回",
     "next": "下一步",
     "cancel": "取消",
@@ -23,7 +23,7 @@
     "newChip": "新",
     "newPayeeA11y": "新收款人 – 您从未付款给他们",
     "errorGeneric": "出了点问题，请再试一次。",
-    "offlineTitle": "我们现在无法连接 SafeBank",
+    "offlineTitle": "我们现在无法连接 OCBC",
     "offlineBody": "请检查您的网络连接，然后再试一次。",
     "liveOff": "实时更新已暂停 – 正在重新连接"
   },
@@ -38,13 +38,13 @@
   "help": {
     "title": "获取帮助",
     "body": "对电话、信息或付款有疑问？请先停下来，向我们确认。",
-    "callInApp": "在应用内致电 SafeBank",
+    "callInApp": "在应用内致电 OCBC",
     "helpline": "反诈骗热线 1799",
     "helplineDesc": "免费，24小时服务，由全国罪案防范理事会运营。",
     "verify": "核实来电"
   },
   "login": {
-    "title": "登录 SafeBank",
+    "title": "登录 OCBC",
     "username": "用户名",
     "password": "密码",
     "showPassword": "显示密码",
@@ -60,14 +60,14 @@
     "balanceHidden": "余额已隐藏",
     "pay": "付款给别人",
     "verifyCall": "核实来电",
-    "verifyCallDesc": "有人说自己是 SafeBank 的人？在这里核实。",
+    "verifyCallDesc": "有人说自己是 OCBC 的人？在这里核实。",
     "checkMessage": "这条信息是真的吗？",
     "recent": "最近记录",
     "noActivity": "还没有付款。",
     "savedTitle": "稍后再付",
     "savedBody": "{{amount}} 给 {{payee}}",
     "savedOpen": "打开",
-    "offlineDraft": "未发送 – 无法连接 SafeBank 时已保存在本手机",
+    "offlineDraft": "未发送 – 无法连接 OCBC 时已保存在本手机",
     "offlineDraftRetry": "现在检查",
     "offlineDraftRemove": "删除"
   },
@@ -78,11 +78,11 @@
     "paused": "已暂停",
     "saved_for_later": "稍后再付",
     "waiting_trusted_contact": "等待信任联系人",
-    "in_verification_call": "正在与 SafeBank 通话",
-    "under_staff_review": "SafeBank 正在审核",
+    "in_verification_call": "正在与 OCBC 通话",
+    "under_staff_review": "OCBC 正在审核",
     "cancelled": "已取消",
     "escalated": "为保护您已暂扣",
-    "approved_by_staff": "SafeBank 已批准"
+    "approved_by_staff": "OCBC 已批准"
   },
   "pay": {
     "title": "付款给别人",
@@ -119,7 +119,9 @@
     "q_online": "您只在网上或电话里跟这个人接触过。",
     "q_chat": "您说有人发信息叫您付款。",
     "override_new_payee_live": "在通话或聊天时付款给新收款人，是常见的诈骗手法。",
-    "signals_unavailable": "我们无法检查您的手机是否在通话，所以想问您几个问题。"
+    "signals_unavailable": "我们无法检查您的手机是否在通话，所以想问您几个问题。",
+    "payee_reported": "其他客户举报过这个账户。",
+    "override_new_payee_unusual_large": "向新收款人付一笔异常的大额款项，是大多数诈骗的结局。我们一定会暂停这类付款。"
   },
   "questions": {
     "title": "几个简单的安全问题",
@@ -149,7 +151,7 @@
     "whatNext": "您想怎么做？",
     "cancel": "取消付款",
     "save": "稍后再付",
-    "call": "在应用内致电 SafeBank",
+    "call": "在应用内致电 OCBC",
     "trusted": "询问我的信任联系人",
     "trustedNone": "请先在设置中添加信任联系人",
     "continueIn": "仍然继续（{{s}} 秒后可用）",
@@ -157,7 +159,8 @@
     "sheetTitle": "骗子常叫您不要理会警告。您确定吗？",
     "sheetBody": "如果现在有人在指示您怎么做，请停下来。真正的银行、金管局或警察绝不会催促您。",
     "goBack": "返回",
-    "sendAnyway": "仍然发送"
+    "sendAnyway": "仍然发送",
+    "reportedBody": "其他 OCBC 客户在诈骗案件中举报过这个账户。在确认之前，请不要汇款。"
   },
   "save": {
     "title": "稍后再付",
@@ -174,23 +177,23 @@
     "waitingBody": "我们已请 {{name}} 看看这笔付款。请现在打电话给他们，一起商量。",
     "timeLeft": "回复剩余时间：{{time}}",
     "timeoutTitle": "{{name}} 还没有回复",
-    "timeoutBody": "您仍然可以稍后再付，或致电 SafeBank。",
+    "timeoutBody": "您仍然可以稍后再付，或致电 OCBC。",
     "okTitle": "{{name}} 说可以",
     "okBody": "他们已经和您谈过这笔付款。您现在可以发送。",
-    "stopTitle": "{{name}} 要求停止这笔付款",
-    "stopBody": "SafeBank 会和您一起审核。款项没有发出，您的钱是安全的。"
+    "stopTitle": "{{name}} 已暂停这笔付款，交给 OCBC 审核",
+    "stopBody": "OCBC 职员会和您一起审核。这不是永久阻止，款项也没有发出。"
   },
   "result": {
     "sent": "付款已发送",
     "sentBody": "已发送 {{amount}} 给 {{payee}}。",
-    "approved_by_staff": "SafeBank 已批准这笔付款",
-    "approvedBody": "经 SafeBank 核查后，已发送 {{amount}} 给 {{payee}}。",
+    "approved_by_staff": "OCBC 已批准这笔付款",
+    "approvedBody": "经 OCBC 核查后，已发送 {{amount}} 给 {{payee}}。",
     "cancelled": "付款已取消",
     "cancelledBody": "没有发送任何款项。您的钱是安全的。",
-    "under_staff_review": "SafeBank 正在审核这笔付款",
-    "reviewBody": "款项没有发出。SafeBank 职员会在应用内联系您。您也可以现在致电我们。",
+    "under_staff_review": "OCBC 正在审核这笔付款",
+    "reviewBody": "款项没有发出。OCBC 职员会在应用内联系您。您也可以现在致电我们。",
     "escalated": "为保护您，这笔付款已暂扣",
-    "escalatedBody": "SafeBank 已暂扣这笔付款并报告反诈骗中心。没有发送任何款项。我们会在应用内联系您。",
+    "escalatedBody": "OCBC 已暂扣这笔付款并报告反诈骗中心。没有发送任何款项。我们会在应用内联系您。",
     "home": "返回首页"
   },
   "banners": {
@@ -200,18 +203,18 @@
     "unavailable": "我们无法在这台手机上检查通话，所以会问您几个问题。"
   },
   "signals": {
-    "permissionTitle": "允许 SafeBank 检查您是否在通话吗？",
+    "permissionTitle": "允许 OCBC 检查您是否在通话吗？",
     "permissionBody": "我们只检查您是否在通话，绝不查看您在跟谁说话或说了什么。这能帮助我们在骗子在线时提醒您。",
     "allow": "允许",
     "notNow": "暂时不要"
   },
   "call": {
-    "title": "致电 SafeBank",
-    "verified": "已验证的 SafeBank 反诈骗团队",
+    "title": "致电 OCBC",
+    "verified": "已验证的 OCBC 反诈骗团队",
     "officer": "{{name}}",
-    "waitingStaff": "正在致电 SafeBank… 职员很快会接听。",
-    "incoming": "SafeBank 正在致电您",
-    "incomingBody": "这是 SafeBank 反诈骗团队在应用内打来的真实电话。",
+    "waitingStaff": "正在致电 OCBC… 职员很快会接听。",
+    "incoming": "OCBC 正在致电您",
+    "incomingBody": "这是 OCBC 反诈骗团队在应用内打来的真实电话。",
     "answer": "接听",
     "end": "结束通话",
     "mute": "静音",
@@ -223,19 +226,19 @@
     "typeMessage": "输入信息",
     "send": "发送",
     "ended": "通话已结束",
-    "endedBody": "谢谢。您的付款会保持暂停，直到您或 SafeBank 做出决定。",
-    "noMessages": "您在这里发送的信息只会给 SafeBank 职员。"
+    "endedBody": "谢谢。您的付款会保持暂停，直到您或 OCBC 做出决定。",
+    "noMessages": "您在这里发送的信息只会给 OCBC 职员。"
   },
   "verify": {
     "title": "核实来电",
-    "intro": "电话里有人说自己是 SafeBank 的人？在这里核实。",
-    "genuine": "这是真正的 SafeBank 来电",
-    "genuineBody": "SafeBank 反诈骗团队的 {{name}} 正在应用内致电您。",
+    "intro": "电话里有人说自己是 OCBC 的人？在这里核实。",
+    "genuine": "这是真正的 OCBC 来电",
+    "genuineBody": "OCBC 反诈骗团队的 {{name}} 正在应用内致电您。",
     "open": "前往通话",
-    "notCalling": "SafeBank 现在没有打电话给您。",
-    "notCallingBody": "如果有人说自己来自 SafeBank、金管局或警察，请挂断，并在应用内致电我们。",
+    "notCalling": "OCBC 现在没有打电话给您。",
+    "notCallingBody": "如果有人说自己来自 OCBC、金管局或警察，请挂断，并在应用内致电我们。",
     "checkAgain": "再查一次",
-    "callUs": "在应用内致电 SafeBank"
+    "callUs": "在应用内致电 OCBC"
   },
   "check": {
     "title": "这是真的吗？",
@@ -265,8 +268,8 @@
     "tapExplain": "有下划线的词是警告信号。点一下看原因。",
     "confidence": "我们的检查器认为这有 {{p}}% 的可能是诈骗。",
     "safeActions": "您可以怎么做",
-    "report": "向 SafeBank 举报",
-    "reported": "已举报。谢谢您 – SafeBank 职员会查看。",
+    "report": "向 OCBC 举报",
+    "reported": "已举报。谢谢您 – OCBC 职员会查看。",
     "privacy": "我们只保存隐藏了电话号码、缩短了链接的副本。",
     "flags": {
       "urgency": "催促您",
@@ -281,7 +284,8 @@
       "earn_per_day": "“每天赚 $X”",
       "move_chat": "叫您转到 Telegram / WhatsApp",
       "paynow_first": "“先付款，不见面”",
-      "family_new_number": "家人换了新号码"
+      "family_new_number": "家人换了新号码",
+      "preorder_scam": "先付款的预购，不见面"
     },
     "explain": {
       "urgency": "骗子会催促您，让您没时间思考或确认。",
@@ -290,14 +294,21 @@
       "secrecy": "被要求对付款保密是一个很大的警告信号。",
       "link": "信息里的链接可能会带您去盗取资料的假网站。",
       "install_app": "从链接安装应用可能让骗子控制您的手机。",
-      "credentials": "永远不要分享您的验证码、PIN 或密码。SafeBank 绝不会索取。",
+      "credentials": "永远不要分享您的验证码、PIN 或密码。OCBC 绝不会索取。",
       "gift_crypto_gold": "要求礼品卡、加密货币、黄金或“保证”回报的，常常是诈骗。",
       "upfront_fee": "真正的工作和奖品绝不会要您先付费。",
       "earn_per_day": "做简单任务就“每天赚 $X”的，几乎都是诈骗。",
       "move_chat": "骗子会叫您转到 Telegram 或 WhatsApp，那里更难追查。",
       "paynow_first": "“先付款，不见面”是大多数网购和门票诈骗的手法。",
-      "family_new_number": "“家人”用新号码向您要钱：请先打他们的旧号码确认。"
-    }
+      "family_new_number": "“家人”用新号码向您要钱：请先打他们的旧号码确认。",
+      "preorder_scam": "必须先付款、不见面交易的“预购”，是常见的收藏品诈骗（例如宝可梦卡）。"
+    },
+    "s_pokemon": "宝可梦卡预购",
+    "attachTitle": "把这条信息加到我的付款中",
+    "attachBody": "这条信息和您正在做的付款有关吗？加上它，OCBC 职员审核该付款时就能看到。",
+    "attachPick": "哪一笔付款？",
+    "attachButton": "把信息加到这笔付款",
+    "attached": "已添加。OCBC 职员会在您付给 {{payee}} 的款项中看到这条信息。"
   },
   "settings": {
     "title": "设置",
@@ -322,11 +333,11 @@
     },
     "safety": "安全",
     "trustedContact": "信任联系人",
-    "trustedHelper": "在有风险的付款发出前，我们可以询问的人。学生可以选择父母；年长者可以选择成年子女。",
+    "trustedHelper": "在有风险的付款发出前，我们可以询问的人。学生可以选择父母；年长者可以选择成年子女。他们可以暂停有风险的付款交给 OCBC 职员审核，但绝不能永久阻止。",
     "noContact": "您还没有信任联系人。",
     "addContact": "添加信任联系人",
     "changeContact": "更换信任联系人",
-    "contactUsername": "他们的 SafeBank 用户名",
+    "contactUsername": "他们的 OCBC 用户名",
     "relationship": "他们是我的…",
     "relationships": {
       "parent": "父母",
@@ -344,7 +355,7 @@
     "remove": "移除",
     "saved": "已保存。{{note}}",
     "callDetection": "通话检测",
-    "callDetectionDesc": "在安卓应用中，SafeBank 可以在您付款时检查您是否在通话。我们绝不读取您在跟谁说话、号码或说了什么。网页浏览器无法看到通话，所以对新收款人我们会直接问您。",
+    "callDetectionDesc": "在安卓应用中，OCBC 可以在您付款时检查您是否在通话。我们绝不读取您在跟谁说话、号码或说了什么。网页浏览器无法看到通话，所以对新收款人我们会直接问您。",
     "callDetectionStatus": "状态：{{status}}",
     "callStatus": {
       "native": "已开启（安卓）",
@@ -364,9 +375,9 @@
     "c1Title": "我们会暂停有风险的付款",
     "c1Body": "如果一笔付款看起来像诈骗，我们会先停一下让您确认。决定权始终在您手上。",
     "c2Title": "我们绝不会叫您把钱转到“安全账户”",
-    "c2Body": "SafeBank 不会，金管局不会，警察也不会。这样要求的人就是骗子。",
+    "c2Body": "OCBC 不会，金管局不会，警察也不会。这样要求的人就是骗子。",
     "c3Title": "在这里核实任何来电",
-    "c3Body": "有人说自己是 SafeBank 的人？在首页点“核实来电”，看看是不是真的是我们。"
+    "c3Body": "有人说自己是 OCBC 的人？在首页点“核实来电”，看看是不是真的是我们。"
   },
   "contact": {
     "title": "家人的请求",
@@ -379,13 +390,13 @@
     "payeeType": "付款给",
     "newPayee": "一个新收款人",
     "knownPayee": "以前付过款的人",
-    "why": "SafeBank 为什么问您",
+    "why": "OCBC 为什么问您",
     "callFirst": "做决定前，请先打电话给他们。",
     "ok": "我已和他们谈过 – 可以",
-    "stop": "停止这笔付款",
-    "stopNote": "这不会永久阻止他们。SafeBank 职员会和他们一起审核。",
+    "stop": "暂停，交给 OCBC 审核",
+    "stopNote": "这会暂停付款，让 OCBC 职员和他们一起审核。绝不会永久阻止。",
     "decidedOk": "您说可以",
-    "decidedStop": "您要求停止",
+    "decidedStop": "您已暂停，交给 OCBC 审核",
     "noAnswer": "未回复",
     "timeLeft": "剩余时间：{{time}}",
     "newRequest": "{{name}} 发来新请求"
@@ -419,5 +430,23 @@
   "duration": {
     "minutes_other": "{{count}} 分钟",
     "hours_other": "{{count}} 小时"
+  },
+  "codeWord": {
+    "title": "家庭暗号",
+    "intro": "和家人约定一个暗号。如果有人打电话说是您的孩子或孙子出事了，请让对方说出暗号。AI 模仿的声音不会知道。",
+    "introContact": "为您照顾的人设定一个家庭暗号。如果来电者自称是家人，就请对方说出暗号。AI 模仿的声音不会知道。",
+    "label": "新暗号",
+    "change": "更改暗号",
+    "helper": "3 到 40 个字符。暗号会加密保存，之后不会再显示，OCBC 职员也看不到。",
+    "isSet": "已设定暗号",
+    "notSet": "还没有暗号",
+    "save": "保存暗号",
+    "saved": "已保存。请当面告诉家人，不要用短信。",
+    "errLength": "请使用 3 到 40 个字符的暗号。",
+    "show": "显示我输入的内容",
+    "hide": "隐藏我输入的内容",
+    "prompt": "请让来电者说出你们的家庭暗号。",
+    "promptBody": "如果对方说不出来，请挂断。声音可以用 AI 伪造。",
+    "promptNotSet": "您还没有设定家庭暗号。可以在设置中和信任联系人一起设定。"
   }
 }

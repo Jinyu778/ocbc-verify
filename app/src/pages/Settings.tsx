@@ -10,6 +10,7 @@ import { LanguageSelect } from "../components/Layout";
 import { Screen } from "../components/Screen";
 import { setGuideDone } from "./Guide";
 import { signalProvider, type PermissionStatus } from "../signals";
+import { CodeWordCard, ContactCodeWords } from "../components/CodeWord";
 
 function Toggle({ id, label, desc, checked, onChange }: { id: string; label: string; desc?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -218,6 +219,8 @@ export function Settings() {
         />
       </Card>
       {customer && <TrustedContacts />}
+      {customer && <CodeWordCard />}
+      {user?.role === "trusted_contact" && <ContactCodeWords />}
       {customer && <CallDetection />}
       <Card className="space-y-3">
         <h2 className="text-lg">{t("settings.account")}</h2>

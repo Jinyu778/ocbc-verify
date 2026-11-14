@@ -145,7 +145,7 @@ def act(case_id: int, body: ActionIn, user: User = Depends(staff_only), db: Sess
 def referral_data(db: Session, t: Transfer, staff: User) -> dict:
     c = t.customer
     return {
-        "referral_type": "Anti-Scam Centre referral (synthetic proof of concept)",
+        "referral_type": "Anti-Scam Centre referral (student prototype, synthetic data)",
         "generated_at": utcnow().isoformat(),
         "generated_by": staff.display_name,
         "case_id": f"SB-{t.id:06d}",

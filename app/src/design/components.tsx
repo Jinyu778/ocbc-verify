@@ -282,7 +282,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 export const useToast = () => useContext(ToastCtx);
 
 // ---------------------------------------------------------------------------------- Disclaimer
-export function Disclaimer({ text = "Student proof of concept – synthetic data – not an OCBC product", className }: { text?: string; className?: string }) {
+export function Disclaimer({ text = "Student prototype for OCBC IGNITE 2026, not an official OCBC product", className }: { text?: string; className?: string }) {
   return <p className={cx("bg-primary px-4 py-1 text-center text-sm text-on-primary", className)}>{text}</p>;
 }
 

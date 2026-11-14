@@ -1,6 +1,6 @@
 """Official in-app verification calls (Feature 3).
 
-A call session is created by the customer ("Call SafeBank in-app") or by staff ("Call
+A call session is created by the customer ("Call OCBC in-app") or by staff ("Call
 customer in-app"). The session carries an HMAC signature so "Verify a call" can prove it is
 genuine. Media flows browser-to-browser over WebRTC; signalling goes over the WebSocket.
 """
@@ -99,7 +99,7 @@ def staff_starts_call(db: Session, staff: User, t: Transfer) -> CallSession:
 
 @router.get("/active")
 def active_call(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """'Verify a call': is SafeBank genuinely calling me right now?"""
+    """'Verify a call': is OCBC genuinely calling me right now?"""
     if user.role == "staff":
         rows = db.scalars(select(CallSession).where(CallSession.status != "ended",
                                                     or_(CallSession.staff_user_id == user.id,
@@ -134,7 +134,7 @@ def accept(call_id: int, user: User = Depends(get_current_user), db: Session = D
             raise HTTPException(409, "Only the customer can accept this call.")
         c.staff_user_id = user.id
     elif c.initiated_by != "staff":
-        raise HTTPException(409, "Waiting for SafeBank to answer.")
+        raise HTTPException(409, "Waiting for OCBC to answer.")
     c.status = "active"
     actor = staff_actor(user.id) if user.role == "staff" else "customer"
     log_event(db, c.transfer_id, actor, "call_connected", {"call_id": c.id})

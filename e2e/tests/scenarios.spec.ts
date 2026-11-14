@@ -24,15 +24,15 @@ test("Scenario 3 fast path – known payee from Home in ≤ 3 taps", async ({ pa
   await expect(page.getByRole("heading", { name: "Payment sent" })).toBeVisible();
 });
 
-test("Scenario 1 (browser) – fake MAS officer: answers 'on a call' → pause → Call SafeBank → staff escalates", async ({ page, browser }) => {
+test("Scenario 1 (browser) – fake MAS officer: answers 'on a call' → pause → Call OCBC → staff escalates", async ({ page, browser }) => {
   await login(page, "tan.siewlan");
   await english(page);
   await startPayment(page, "MAS Safety Account", "8000", "call");
   await answerAllNo(page);
   await expect(page.getByRole("heading", { name: "Let's pause this payment" })).toBeVisible();
   await expect(page.getByRole("alert").filter({ hasText: "You're on a call" })).toBeVisible();
-  await page.getByRole("button", { name: "Call SafeBank in-app" }).click();
-  await expect(page.getByText("Calling SafeBank")).toBeVisible();
+  await page.getByRole("button", { name: "Call OCBC in-app" }).click();
+  await expect(page.getByText("Calling OCBC")).toBeVisible();
 
   const staff = await openAs(browser, "staff.anna", { width: 1440, height: 900 });
   await staff.getByRole("button", { name: "Answer" }).click();
@@ -110,9 +110,10 @@ test("Scenario 5 – fake job deposit: Ryan adds the payee, chatting, trusted co
   await expect(mom.getByText("S$100 – S$1,000")).toBeVisible();
   await expect(mom.getByText("a NEW payee")).toBeVisible();
   await expect(mom.getByText("2,800")).toHaveCount(0);
-  await mom.getByRole("button", { name: "Stop this payment" }).click();
-  await expect(mom.getByText("You asked to stop it")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "SafeBank is reviewing this payment" })).toBeVisible();
+  await expect(mom.getByText(/It never blocks it permanently/)).toBeVisible();
+  await mom.getByRole("button", { name: "Pause for OCBC review" }).click();
+  await expect(mom.getByText("You paused it for OCBC review")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "OCBC is reviewing this payment" })).toBeVisible();
 
   const staff = await openAs(browser, "staff.anna", { width: 1440, height: 900 });
   await expect(staff.getByRole("row", { name: /Ryan Lim/ }).first()).toContainText("Needs staff review");
@@ -130,7 +131,7 @@ test("Scenario 6 – ticket scam message: Likely scam, flags, report → staff s
   await expect(page.getByText("Likely scam", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: /^PayNow first/ }).click();
   await expect(page.getByText("'Pay first, no meetup' is how most online shopping and ticket scams work.")).toBeVisible();
-  await page.getByRole("button", { name: "Report this to SafeBank" }).click();
+  await page.getByRole("button", { name: "Report this to OCBC" }).click();
   await expect(page.getByText("Reported. Thank you")).toBeVisible();
   const staff = await openAs(browser, "staff.anna", { width: 1440, height: 900 });
   await staff.getByRole("link", { name: "Reported messages" }).click();
@@ -146,7 +147,7 @@ test("Scenario 7 – Verify a call: NOT calling, then genuine after staff starts
   await login(page, "tan.siewlan");
   await english(page);
   await page.getByRole("button", { name: "Verify a call" }).click();
-  await expect(page.getByText("SafeBank is NOT calling you right now.")).toBeVisible();
+  await expect(page.getByText("OCBC is NOT calling you right now.")).toBeVisible();
 
   // a case is needed for staff to call: Mdm Tan starts a risky payment
   await startPayment(page, "Hospital – NUH Billing", "3200", "no");
@@ -158,19 +159,19 @@ test("Scenario 7 – Verify a call: NOT calling, then genuine after staff starts
   await staff.getByLabel("Note for the audit trail (required)").fill("Calling to verify the hospital bill.");
   await staff.getByRole("button", { name: "Confirm" }).click();
 
-  await expect(page.getByText("SafeBank is calling you")).toBeVisible();
+  await expect(page.getByText("OCBC is calling you")).toBeVisible();
   await page.keyboard.press("Escape");
   await page.goto("/customer/verify");
-  await expect(page.getByText("This is a genuine SafeBank call")).toBeVisible();
-  await expect(page.getByText(/Anna Koh from the SafeBank Fraud Team/)).toBeVisible();
+  await expect(page.getByText("This is a genuine OCBC call")).toBeVisible();
+  await expect(page.getByText(/Anna Koh from the OCBC Fraud Team/)).toBeVisible();
   await page.getByRole("button", { name: "Go to the call" }).click();
   await page.getByRole("button", { name: "Answer" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Connected" })).toBeVisible({ timeout: 14_000 });
   await page.getByRole("button", { name: "Use text chat instead" }).click();
   await expect(page.getByText("We switched to text chat")).toBeVisible();
-  await page.getByLabel("Type a message").fill("Is this really SafeBank?");
+  await page.getByLabel("Type a message").fill("Is this really OCBC?");
   await page.getByRole("button", { name: "Send", exact: true }).click();
-  await expect(staff.getByText("Is this really SafeBank?")).toBeVisible();
+  await expect(staff.getByText("Is this really OCBC?")).toBeVisible();
   await staff.context().close();
 });
 
@@ -252,7 +253,7 @@ test("Failure – trusted contact doesn't answer: timeout path after TRUSTED_CON
   await expect(page.getByText(/Time left for a reply: 0:\d\d/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Mrs Lim hasn't answered yet" })).toBeVisible({ timeout: 75_000 });
   await expect(page.getByRole("button", { name: "Save for later" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Call SafeBank in-app" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Call OCBC in-app" })).toBeVisible();
 });
 
 test("Failure – invalid amount shows an inline error next to the field", async ({ page }) => {

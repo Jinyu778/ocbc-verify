@@ -18,8 +18,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="SafeBank Shield API",
-    description="Student proof of concept – synthetic data – not an OCBC product.",
+    title="OCBC Verify API",
+    description="Student prototype for OCBC IGNITE 2026, not an official OCBC product.",
     version="1.0.0",
     lifespan=lifespan,
 )

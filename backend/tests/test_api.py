@@ -422,7 +422,7 @@ def test_message_check_and_report(client, auth):
 def test_genuine_bank_notice(client, auth):
     h = auth("tan.siewlan")
     r = client.post("/api/messages/check", headers=h, json={
-        "text": "SafeBank: Your monthly statement for March is ready. View it in the SafeBank app. We will never ask for your OTP or password."}).json()
+        "text": "OCBC: Your monthly statement for March is ready. View it in the OCBC Verify app. We will never ask for your OTP or password."}).json()
     assert r["verdict"] in ("no_signs", "be_careful", "not_sure")
     assert r["verdict"] != "likely_scam"
 

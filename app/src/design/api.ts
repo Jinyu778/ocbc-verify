@@ -85,7 +85,7 @@ async function rawFetch(path: string, init: RequestInit, timeoutMs: number): Pro
     if ((e as Error).name === "AbortError") {
       throw new ApiError("The server took too long to answer.", 0, "timeout");
     }
-    throw new ApiError("We can't reach SafeBank right now.", 0, "offline");
+    throw new ApiError("We can't reach OCBC right now.", 0, "offline");
   } finally {
     clearTimeout(timer);
   }
@@ -140,7 +140,7 @@ export async function api<T = unknown>(path: string, opts: RequestOpts = {}): Pr
       const d = detail as { message: string; field?: string };
       throw new ApiError(d.message, res.status, "http", d.field);
     }
-    const msg = typeof detail === "string" ? detail : res.status >= 500 ? "Something went wrong at SafeBank." : `Request failed (${res.status}).`;
+    const msg = typeof detail === "string" ? detail : res.status >= 500 ? "Something went wrong at OCBC." : `Request failed (${res.status}).`;
     throw new ApiError(msg, res.status, "http");
   }
   const text = await res.text();

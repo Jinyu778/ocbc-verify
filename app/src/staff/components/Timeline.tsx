@@ -10,6 +10,8 @@ function summarise(e: Evidence): string {
   if (e.event_type === "questions_answered")
     return Object.entries(d).map(([k, v]) => `${k.replace("q_", "")}: ${v ? "YES" : "no"}`).join(" · ");
   if ("note" in d) return `“${d.note}”`;
+  if (e.event_type === "message_attached")
+    return `${String(d.verdict).replace("_", " ")} · flags: ${(d.flags as string[] | undefined)?.join(", ") || "none"} · “${String(d.text_redacted ?? "").slice(0, 160)}”`;
   if ("minutes" in d) return `wait ${d.minutes} min · until ${String(d.wait_until ?? "").slice(11, 19)} UTC`;
   if ("source" in d && e.event_type === "signal_source") return `signals from: ${String(d.source).replace("_", " ")}`;
   const keys = Object.keys(d).filter((k) => !["signals"].includes(k));

@@ -50,7 +50,7 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.getByText("Likely scam", { exact: true })).toBeVisible();
     await scan(page, "check result");
     await page.goto("/customer/verify");
-    await expect(page.getByText("SafeBank is NOT calling you right now.")).toBeVisible();
+    await expect(page.getByText("OCBC is NOT calling you right now.")).toBeVisible();
     await scan(page, "verify");
     await page.goto("/customer/settings");
     await scan(page, "settings");

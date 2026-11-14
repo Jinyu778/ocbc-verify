@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   Users,
   X,
+  Flag,
+  KeyRound,
 } from "lucide-react";
 import {
   ApiError,
@@ -298,6 +300,16 @@ function Pause({ tr }: { tr: Transfer }) {
         <p className="mt-2 text-lg opacity-95">{t("pause.subtitle")}</p>
       </section>
       <PaymentSummary tr={tr} />
+      {tr.payee_reported && (
+        <Banner tone="danger" icon={Flag} title={t("reasons.payee_reported")}>
+          {t("pause.reportedBody")}
+        </Banner>
+      )}
+      {tr.code_word_prompt && (
+        <Banner tone="warning" icon={KeyRound} title={t("codeWord.prompt")}>
+          {tr.code_word_set ? t("codeWord.promptBody") : t("codeWord.promptNotSet")}
+        </Banner>
+      )}
       <Card className="space-y-3">
         <h2 className="text-lg">{t("pause.because")}</h2>
         <ReasonsList reasons={tr.reasons} />

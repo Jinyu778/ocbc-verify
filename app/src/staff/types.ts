@@ -18,6 +18,9 @@ export interface CaseRow {
   trusted_decision: "ok" | "stop" | null;
   trusted_contact_name: string | null;
   active_call_id: number | null;
+  payee_reported: boolean;
+  code_word_prompt: boolean;
+  code_word_set: boolean;
   false_positive: boolean;
   created_at: string;
   customer: { id: number; display_name: string; age: number | null };
@@ -47,6 +50,7 @@ export interface CaseDetail extends CaseRow {
   evidence: Evidence[];
   calls: CallInfo[];
   staff_actions: { id: number; staff: string; action: string; note: string; created_at: string }[];
+  attached_messages: { id: number; text_redacted: string; verdict: string; flags: string[]; ml_probability: number; review_status: string; created_at: string }[];
 }
 export interface Summary {
   cases_today: number;

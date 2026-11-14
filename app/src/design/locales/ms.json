@@ -4,8 +4,8 @@
     "review": "TODO: machine-assisted translation – needs native-speaker review"
   },
   "common": {
-    "appName": "SafeBank",
-    "disclaimer": "Bukti konsep pelajar – data sintetik – bukan produk OCBC",
+    "appName": "OCBC Verify",
+    "disclaimer": "Prototaip pelajar untuk OCBC IGNITE 2026, bukan produk rasmi OCBC",
     "back": "Kembali",
     "next": "Seterusnya",
     "cancel": "Batal",
@@ -23,7 +23,7 @@
     "newChip": "BARU",
     "newPayeeA11y": "Penerima baru – anda tidak pernah membayar mereka",
     "errorGeneric": "Ada masalah. Sila cuba lagi.",
-    "offlineTitle": "Kami tidak dapat menghubungi SafeBank sekarang",
+    "offlineTitle": "Kami tidak dapat menghubungi OCBC sekarang",
     "offlineBody": "Sila semak sambungan internet anda, kemudian cuba lagi.",
     "liveOff": "Kemas kini langsung dijeda – menyambung semula"
   },
@@ -38,13 +38,13 @@
   "help": {
     "title": "Dapatkan bantuan",
     "body": "Tidak pasti tentang panggilan, mesej atau bayaran? Berhenti dan semak dengan kami dahulu.",
-    "callInApp": "Hubungi SafeBank dalam aplikasi",
+    "callInApp": "Hubungi OCBC dalam aplikasi",
     "helpline": "Talian Bantuan ScamShield 1799",
     "helplineDesc": "Percuma, 24 jam. Dikendalikan oleh Majlis Pencegahan Jenayah Kebangsaan.",
     "verify": "Sahkan panggilan"
   },
   "login": {
-    "title": "Log masuk ke SafeBank",
+    "title": "Log masuk ke OCBC",
     "username": "Nama pengguna",
     "password": "Kata laluan",
     "showPassword": "Tunjuk kata laluan",
@@ -60,14 +60,14 @@
     "balanceHidden": "Baki disembunyikan",
     "pay": "Bayar seseorang",
     "verifyCall": "Sahkan panggilan",
-    "verifyCallDesc": "Ada orang kata mereka dari SafeBank? Semak di sini.",
+    "verifyCallDesc": "Ada orang kata mereka dari OCBC? Semak di sini.",
     "checkMessage": "Adakah mesej ini benar?",
     "recent": "Aktiviti terkini",
     "noActivity": "Belum ada bayaran.",
     "savedTitle": "Disimpan untuk kemudian",
     "savedBody": "{{amount}} kepada {{payee}}",
     "savedOpen": "Buka",
-    "offlineDraft": "Belum dihantar – disimpan pada telefon ini semasa SafeBank tidak dapat dihubungi",
+    "offlineDraft": "Belum dihantar – disimpan pada telefon ini semasa OCBC tidak dapat dihubungi",
     "offlineDraftRetry": "Semak sekarang",
     "offlineDraftRemove": "Buang"
   },
@@ -78,11 +78,11 @@
     "paused": "Dijeda",
     "saved_for_later": "Disimpan untuk kemudian",
     "waiting_trusted_contact": "Menunggu kenalan dipercayai",
-    "in_verification_call": "Dalam panggilan dengan SafeBank",
-    "under_staff_review": "SafeBank sedang menyemak",
+    "in_verification_call": "Dalam panggilan dengan OCBC",
+    "under_staff_review": "OCBC sedang menyemak",
     "cancelled": "Dibatalkan",
     "escalated": "Ditahan untuk keselamatan anda",
-    "approved_by_staff": "Diluluskan oleh SafeBank"
+    "approved_by_staff": "Diluluskan oleh OCBC"
   },
   "pay": {
     "title": "Bayar seseorang",
@@ -119,7 +119,9 @@
     "q_online": "Anda hanya pernah berjumpa orang ini dalam talian atau melalui telefon.",
     "q_chat": "Anda kata seseorang menghantar mesej menyuruh anda membayar.",
     "override_new_payee_live": "Penerima baru semasa anda dalam panggilan atau sembang ialah corak penipuan biasa.",
-    "signals_unavailable": "Kami tidak dapat menyemak panggilan pada telefon anda, jadi kami bertanya beberapa soalan."
+    "signals_unavailable": "Kami tidak dapat menyemak panggilan pada telefon anda, jadi kami bertanya beberapa soalan.",
+    "payee_reported": "Akaun ini telah dilaporkan oleh pelanggan lain.",
+    "override_new_payee_unusual_large": "Bayaran besar dan luar biasa kepada orang baru ialah cara kebanyakan penipuan berakhir. Kami sentiasa menjeda bayaran ini."
   },
   "questions": {
     "title": "Beberapa soalan keselamatan ringkas",
@@ -149,7 +151,7 @@
     "whatNext": "Apa yang anda mahu lakukan?",
     "cancel": "Batalkan bayaran",
     "save": "Simpan untuk kemudian",
-    "call": "Hubungi SafeBank dalam aplikasi",
+    "call": "Hubungi OCBC dalam aplikasi",
     "trusted": "Tanya kenalan dipercayai saya",
     "trustedNone": "Tambah kenalan dipercayai dalam Tetapan dahulu",
     "continueIn": "Teruskan juga (tersedia dalam {{s}} s)",
@@ -157,7 +159,8 @@
     "sheetTitle": "Penipu selalu menyuruh anda abaikan amaran. Adakah anda pasti?",
     "sheetBody": "Jika ada orang sedang memberitahu anda apa yang perlu dilakukan, berhenti. Bank, MAS atau polis sebenar tidak akan mendesak anda.",
     "goBack": "Kembali",
-    "sendAnyway": "Hantar juga"
+    "sendAnyway": "Hantar juga",
+    "reportedBody": "Pelanggan OCBC lain telah melaporkan akaun ini dalam kes penipuan. Jangan hantar wang sehingga anda telah menyemak."
   },
   "save": {
     "title": "Simpan untuk kemudian",
@@ -174,23 +177,23 @@
     "waitingBody": "Kami telah meminta {{name}} melihat bayaran ini. Sila telefon mereka sekarang dan bincangkannya.",
     "timeLeft": "Masa tinggal untuk jawapan: {{time}}",
     "timeoutTitle": "{{name}} belum menjawab",
-    "timeoutBody": "Anda masih boleh menyimpan bayaran ini untuk kemudian atau menghubungi SafeBank.",
+    "timeoutBody": "Anda masih boleh menyimpan bayaran ini untuk kemudian atau menghubungi OCBC.",
     "okTitle": "{{name}} kata OK",
     "okBody": "Mereka telah bercakap dengan anda tentang bayaran ini. Anda boleh menghantarnya sekarang.",
-    "stopTitle": "{{name}} minta bayaran ini dihentikan",
-    "stopBody": "SafeBank akan menyemaknya bersama anda. Tiada apa-apa dihantar dan wang anda selamat."
+    "stopTitle": "{{name}} menjeda bayaran ini untuk semakan OCBC",
+    "stopBody": "Kakitangan OCBC akan menyemaknya bersama anda. Ia tidak disekat selama-lamanya, dan tiada apa-apa dihantar."
   },
   "result": {
     "sent": "Bayaran dihantar",
     "sentBody": "{{amount}} dihantar kepada {{payee}}.",
-    "approved_by_staff": "SafeBank meluluskan bayaran ini",
-    "approvedBody": "{{amount}} dihantar kepada {{payee}} selepas semakan SafeBank.",
+    "approved_by_staff": "OCBC meluluskan bayaran ini",
+    "approvedBody": "{{amount}} dihantar kepada {{payee}} selepas semakan OCBC.",
     "cancelled": "Bayaran dibatalkan",
     "cancelledBody": "Tiada apa-apa dihantar. Wang anda selamat.",
-    "under_staff_review": "SafeBank sedang menyemak bayaran ini",
-    "reviewBody": "Tiada apa-apa dihantar. Pegawai SafeBank akan menghubungi anda dalam aplikasi. Anda juga boleh hubungi kami sekarang.",
+    "under_staff_review": "OCBC sedang menyemak bayaran ini",
+    "reviewBody": "Tiada apa-apa dihantar. Pegawai OCBC akan menghubungi anda dalam aplikasi. Anda juga boleh hubungi kami sekarang.",
     "escalated": "Bayaran ditahan untuk keselamatan anda",
-    "escalatedBody": "SafeBank telah menahan bayaran ini dan melaporkannya kepada Pusat Anti-Penipuan. Tiada apa-apa dihantar. Kami akan menghubungi anda dalam aplikasi.",
+    "escalatedBody": "OCBC telah menahan bayaran ini dan melaporkannya kepada Pusat Anti-Penipuan. Tiada apa-apa dihantar. Kami akan menghubungi anda dalam aplikasi.",
     "home": "Kembali ke Utama"
   },
   "banners": {
@@ -200,18 +203,18 @@
     "unavailable": "Kami tidak dapat menyemak panggilan pada telefon ini, jadi kami akan bertanya beberapa soalan."
   },
   "signals": {
-    "permissionTitle": "Benarkan SafeBank menyemak jika anda dalam panggilan?",
+    "permissionTitle": "Benarkan OCBC menyemak jika anda dalam panggilan?",
     "permissionBody": "Kami hanya menyemak sama ada anda dalam panggilan, tidak sekali-kali dengan siapa anda bercakap atau apa yang dikatakan. Ini membantu kami memberi amaran jika penipu di talian.",
     "allow": "Benarkan",
     "notNow": "Bukan sekarang"
   },
   "call": {
-    "title": "Hubungi SafeBank",
-    "verified": "Pasukan Penipuan SafeBank yang disahkan",
+    "title": "Hubungi OCBC",
+    "verified": "Pasukan Penipuan OCBC yang disahkan",
     "officer": "{{name}}",
-    "waitingStaff": "Menghubungi SafeBank… seorang pegawai akan menjawab sebentar lagi.",
-    "incoming": "SafeBank sedang menghubungi anda",
-    "incomingBody": "Ini panggilan sebenar daripada Pasukan Penipuan SafeBank dalam aplikasi.",
+    "waitingStaff": "Menghubungi OCBC… seorang pegawai akan menjawab sebentar lagi.",
+    "incoming": "OCBC sedang menghubungi anda",
+    "incomingBody": "Ini panggilan sebenar daripada Pasukan Penipuan OCBC dalam aplikasi.",
     "answer": "Jawab",
     "end": "Tamatkan panggilan",
     "mute": "Senyap",
@@ -223,19 +226,19 @@
     "typeMessage": "Taip mesej",
     "send": "Hantar",
     "ended": "Panggilan tamat",
-    "endedBody": "Terima kasih. Bayaran anda kekal dijeda sehingga anda atau SafeBank membuat keputusan.",
-    "noMessages": "Mesej yang anda hantar di sini hanya pergi kepada pegawai SafeBank."
+    "endedBody": "Terima kasih. Bayaran anda kekal dijeda sehingga anda atau OCBC membuat keputusan.",
+    "noMessages": "Mesej yang anda hantar di sini hanya pergi kepada pegawai OCBC."
   },
   "verify": {
     "title": "Sahkan panggilan",
-    "intro": "Seseorang di telefon kata mereka dari SafeBank? Semak di sini.",
-    "genuine": "Ini panggilan SafeBank yang sebenar",
-    "genuineBody": "{{name}} daripada Pasukan Penipuan SafeBank sedang menghubungi anda dalam aplikasi ini.",
+    "intro": "Seseorang di telefon kata mereka dari OCBC? Semak di sini.",
+    "genuine": "Ini panggilan OCBC yang sebenar",
+    "genuineBody": "{{name}} daripada Pasukan Penipuan OCBC sedang menghubungi anda dalam aplikasi ini.",
     "open": "Pergi ke panggilan",
-    "notCalling": "SafeBank TIDAK menghubungi anda sekarang.",
-    "notCallingBody": "Jika seseorang kata mereka dari SafeBank, MAS atau Polis, letak telefon dan hubungi kami dalam aplikasi.",
+    "notCalling": "OCBC TIDAK menghubungi anda sekarang.",
+    "notCallingBody": "Jika seseorang kata mereka dari OCBC, MAS atau Polis, letak telefon dan hubungi kami dalam aplikasi.",
     "checkAgain": "Semak lagi",
-    "callUs": "Hubungi SafeBank dalam aplikasi"
+    "callUs": "Hubungi OCBC dalam aplikasi"
   },
   "check": {
     "title": "Adakah ini benar?",
@@ -265,8 +268,8 @@
     "tapExplain": "Perkataan bergaris bawah ialah tanda amaran. Ketik untuk melihat sebabnya.",
     "confidence": "Penyemak kami fikir ada {{p}}% kemungkinan ini penipuan.",
     "safeActions": "Apa yang anda boleh lakukan",
-    "report": "Laporkan kepada SafeBank",
-    "reported": "Dilaporkan. Terima kasih – kakitangan SafeBank akan melihatnya.",
+    "report": "Laporkan kepada OCBC",
+    "reported": "Dilaporkan. Terima kasih – kakitangan OCBC akan melihatnya.",
     "privacy": "Kami hanya menyimpan salinan dengan nombor telefon disembunyikan dan pautan dipendekkan.",
     "flags": {
       "urgency": "Mendesak anda",
@@ -281,7 +284,8 @@
       "earn_per_day": "'Dapat $X sehari'",
       "move_chat": "Pindahkan anda ke Telegram / WhatsApp",
       "paynow_first": "'Bayar dulu, tiada jumpa'",
-      "family_new_number": "Ahli keluarga dengan nombor baru"
+      "family_new_number": "Ahli keluarga dengan nombor baru",
+      "preorder_scam": "Prapesanan bayar dahulu, tiada jumpa"
     },
     "explain": {
       "urgency": "Penipu mendesak anda supaya anda tiada masa untuk berfikir atau menyemak.",
@@ -290,14 +294,21 @@
       "secrecy": "Disuruh merahsiakan bayaran ialah tanda amaran besar.",
       "link": "Pautan dalam mesej boleh membawa ke laman web palsu yang mencuri maklumat anda.",
       "install_app": "Memasang aplikasi dari pautan boleh membenarkan penipu mengawal telefon anda.",
-      "credentials": "Jangan sekali-kali kongsi OTP, PIN atau kata laluan. SafeBank tidak akan memintanya.",
+      "credentials": "Jangan sekali-kali kongsi OTP, PIN atau kata laluan. OCBC tidak akan memintanya.",
       "gift_crypto_gold": "Permintaan kad hadiah, kripto atau emas, atau keuntungan 'dijamin', ialah penipuan biasa.",
       "upfront_fee": "Kerja dan hadiah sebenar tidak meminta anda membayar yuran dahulu.",
       "earn_per_day": "Tawaran 'dapat $X sehari' untuk tugas mudah hampir selalu penipuan.",
       "move_chat": "Penipu memindahkan anda ke Telegram atau WhatsApp di mana mereka lebih sukar dikesan.",
       "paynow_first": "'Bayar dulu, tiada jumpa' ialah cara kebanyakan penipuan beli-belah dan tiket.",
-      "family_new_number": "'Ahli keluarga' dengan nombor baru meminta wang: telefon nombor lama mereka dahulu."
-    }
+      "family_new_number": "'Ahli keluarga' dengan nombor baru meminta wang: telefon nombor lama mereka dahulu.",
+      "preorder_scam": "'Prapesanan' yang perlu dibayar dahulu tanpa jumpa ialah penipuan barang koleksi yang biasa (cth. kad Pokémon)."
+    },
+    "s_pokemon": "Prapesanan kad Pokémon",
+    "attachTitle": "Tambah mesej ini pada bayaran saya",
+    "attachBody": "Adakah mesej ini berkaitan bayaran yang anda buat? Tambahkannya supaya kakitangan OCBC dapat melihatnya semasa menyemak bayaran itu.",
+    "attachPick": "Bayaran yang mana?",
+    "attachButton": "Tambah mesej pada bayaran ini",
+    "attached": "Ditambah. Kakitangan OCBC akan melihat mesej ini bersama bayaran anda kepada {{payee}}."
   },
   "settings": {
     "title": "Tetapan",
@@ -322,11 +333,11 @@
     },
     "safety": "Keselamatan",
     "trustedContact": "Kenalan dipercayai",
-    "trustedHelper": "Seseorang yang boleh kami tanya sebelum bayaran berisiko dihantar. Pelajar boleh memilih ibu bapa; warga emas boleh memilih anak dewasa.",
+    "trustedHelper": "Seseorang yang boleh kami tanya sebelum bayaran berisiko dihantar. Pelajar boleh memilih ibu bapa; warga emas boleh memilih anak dewasa. Mereka boleh menjeda bayaran berisiko untuk semakan kakitangan OCBC, tetapi tidak sekali-kali menyekatnya selama-lamanya.",
     "noContact": "Anda belum mempunyai kenalan dipercayai.",
     "addContact": "Tambah kenalan dipercayai",
     "changeContact": "Tukar kenalan dipercayai",
-    "contactUsername": "Nama pengguna SafeBank mereka",
+    "contactUsername": "Nama pengguna OCBC mereka",
     "relationship": "Mereka ialah…",
     "relationships": {
       "parent": "Ibu bapa",
@@ -344,7 +355,7 @@
     "remove": "Buang",
     "saved": "Disimpan. {{note}}",
     "callDetection": "Pengesanan panggilan",
-    "callDetectionDesc": "Pada aplikasi Android, SafeBank boleh menyemak sama ada anda dalam panggilan telefon semasa membayar. Kami tidak membaca dengan siapa anda bercakap, nombor, atau apa yang dikatakan. Pelayar web tidak dapat melihat panggilan, jadi untuk penerima baru kami bertanya kepada anda.",
+    "callDetectionDesc": "Pada aplikasi Android, OCBC boleh menyemak sama ada anda dalam panggilan telefon semasa membayar. Kami tidak membaca dengan siapa anda bercakap, nombor, atau apa yang dikatakan. Pelayar web tidak dapat melihat panggilan, jadi untuk penerima baru kami bertanya kepada anda.",
     "callDetectionStatus": "Status: {{status}}",
     "callStatus": {
       "native": "Hidup (Android)",
@@ -364,9 +375,9 @@
     "c1Title": "Kami menjeda bayaran berisiko",
     "c1Body": "Jika bayaran nampak seperti penipuan, kami hentikan seketika supaya anda boleh menyemak. Anda sentiasa berkuasa membuat keputusan.",
     "c2Title": "Kami tidak akan meminta anda memindahkan wang ke 'akaun selamat'",
-    "c2Body": "Bukan SafeBank, bukan MAS, bukan Polis. Sesiapa yang meminta ialah penipu.",
+    "c2Body": "Bukan OCBC, bukan MAS, bukan Polis. Sesiapa yang meminta ialah penipu.",
     "c3Title": "Sahkan sebarang panggilan di sini",
-    "c3Body": "Seseorang kata mereka dari SafeBank? Ketik 'Sahkan panggilan' di Utama untuk melihat jika ia benar-benar kami."
+    "c3Body": "Seseorang kata mereka dari OCBC? Ketik 'Sahkan panggilan' di Utama untuk melihat jika ia benar-benar kami."
   },
   "contact": {
     "title": "Permintaan daripada keluarga",
@@ -379,13 +390,13 @@
     "payeeType": "Membayar",
     "newPayee": "penerima BARU",
     "knownPayee": "seseorang yang pernah dibayar",
-    "why": "Mengapa SafeBank bertanya kepada anda",
+    "why": "Mengapa OCBC bertanya kepada anda",
     "callFirst": "Sila telefon mereka sebelum anda membuat keputusan.",
     "ok": "Saya sudah bercakap dengan mereka – OK",
-    "stop": "Hentikan bayaran ini",
-    "stopNote": "Ini tidak menyekat mereka selama-lamanya. Kakitangan SafeBank akan menyemaknya bersama mereka.",
+    "stop": "Jeda untuk semakan OCBC",
+    "stopNote": "Ini menjeda bayaran supaya kakitangan OCBC boleh menyemaknya bersama mereka. Ia tidak sekali-kali menyekatnya selama-lamanya.",
     "decidedOk": "Anda kata OK",
-    "decidedStop": "Anda minta ia dihentikan",
+    "decidedStop": "Anda menjedanya untuk semakan OCBC",
     "noAnswer": "Tidak dijawab",
     "timeLeft": "Masa tinggal: {{time}}",
     "newRequest": "Permintaan baru daripada {{name}}"
@@ -421,5 +432,23 @@
     "minutes_other": "{{count}} minit",
     "hours_one": "{{count}} jam",
     "hours_other": "{{count}} jam"
+  },
+  "codeWord": {
+    "title": "Kata kod keluarga",
+    "intro": "Persetujui satu kata rahsia dengan keluarga anda. Jika seseorang menelefon mengaku anak atau cucu anda dalam masalah, minta kata itu. Suara tiruan AI tidak akan tahu.",
+    "introContact": "Tetapkan kata rahsia keluarga untuk orang yang anda jaga. Jika pemanggil mengaku keluarga, mereka patut memintanya. Suara tiruan tidak akan tahu.",
+    "label": "Kata kod baru",
+    "change": "Tukar kata kod",
+    "helper": "3 hingga 40 huruf. Ia disimpan secara rahsia dan tidak akan ditunjukkan lagi, termasuk kepada kakitangan OCBC.",
+    "isSet": "Kata kod sudah ditetapkan",
+    "notSet": "Belum ada kata kod",
+    "save": "Simpan kata kod",
+    "saved": "Disimpan. Beritahu keluarga anda secara bersemuka, bukan melalui mesej.",
+    "errLength": "Sila guna kata kod 3 hingga 40 aksara.",
+    "show": "Tunjuk apa yang saya taip",
+    "hide": "Sembunyi apa yang saya taip",
+    "prompt": "Minta pemanggil menyebut kata kod keluarga anda.",
+    "promptBody": "Jika mereka tidak dapat menyebutnya, letak telefon. Suara boleh ditiru dengan AI.",
+    "promptNotSet": "Anda belum menetapkan kata kod keluarga. Anda boleh menetapkannya dalam Tetapan bersama kenalan dipercayai anda."
   }
 }

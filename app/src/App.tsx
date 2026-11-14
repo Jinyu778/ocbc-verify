@@ -147,7 +147,7 @@ function LiveSync() {
   return null;
 }
 
-/** SafeBank staff can ring the customer in-app; shown wherever they are. */
+/** OCBC staff can ring the customer in-app; shown wherever they are. */
 function IncomingCall() {
   const { t } = useTranslation();
   const nav = useNavigate();

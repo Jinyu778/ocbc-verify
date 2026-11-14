@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Download, FileText, PhoneCall, ShieldAlert, ThumbsUp, X } from "lucide-react";
+import { CheckCircle2, Download, FileText, Flag, MessageSquareWarning, PhoneCall, ShieldAlert, ThumbsUp, X } from "lucide-react";
 import { Banner, Button, Dialog, RiskChip, Skeleton, api, apiText, cx, formatSGD, useToast, type Tier } from "@/design";
 import { STATUS_LABEL, TIER_LABEL, type CaseDetail } from "../types";
 import { Timeline } from "./Timeline";
@@ -9,11 +9,12 @@ import { claimCall } from "../lib/claims";
 type Action = "approve" | "call" | "escalate" | "genuine";
 const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircle2; variant: "primary" | "navy" | "outline" | "danger"; help: string }[] = [
   { id: "approve", label: "Approve & release", key: "A", icon: CheckCircle2, variant: "navy", help: "Releases the payment. Money moves now." },
-  { id: "call", label: "Call customer in-app", key: "C", icon: PhoneCall, variant: "outline", help: "Rings the customer inside the SafeBank app with a verified badge." },
+  { id: "call", label: "Call customer in-app", key: "C", icon: PhoneCall, variant: "outline", help: "Rings the customer inside the OCBC Verify app with a verified badge." },
   { id: "escalate", label: "Hold & escalate to ASC", key: "E", icon: ShieldAlert, variant: "danger", help: "Holds the payment and creates an Anti-Scam Centre referral." },
   { id: "genuine", label: "Mark as genuine", key: "G", icon: ThumbsUp, variant: "outline", help: "Releases it and records a false positive for the metrics." },
 ];
 const CLOSED = ["sent", "cancelled", "approved_by_staff"];
+const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No obvious signs" };
 const QUESTION_LABEL: Record<string, string> = {
   q_phone: "Someone on the phone telling them to pay",
   q_secret: "Told to keep secret / 'safe account'",
@@ -118,6 +119,13 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
               <Info label="Customer" value={`${c.customer.display_name}${c.customer.age ? `, ${c.customer.age}` : ""}`} />
               <Info label="Status" value={STATUS_LABEL[c.status] ?? c.status} />
               <Info label="Payee" value={<>{c.payee.name} {c.is_new_payee ? <strong className="text-warning">(NEW payee)</strong> : <span className="text-muted-foreground">(known)</span>}</>} />
+              {c.payee_reported && (
+                <div className="sm:col-span-2">
+                  <Banner tone="danger" icon={Flag} title="This account was reported by other customers">
+                    Other customers' cases on this account number were escalated to the ASC or had a scam message attached.
+                  </Banner>
+                </div>
+              )}
               <Info
                 label="Amount vs usual"
                 value={
@@ -188,6 +196,21 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
                     <li key={a.id}><strong>{a.staff}</strong> · {a.action} · “{a.note}” · <time dateTime={a.created_at}>{new Date(a.created_at).toLocaleTimeString()}</time></li>
                   ))}
                 </ul>
+              </section>
+            )}
+
+            {c.attached_messages.length > 0 && (
+              <section className="space-y-2 rounded-card border border-border bg-card p-4">
+                <h3 className="flex items-center gap-2 font-bold"><MessageSquareWarning aria-hidden className="h-5 w-5" />Messages the customer attached</h3>
+                {c.attached_messages.map((m) => (
+                  <div key={m.id} className="space-y-1 rounded-btn bg-muted p-3 text-sm">
+                    <p className="font-semibold">
+                      {VERDICT[m.verdict] ?? m.verdict} · ML {Math.round(m.ml_probability * 100)}% · review: {m.review_status}
+                    </p>
+                    <blockquote className="whitespace-pre-wrap">{m.text_redacted}</blockquote>
+                    <p className="text-muted-foreground">Flags: {m.flags.map((f) => f.replace(/_/g, " ")).join(", ") || "none"} · redacted copy only</p>
+                  </div>
+                ))}
               </section>
             )}
 

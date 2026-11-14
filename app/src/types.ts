@@ -41,6 +41,9 @@ export interface Transfer {
   trusted_decision: "ok" | "stop" | null;
   trusted_contact_name: string | null;
   active_call_id: number | null;
+  payee_reported: boolean;
+  code_word_prompt: boolean;
+  code_word_set: boolean;
   next_step: "questions" | "confirm" | "pause" | "saved" | "trusted" | "call" | "done";
   created_at: string;
   completed_at: string | null;

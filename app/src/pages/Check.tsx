@@ -1,12 +1,13 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, CircleHelp, Flag, Phone, PhoneCall, ShieldAlert, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
-import { ApiError, Banner, Button, Card, api, cx } from "@/design";
+import { AlertTriangle, CircleHelp, Flag, Paperclip, Phone, PhoneCall, ShieldAlert, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
+import { ApiError, Banner, Button, Card, api, cx, formatSGD } from "@/design";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
 import { startSafeBankCall } from "../lib/calls";
-import type { CheckResult, MessageFlag } from "../types";
+import type { CheckResult, MessageFlag, Transfer } from "../types";
 
 export const SAMPLES: Record<string, string> = {
   mas: "This is Officer Lee from the Monetary Authority of Singapore (MAS). Your bank account is linked to a money laundering case. To protect your savings, transfer them to the MAS safety account immediately. Do not tell anyone, including bank staff.",
@@ -14,7 +15,8 @@ export const SAMPLES: Record<string, string> = {
   friend: "Hi Aunty, this is Wei Ming, my new number. My phone broke. Can you lend me $1,500 urgently? Please PayNow to my friend's number, I'll return tomorrow. Don't tell Mum.",
   job: "Part-time job offer! Earn $300 per day just liking TikTok videos. No experience needed. Pay a $50 registration deposit to start. Contact our HR on Telegram now.",
   ticket: "Selling 2x Coldplay concert tickets Cat 1, below price! Many people asking, PayNow first, no meetup. Will send e-tickets after payment. Last 2 left, decide now!",
-  bank: "SafeBank: Your monthly statement for October is ready. View it in the SafeBank app. We will never ask for your OTP, PIN or password.",
+  pokemon: "Pokemon 151 booster box pre-order, only $120! Limited slots. PayNow first to secure your box, no meetup, will mail when stock arrives next month.",
+  bank: "OCBC: Your monthly statement for October is ready. View it in the OCBC app. We will never ask for your OTP, PIN or password.",
 };
 
 const VERDICT: Record<CheckResult["verdict"], { icon: LucideIcon; cls: string }> = {
@@ -214,8 +216,68 @@ export function Check() {
             )}
             <p className="text-sm text-muted-foreground">{t("check.privacy")}</p>
           </Card>
+          <AttachToPayment checkId={result.id} />
         </section>
       )}
     </Screen>
+  );
+}
+
+const OPEN = ["checking", "paused", "saved_for_later", "waiting_trusted_contact", "in_verification_call", "under_staff_review"];
+
+/** Attach the checked message to one of the customer's flagged payments, as evidence for OCBC staff. */
+function AttachToPayment({ checkId }: { checkId: number }) {
+  const { t } = useTranslation();
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ["activity"], queryFn: () => api<Transfer[]>("/api/me/activity?limit=20") });
+  const open = (q.data ?? []).filter((x) => x.risk_tier !== "none" && OPEN.includes(x.status));
+  const [pick, setPick] = useState<string>("");
+  const [done, setDone] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  if (!open.length) return null;
+  const chosen = pick || String(open[0].id);
+  const attach = async () => {
+    setBusy(true);
+    setErr(null);
+    try {
+      await api(`/api/messages/${checkId}/attach`, { method: "POST", body: { transfer_id: Number(chosen) } });
+      const tr = open.find((x) => String(x.id) === chosen);
+      setDone(t("check.attached", { payee: tr?.payee.name ?? "" }));
+      qc.invalidateQueries({ queryKey: ["transfer", Number(chosen)] });
+    } catch (e) {
+      setErr(e instanceof ApiError ? e.message : t("common.errorGeneric"));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Card className="space-y-3">
+      <h3 className="flex items-center gap-2 text-lg font-bold"><Paperclip aria-hidden className="h-5 w-5" />{t("check.attachTitle")}</h3>
+      <p>{t("check.attachBody")}</p>
+      {done ? (
+        <Banner tone="success">{done}</Banner>
+      ) : (
+        <>
+          <label htmlFor="attach-to" className="block font-semibold">{t("check.attachPick")}</label>
+          <select
+            id="attach-to"
+            value={chosen}
+            onChange={(e) => setPick(e.target.value)}
+            className="min-h-btn w-full rounded-btn border-2 border-border-strong bg-card px-3 text-foreground"
+          >
+            {open.map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.payee.name} · {formatSGD(x.amount)} · {t(`status.${x.status}`)}
+              </option>
+            ))}
+          </select>
+          {err && <Banner tone="danger" alert>{err}</Banner>}
+          <Button variant="outline" icon={Paperclip} block loading={busy} onClick={attach}>
+            {t("check.attachButton")}
+          </Button>
+        </>
+      )}
+    </Card>
   );
 }
