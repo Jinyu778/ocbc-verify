@@ -1,0 +1,825 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T15:18:16.327Z",
+  "title": "Design System: OCBC Verify",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Deep Blue-Navy",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#050f27",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "primary-2": {
+        "role": "primary",
+        "displayName": "Lifted Navy",
+        "canonical": "#13306b",
+        "oklch": "oklch(32.6% 0.109 262.4)",
+        "dark": "#0d2252",
+        "tonalRamp": [
+          "#080b12",
+          "#182439",
+          "#2a3f67",
+          "#3d5c98",
+          "#5c7fc1",
+          "#8ba5d5",
+          "#bbcbe8",
+          "#e9effa"
+        ]
+      },
+      "on-primary": {
+        "role": "neutral",
+        "displayName": "On Navy White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "dark": "#f2f6ff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "on-primary-muted": {
+        "role": "primary",
+        "displayName": "Navy Mist",
+        "canonical": "#c9d5ee",
+        "oklch": "oklch(87.2% 0.037 265.1)",
+        "dark": "#b9c6e3",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#20242b",
+          "#39404d",
+          "#545e72",
+          "#758097",
+          "#9da5b5",
+          "#c6cbd5",
+          "#edeef2"
+        ]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Link Blue",
+        "canonical": "#1d3f91",
+        "oklch": "oklch(39.5% 0.141 264.0)",
+        "dark": "#9db8ff",
+        "tonalRamp": [
+          "#070b14",
+          "#16233f",
+          "#253d72",
+          "#3559a9",
+          "#547cd4",
+          "#85a4e3",
+          "#b8cbf0",
+          "#e7effd"
+        ]
+      },
+      "navy-fill": {
+        "role": "primary",
+        "displayName": "Filled Navy",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#1d3f91",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Signal Orange",
+        "canonical": "#ff6b1a",
+        "oklch": "oklch(70.3% 0.198 43.4)",
+        "dark": "#ff8a3d",
+        "tonalRamp": [
+          "#150703",
+          "#411300",
+          "#6b2805",
+          "#993d0c",
+          "#ce5615",
+          "#eb8559",
+          "#f8baa1",
+          "#feeae1"
+        ]
+      },
+      "accent-hover": {
+        "role": "secondary",
+        "displayName": "Warm Orange",
+        "canonical": "#ff8640",
+        "oklch": "oklch(74.4% 0.168 47.9)",
+        "dark": "#ffa366",
+        "tonalRamp": [
+          "#140803",
+          "#3d1802",
+          "#672c05",
+          "#94430c",
+          "#c75d16",
+          "#e08d61",
+          "#f0bea5",
+          "#feeae0"
+        ]
+      },
+      "on-accent": {
+        "role": "secondary",
+        "displayName": "Navy on Orange",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#0a1f44",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "accent-ink": {
+        "role": "secondary",
+        "displayName": "Burnt Orange Ink",
+        "canonical": "#c2410c",
+        "oklch": "oklch(55.3% 0.174 38.4)",
+        "dark": "#ffa366",
+        "tonalRamp": [
+          "#140704",
+          "#3f1507",
+          "#702103",
+          "#a13406",
+          "#d25022",
+          "#e5886b",
+          "#f4bcaa",
+          "#fee9e3"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Verified Green Ink",
+        "canonical": "#047a48",
+        "oklch": "oklch(51.0% 0.122 156.5)",
+        "dark": "#4ade80",
+        "tonalRamp": [
+          "#050d08",
+          "#0c2b1a",
+          "#0c4c2d",
+          "#007041",
+          "#329561",
+          "#77b58f",
+          "#b2d5be",
+          "#e5f2e9"
+        ]
+      },
+      "success-soft": {
+        "role": "tertiary",
+        "displayName": "Verified Green Tint",
+        "canonical": "#e2f8ec",
+        "oklch": "oklch(96.0% 0.028 162.1)",
+        "dark": "#0e3324",
+        "tonalRamp": [
+          "#0a0c0b",
+          "#1f2622",
+          "#37433d",
+          "#516359",
+          "#72867b",
+          "#9aa9a1",
+          "#c4cdc8",
+          "#ecefed"
+        ]
+      },
+      "success-strong": {
+        "role": "tertiary",
+        "displayName": "Verified Green Field",
+        "canonical": "#17c06b",
+        "oklch": "oklch(71.0% 0.176 153.5)",
+        "dark": "#2bd983",
+        "tonalRamp": [
+          "#030e06",
+          "#012d14",
+          "#034d27",
+          "#06703c",
+          "#0f9954",
+          "#60bb80",
+          "#a8d9b5",
+          "#e2f4e6"
+        ]
+      },
+      "on-success-strong": {
+        "role": "tertiary",
+        "displayName": "Navy on Green",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#0a1f44",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Scam Red Ink",
+        "canonical": "#c81e1e",
+        "oklch": "oklch(53.5% 0.203 27.6)",
+        "dark": "#ff8a93",
+        "tonalRamp": [
+          "#160605",
+          "#430f0c",
+          "#781110",
+          "#b10810",
+          "#df3b34",
+          "#f07f72",
+          "#fbb7ae",
+          "#fee9e6"
+        ]
+      },
+      "danger-soft": {
+        "role": "tertiary",
+        "displayName": "Scam Red Tint",
+        "canonical": "#fdeceb",
+        "oklch": "oklch(95.6% 0.019 21.6)",
+        "dark": "#3a1426",
+        "tonalRamp": [
+          "#0c0b0b",
+          "#282322",
+          "#463d3d",
+          "#675a59",
+          "#8b7c7b",
+          "#ada2a1",
+          "#cfc9c8",
+          "#f0eeed"
+        ]
+      },
+      "danger-strong": {
+        "role": "tertiary",
+        "displayName": "Scam Red Field",
+        "canonical": "#e11d2e",
+        "oklch": "oklch(58.2% 0.223 24.7)",
+        "dark": "#e11d2e",
+        "tonalRamp": [
+          "#170505",
+          "#460a0c",
+          "#7d0010",
+          "#b2001b",
+          "#e82734",
+          "#f77972",
+          "#fcb6b0",
+          "#fee9e6"
+        ]
+      },
+      "on-danger-strong": {
+        "role": "tertiary",
+        "displayName": "White on Red",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "dark": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Ink",
+        "canonical": "#9a5200",
+        "oklch": "oklch(51.5% 0.123 58.2)",
+        "dark": "#ffc960",
+        "tonalRamp": [
+          "#110904",
+          "#351d09",
+          "#5f3307",
+          "#894c0f",
+          "#b66b29",
+          "#ce976e",
+          "#e4c3ac",
+          "#f9ece3"
+        ]
+      },
+      "warning-soft": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Tint",
+        "canonical": "#fff3d9",
+        "oklch": "oklch(96.7% 0.036 86.2)",
+        "dark": "#3a2c10",
+        "tonalRamp": [
+          "#0c0b09",
+          "#27241c",
+          "#453f31",
+          "#665d47",
+          "#8a7f68",
+          "#aca493",
+          "#cfcac0",
+          "#f0eeea"
+        ]
+      },
+      "warning-strong": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Field",
+        "canonical": "#ffb020",
+        "oklch": "oklch(81.3% 0.165 75.0)",
+        "dark": "#ffc247",
+        "tonalRamp": [
+          "#110902",
+          "#331f00",
+          "#583800",
+          "#7c550f",
+          "#a9741a",
+          "#cf9a4a",
+          "#e4c59b",
+          "#f9eddd"
+        ]
+      },
+      "on-warning-strong": {
+        "role": "tertiary",
+        "displayName": "Navy on Amber",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#0a1f44",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "#f2f5fb",
+        "oklch": "oklch(97.0% 0.009 264.5)",
+        "dark": "#071330",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#232426",
+          "#3e4043",
+          "#5b5e62",
+          "#7e8086",
+          "#a3a5a8",
+          "#c9cacd",
+          "#eeeeef"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "White Card",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "dark": "#0f2148",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Navy Text",
+        "canonical": "#0a1f44",
+        "oklch": "oklch(24.7% 0.075 260.8)",
+        "dark": "#f2f6ff",
+        "tonalRamp": [
+          "#090b10",
+          "#1c2433",
+          "#30405b",
+          "#465e86",
+          "#6781ad",
+          "#92a6c6",
+          "#c0cbdf",
+          "#eaeff6"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Fog",
+        "canonical": "#e8edf6",
+        "oklch": "oklch(94.5% 0.013 262.4)",
+        "dark": "#18295a",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#232427",
+          "#3d4045",
+          "#5a5e65",
+          "#7c8088",
+          "#a1a5ab",
+          "#c9cace",
+          "#eeeef0"
+        ]
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "Slate Text",
+        "canonical": "#46526b",
+        "oklch": "oklch(43.9% 0.044 264.7)",
+        "dark": "#c3cce0",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#20242d",
+          "#384050",
+          "#525e76",
+          "#73809b",
+          "#9ba5b9",
+          "#c5cbd6",
+          "#eceef3"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#d5ddea",
+        "oklch": "oklch(89.5% 0.020 260.2)",
+        "dark": "#2a3b6b",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#222428",
+          "#3c4047",
+          "#585e69",
+          "#79818c",
+          "#a0a5ae",
+          "#c7cbd0",
+          "#edeef0"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Steel Boundary",
+        "canonical": "#75839c",
+        "oklch": "oklch(60.8% 0.042 262.0)",
+        "dark": "#7384ad",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#20242c",
+          "#38404f",
+          "#525e74",
+          "#73819a",
+          "#9ba5b7",
+          "#c5cbd6",
+          "#eceef3"
+        ]
+      },
+      "info-soft": {
+        "role": "neutral",
+        "displayName": "Info Wash",
+        "canonical": "#e8eefb",
+        "oklch": "oklch(94.8% 0.019 266.0)",
+        "dark": "#14275a",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#222428",
+          "#3d4047",
+          "#595e68",
+          "#7b808c",
+          "#a1a5ad",
+          "#c8cacf",
+          "#edeef0"
+        ]
+      },
+      "ring": {
+        "role": "neutral",
+        "displayName": "Focus Blue",
+        "canonical": "#1d4ed8",
+        "oklch": "oklch(48.8% 0.217 264.4)",
+        "dark": "#9db8ff",
+        "tonalRamp": [
+          "#050b19",
+          "#0e204d",
+          "#16368c",
+          "#1f4ecf",
+          "#4176f5",
+          "#78a2fc",
+          "#b3cbfb",
+          "#e7efff"
+        ]
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Navy Scrim",
+        "canonical": "rgb(5 14 34 / 0.55)",
+        "dark": "rgb(0 0 0 / 0.6)"
+      },
+      "tint-on-dark": {
+        "role": "neutral",
+        "displayName": "Glass on Navy",
+        "canonical": "rgb(255 255 255 / 0.12)",
+        "dark": "rgb(255 255 255 / 0.12)"
+      },
+      "tint-on-dark-strong": {
+        "role": "neutral",
+        "displayName": "Glass on Navy, Strong",
+        "canonical": "rgb(255 255 255 / 0.2)",
+        "dark": "rgb(255 255 255 / 0.2)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Verdict stage titles, the Checking… label and the login hero; 2.25rem rising to 3rem from 640px."
+      },
+      "display-money": {
+        "displayName": "Display Money",
+        "purpose": "Balances and payment amounts, tabular figures. The checker's confidence numeral uses min(3.75rem, 16vw)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Every screen's focused h1."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section h2s and dialog titles."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Copy inside verdict stages, payee names, large buttons."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All reading text, in a column capped at 36rem."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Button labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Chips, small buttons, helper text, dense labels and table cells."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Disclaimer strip and compact status tags."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgb(10 31 68 / 0.06), 0 8px 24px -8px rgb(10 31 68 / 0.16)",
+        "dark": "0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5)",
+        "purpose": "Cards, list groups, stat tiles, header, orange buttons, seals."
+      },
+      {
+        "name": "lift",
+        "value": "0 2px 4px rgb(10 31 68 / 0.08), 0 18px 40px -12px rgb(10 31 68 / 0.28)",
+        "dark": "0 2px 4px rgb(0 0 0 / 0.45), 0 18px 40px -12px rgb(0 0 0 / 0.6)",
+        "purpose": "Verdict stages, dialogs and toasts."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Default curve for entrances, press and the verdict timeline (GSAP expo.out)."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Skeleton opacity pulse."
+      },
+      {
+        "name": "dur-press",
+        "value": "140ms",
+        "purpose": "Press scale to 0.97 on every pressable element."
+      },
+      {
+        "name": "dur-fast",
+        "value": "180ms",
+        "purpose": "Colour cross-fades, dialog and toast fade-up."
+      },
+      {
+        "name": "dur-base",
+        "value": "260ms",
+        "purpose": "Screen slide-in (18px from the right) and held-action fade-in after the stage."
+      },
+      {
+        "name": "dur-slow",
+        "value": "420ms",
+        "purpose": "Reserved slow transition."
+      },
+      {
+        "name": "verdict-timeline",
+        "value": "ring 0.3s; at 0.85s checking fades 0.18s and field sweeps scaleX 0→1 over 0.6s; at 1.0s seal stamps from scale 0.6, -12deg over 0.55s; at 1.05s content rises 18px, stagger 0.06s",
+        "purpose": "The signature Verdict Stage sequence (GSAP)."
+      },
+      {
+        "name": "list-stagger",
+        "value": "y 14px, 0.45s, each 0.05s, total capped at 0.3s",
+        "purpose": "One capped stagger per list; scroll-batched on long lists."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "fade 160ms ease-out; loops stopped; no press scale",
+        "purpose": "Replaces all movement under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ],
+    "modes": {
+      "dark": "Class .dark on :root redefines the colour and shadow variables (dark values in colorMeta[*].dark).",
+      "easy": "Class .easy on :root: --base-size 20px, --btn-h 60px, --gap 1.5rem, darker muted-foreground and border."
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one orange action on a screen: Pay, Cancel payment, Check message.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg><span>Cancel payment</span></button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--btn-h,52px);padding:0 20px;border-radius:999px;font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);font-size:1rem;font-weight:600;letter-spacing:-0.005em;cursor:pointer;transition:transform var(--dur-press,140ms) var(--ease-out,cubic-bezier(0.23,1,0.32,1)),background-color var(--dur-fast,180ms) ease,color var(--dur-fast,180ms) ease,border-color var(--dur-fast,180ms) ease;background:var(--accent);color:var(--on-accent);border:none;box-shadow:var(--shadow);}.ds-btn-primary:hover{background:var(--accent-hover);}.ds-btn-primary:focus-visible{outline:3px solid var(--ring);outline-offset:3px;}.ds-btn-primary:active{transform:scale(0.97);}"
+    },
+    {
+      "name": "Navy Button",
+      "kind": "button",
+      "refersTo": "button-navy",
+      "description": "Second-ranked action beside an orange one, e.g. Verify a call on Home.",
+      "html": "<button class=\"ds-btn-navy\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/></svg><span>Verify a call</span></button>",
+      "css": ".ds-btn-navy{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--btn-h,52px);padding:0 20px;border-radius:999px;font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);font-size:1rem;font-weight:600;letter-spacing:-0.005em;cursor:pointer;transition:transform var(--dur-press,140ms) var(--ease-out,cubic-bezier(0.23,1,0.32,1)),background-color var(--dur-fast,180ms) ease,color var(--dur-fast,180ms) ease,border-color var(--dur-fast,180ms) ease;background:var(--navy-fill);color:var(--on-primary);border:none;}.ds-btn-navy:hover{background:var(--primary-2);}.ds-btn-navy:focus-visible{outline:3px solid var(--ring);outline-offset:3px;}.ds-btn-navy:active{transform:scale(0.97);}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Every alternative safe action (save for later, call the bank, ask a trusted contact).",
+      "html": "<button class=\"ds-btn-outline\"><span>Save for later</span></button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--btn-h,52px);padding:0 20px;border-radius:999px;font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);font-size:1rem;font-weight:600;letter-spacing:-0.005em;cursor:pointer;transition:transform var(--dur-press,140ms) var(--ease-out,cubic-bezier(0.23,1,0.32,1)),background-color var(--dur-fast,180ms) ease,color var(--dur-fast,180ms) ease,border-color var(--dur-fast,180ms) ease;background:var(--card);color:var(--foreground);border:2px solid var(--border-strong);}.ds-btn-outline:hover{border-color:var(--foreground);background:var(--muted);}.ds-btn-outline:focus-visible{outline:3px solid var(--ring);outline-offset:3px;}.ds-btn-outline:active{transform:scale(0.97);}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Labelled 52px input with a 2px steel boundary and inline error.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-f1\">Username</label><input id=\"ds-f1\" class=\"ds-field-input\" placeholder=\"e.g. mdmtan\" /></div>",
+      "css": ".ds-field{font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);color:var(--foreground);}.ds-field-label{display:block;margin-bottom:4px;font-weight:600;}.ds-field-input{display:block;box-sizing:border-box;width:100%;min-height:var(--btn-h,52px);padding:0 16px;border-radius:14px;border:2px solid var(--border-strong);background:var(--card);color:var(--foreground);font:inherit;transition:border-color 180ms;}.ds-field-input::placeholder{color:var(--muted-foreground);}.ds-field-input:hover{border-color:var(--foreground);}.ds-field-input:focus-visible{outline:3px solid var(--ring);outline-offset:3px;}"
+    },
+    {
+      "name": "Risk Chip",
+      "kind": "chip",
+      "refersTo": "chip-risk-pause",
+      "description": "Tier label with icon, soft tint and ink border: pause (red), ask (amber), none (green).",
+      "html": "<span class=\"ds-chip-risk\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"M12 8v4\"/><path d=\"M12 16h.01\"/></svg>High risk</span>",
+      "css": ".ds-chip-risk{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--danger);background:var(--danger-soft);color:var(--danger);font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);font-size:0.875rem;font-weight:700;}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White, 20px-rounded content panel with hairline border and card shadow; here the payment receipt.",
+      "html": "<section class=\"ds-card\"><p class=\"ds-card-label\">To</p><p class=\"ds-card-title\">MAS Safety Account – Lim K.</p><hr class=\"ds-card-rule\"/><p class=\"ds-card-label\">Amount</p><p class=\"ds-card-money\">S$1,500</p></section>",
+      "css": ".ds-card{border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--foreground);padding:20px;box-shadow:var(--shadow);font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);}.ds-card p{margin:0;}.ds-card-label{font-size:0.875rem;font-weight:600;color:var(--muted-foreground);}.ds-card-title{margin-top:2px !important;font-size:1.125rem;font-weight:700;}.ds-card-rule{border:0;border-top:1px dashed var(--border);margin:12px 0;}.ds-card-money{font-family:var(--font-display, 'Bricolage Grotesque Variable', system-ui, sans-serif);font-size:min(2.25rem,11vw);font-weight:800;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}"
+    },
+    {
+      "name": "Banner",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Tinted 20px-rounded notice with a white icon disc; danger, warning, info and success tones.",
+      "html": "<div class=\"ds-banner\" role=\"alert\"><span class=\"ds-banner-ic\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/></svg></span><div><p class=\"ds-banner-title\">You are on a call</p><p class=\"ds-banner-body\">Scammers often stay on the line while you pay.</p></div></div>",
+      "css": ".ds-banner{display:flex;gap:12px;padding:16px;border-radius:20px;border:1px solid var(--danger);background:var(--danger-soft);color:var(--foreground);font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);}.ds-banner p{margin:0;}.ds-banner-ic{display:grid;place-items:center;flex-shrink:0;width:36px;height:36px;border-radius:999px;background:var(--card);color:var(--danger);}.ds-banner-title{padding-top:6px;font-weight:700;}.ds-banner-body{margin-top:4px !important;}"
+    },
+    {
+      "name": "Bottom Navigation",
+      "kind": "nav",
+      "refersTo": "bottom-nav-item-active",
+      "description": "Four-item customer nav on white; the active item gets an orange pill behind its icon.",
+      "html": "<nav class=\"ds-bnav\"><a class=\"ds-bnav-item\" href=\"#\"><span class=\"ds-bnav-pill\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg></span><span>Home</span></a><a class=\"ds-bnav-item is-active\" href=\"#\" aria-current=\"page\"><span class=\"ds-bnav-pill\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"/><path d=\"m21.854 2.147-10.94 10.939\"/></svg></span><span>Pay</span></a></nav>",
+      "css": ".ds-bnav{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;padding:0 4px;border-top:1px solid var(--border);background:var(--card);font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);}.ds-bnav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:var(--btn-h,52px);padding:4px 2px;border-radius:14px;font-size:0.875rem;font-weight:500;color:var(--muted-foreground);text-decoration:none;}.ds-bnav-item:hover{color:var(--foreground);}.ds-bnav-item:focus-visible{outline:3px solid var(--ring);outline-offset:3px;}.ds-bnav-pill{display:grid;place-items:center;width:56px;height:32px;border-radius:999px;transition:transform 180ms var(--ease-out),background-color 180ms;}.ds-bnav-item.is-active{color:var(--foreground);font-weight:700;}.ds-bnav-item.is-active .ds-bnav-pill{background:var(--accent);color:var(--on-accent);}"
+    },
+    {
+      "name": "Verdict Stage (paused)",
+      "kind": "custom",
+      "refersTo": "verdict-stage-paused",
+      "description": "Signature component. Navy stage with amber hand seal, live-call chip and display title; other tones swap the field to success-, danger- or warning-strong.",
+      "html": "<section class=\"ds-stage\"><div class=\"ds-stage-aside\"><span class=\"ds-stage-chip\"><span class=\"ds-stage-dot\"></span>On a call</span></div><div class=\"ds-stage-row\"><span class=\"ds-stage-seal\"><svg width=\"40\" height=\"40\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/><path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/><path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/></svg></span><div><h2 class=\"ds-stage-title\">Let's pause this payment</h2><p class=\"ds-stage-body\">Nothing has been sent. Your money is still safe.</p></div></div></section>",
+      "css": ".ds-stage{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:16px;padding:24px;border-radius:20px;background:var(--primary);color:var(--on-primary);box-shadow:var(--shadow-lift);font-family:var(--font-sans, 'Figtree Variable', system-ui, sans-serif);}.ds-stage-aside{display:flex;flex-wrap:wrap;gap:8px;}.ds-stage-chip{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:999px;background:var(--danger-strong);color:var(--on-danger-strong);font-size:0.875rem;font-weight:700;}.ds-stage-dot{width:8px;height:8px;border-radius:999px;background:currentColor;}.ds-stage-row{display:flex;align-items:flex-start;gap:16px;}.ds-stage-seal{display:grid;place-items:center;flex-shrink:0;width:64px;height:64px;border-radius:999px;background:var(--warning-strong);color:var(--on-warning-strong);box-shadow:var(--shadow);}.ds-stage-title{margin:0;padding-top:4px;font-family:var(--font-display, 'Bricolage Grotesque Variable', system-ui, sans-serif);font-size:2.25rem;font-weight:800;line-height:1.05;letter-spacing:-0.02em;text-wrap:balance;}.ds-stage-body{margin:8px 0 0;font-size:1.125rem;font-weight:500;color:var(--on-primary-muted);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Verdict Stage",
+    "overview": "OCBC Verify is a deep-navy shell on a cool off-white ground, and its judgement is staged. Whenever a payment, a call or a message is risky, the app answers on a large rounded stage: a scanning ring and a big \"Checking…\", then a full-strength colour field sweeps in from the left, a round seal stamps down and a display-weight verdict rises. The verdict can be read from the back of a room on a projector, and also by a 68-year-old customer who is being coached over the phone.\n\nThe rest of the system stays quiet so the stage carries the weight. Surfaces are white cards with soft, navy-tinted depth. Colour is rationed by meaning, and every hue does one job: orange is the only action colour, green means verified, red means scam or risk, amber means caution, and navy is the shell. Actions are pills, panels have 20px corners, and the type pairs Bricolage Grotesque for verdicts, headings and money with Figtree for everything people read.\n\nDensity follows the person. Customer screens are one calm column with 52px actions and generous gaps, and they grow further in Easy Mode (20px base text, 60px buttons, 1.5rem gaps). The staff console runs the same tokens tighter: a navy rail, a stat strip and a sortable table.",
+    "keyCharacteristics": [
+      "Deep blue-navy shell: header, hero bands, the paused stage, the staff rail and the disclaimer strip.",
+      "Full-bleed verdict fields in strong green, red and amber, each with its own AA text colour.",
+      "Vivid orange pill buttons with navy text as the single call to action.",
+      "Bricolage Grotesque at extrabold weight for verdicts and money; Figtree for body text.",
+      "Two soft shadow levels, both tinted from the navy.",
+      "rem-based sizing everywhere, so Easy Mode and the text-size setting scale the whole UI.",
+      "Motion that tells the story (sweep, stamp, rise) and becomes plain fades under reduced motion."
+    ],
+    "rules": [
+      {
+        "name": "The One Job Rule",
+        "body": "Every hue has exactly one meaning: orange is action, green is verified, red is scam or risk, amber is caution, navy is the shell. Orange never signals a warning, and green never decorates.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink, Soft, Strong Rule",
+        "body": "A signal colour appears in only three forms: ink (text and icons on light), soft (a tinted chip or banner behind foreground text) and strong (a full verdict field). A strong field always takes its matching on-colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Navy-on-Bright Rule",
+        "body": "Orange, green and amber fills carry navy text. White text appears only on the navy shell, on navy-fill and on danger-strong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Only Rule",
+        "body": "Components never write raw hex. Every colour comes from a CSS variable in tokens.css through the Tailwind preset, and dark mode and Easy Mode work by redefining those variables.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stage Voice Rule",
+        "body": "Extrabold Bricolage belongs to verdicts, money and the hero heading. Ordinary headings stay at bold, so the stage is always the loudest thing on screen.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Money Rule",
+        "body": "Every amount uses tabular figures and is written in full (\"S$1,500\"), so columns align and digits never jump.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Ramp Rule",
+        "body": "There is a single rem-based scale (0.8125, 0.875, 1, 1.125, 1.375, 1.75, 2.25, 3, 3.75rem). Nothing is sized in px, so the browser's text size, the app's four text sizes and Easy Mode all scale it together.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Levels Rule",
+        "body": "Only card and lift exist. Anything that interrupts (a stage, a dialog, a toast) gets lift, and everything else gets card or no shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Pill Action Rule",
+        "body": "If it is a button, it is a pill. Corners of 20px are for things that hold content, and 14px is for things you type into or pick from.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** resolve every risky moment on the Verdict Stage: a navy checking state, then a full strong-colour field with a round seal and an extrabold Bricolage title.",
+      "**Do** put navy text on orange, green and amber fills, and reserve white text for navy, navy-fill and danger-strong.",
+      "**Do** keep the verdict in the DOM and visible by default, and hold the actions after the stage (`[data-stage-running] ~ *`, `data-after-stage`) until it settles.",
+      "**Do** set money in Bricolage extrabold with tabular figures, written in full (\"S$1,500\").",
+      "**Do** size type and spacing in rem from the one ramp so Easy Mode (20px base, 60px buttons, 1.5rem gaps) scales the whole interface.",
+      "**Do** give every pressable control at least 44px, and primary actions and inputs 52px.",
+      "**Do** pair every signal colour with an icon and words in chips, banners, reason lists and stages, so meaning never rests on colour alone.",
+      "**Do** let Noto Sans SC and Noto Sans Tamil lead the font stacks in Chinese and Tamil, with display letter-spacing at 0.",
+      "**Do** keep the navy disclaimer strip at the top of every screen."
+    ],
+    "donts": [
+      "**Don't** use orange for anything other than action and brand: no orange warnings, and no orange text on light surfaces except accent-ink.",
+      "**Don't** put white text on the green or amber strong fields.",
+      "**Don't** use the shield-check seal as the brand or for anything but a verified state. The brand is the \"V\" monogram and the pause uses a hand.",
+      "**Don't** write raw hex in components; every colour comes through a token variable.",
+      "**Don't** add shadow levels beyond card and lift, or hard offset shadows.",
+      "**Don't** animate with `transition: all` or background-position shimmer. Animate only transform and opacity.",
+      "**Don't** move or scale anything under reduced motion. Use fades only and stop loops."
+    ]
+  }
+}

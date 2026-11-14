@@ -94,7 +94,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
 
   return (
     <>
-    <div className="fixed inset-0 z-30 flex justify-end bg-black/30" onClick={onClose}>
+    <div className="fixed inset-x-0 bottom-0 top-[30px] z-30 flex justify-end bg-scrim" onClick={onClose}>
       <div
         ref={ref}
         tabIndex={-1}

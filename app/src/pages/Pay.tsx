@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronRight, CircleUserRound, MessageCircleWarning, PhoneCall, RefreshCw, Save, ShieldAlert, ShieldCheck, Sparkles, UserPlus, X } from "lucide-react";
-import { ApiError, Banner, Button, Card, Field, Skeleton, api, cx, formatSGD } from "@/design";
+import { PhoneOff, ChevronRight, CircleUserRound, MessageCircleWarning, PhoneCall, RefreshCw, Save, ShieldAlert, ShieldCheck, Sparkles, UserPlus, X } from "lucide-react";
+import { ApiError, Banner, Button, Card, Field, Skeleton, api, cx, formatSGD, useStaggerIn } from "@/design";
 import { Screen, SignalBanners } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
 import { mergeSignals, needsLiveQuestion, signalProvider, useSignals, type LiveAnswer } from "../signals";
@@ -13,8 +13,8 @@ import type { Payee, Transfer } from "../types";
 export function NewChip() {
   const { t } = useTranslation();
   return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-warning bg-warning-soft px-2 py-0.5 text-sm font-bold text-warning" title={t("common.newPayeeA11y")}>
-      <Sparkles aria-hidden className="h-4 w-4" />
+    <span className="inline-flex items-center gap-1 rounded-pill border border-warning bg-warning-soft px-2.5 py-0.5 text-sm font-bold tracking-wide text-warning" title={t("common.newPayeeA11y")}>
+      <UserPlus aria-hidden className="h-4 w-4" strokeWidth={2.4} />
       <span aria-hidden>{t("common.newChip")}</span>
       <span className="sr-only">{t("common.newPayeeA11y")}</span>
     </span>
@@ -40,6 +40,8 @@ export function Pay() {
   const [failed, setFailed] = useState(false);
   const [savedOffline, setSavedOffline] = useState(false);
   const amountRef = useRef<HTMLInputElement>(null);
+  const payeeListRef = useRef<HTMLUListElement>(null);
+  useStaggerIn(payeeListRef, "[data-payee]", [payees.data?.length, step]);
 
   const choose = (p: Payee) => {
     setPayee(p);
@@ -177,7 +179,7 @@ export function Pay() {
             <Button size="lg" variant="outline" icon={MessageCircleWarning} block onClick={() => (setLive("chatting"), setStep("amount"))}>
               {t("live.chatting")}
             </Button>
-            <Button size="lg" variant="outline" icon={ShieldCheck} block onClick={() => (setLive("no"), setStep("amount"))}>
+            <Button size="lg" variant="outline" icon={PhoneOff} block onClick={() => (setLive("no"), setStep("amount"))}>
               {t("live.no")}
             </Button>
           </div>
@@ -202,9 +204,9 @@ export function Pay() {
             {t("common.offlineBody")}
           </Banner>
         ) : (
-          <ul className="space-y-2">
+          <ul ref={payeeListRef} className="space-y-2">
             {payees.data?.map((p) => (
-              <li key={p.id}>
+              <li key={p.id} data-payee>
                 <button
                   type="button"
                   onClick={() => choose(p)}

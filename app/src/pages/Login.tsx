@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, LogIn, ShieldCheck } from "lucide-react";
 import { ApiError, Banner, Button, Disclaimer, Field } from "@/design";
 import { useSession } from "../state/session";
-import { LanguageSelect } from "../components/Layout";
+import { BrandMark, LanguageSelect } from "../components/Layout";
 import { HOME_FOR } from "../App";
 
 /** One real login for every role. After sign-in each account goes to its own area. */
@@ -43,16 +43,17 @@ export function Login() {
 
   return (
     <div className="min-h-screen">
-      <Disclaimer text={t("common.disclaimer")} />
-      <main className="mx-auto max-w-md space-y-6 px-4 py-8">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="flex items-center gap-2 text-xl font-bold">
-            <ShieldCheck aria-hidden className="h-8 w-8 text-accent" />
-            {t("common.appName")}
-          </span>
-          <LanguageSelect id="lang-login" />
+      <div className="bg-primary text-on-primary">
+        <Disclaimer text={t("common.disclaimer")} className="border-b border-tint-on-dark" />
+        <div className="mx-auto max-w-md px-4 pb-16 pt-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <BrandMark />
+            <LanguageSelect id="lang-login" onDark />
+          </div>
+          <h1 className="mt-10 font-display text-4xl font-extrabold leading-[1.02]">{t("login.title")}</h1>
         </div>
-        <h1>{t("login.title")}</h1>
+      </div>
+      <main className="mx-auto -mt-10 max-w-md space-y-6 px-4 pb-10">
         <form onSubmit={submit} noValidate className="space-y-4 rounded-card border border-border bg-card p-5 shadow-card">
           {error && <Banner tone="danger" alert>{error}</Banner>}
           <Field label={t("login.username")} autoComplete="username" autoCapitalize="none" value={username} onChange={(e) => setUsername(e.target.value)} />

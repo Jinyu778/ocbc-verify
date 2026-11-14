@@ -160,7 +160,9 @@
     "sheetBody": "Jika ada orang sedang memberitahu anda apa yang perlu dilakukan, berhenti. Bank, MAS atau polis sebenar tidak akan mendesak anda.",
     "goBack": "Kembali",
     "sendAnyway": "Hantar juga",
-    "reportedBody": "Pelanggan OCBC lain telah melaporkan akaun ini dalam kes penipuan. Jangan hantar wang sehingga anda telah menyemak."
+    "reportedBody": "Pelanggan OCBC lain telah melaporkan akaun ini dalam kes penipuan. Jangan hantar wang sehingga anda telah menyemak.",
+    "chipCall": "Dalam panggilan",
+    "chipChat": "Ada mesej tentang ini"
   },
   "save": {
     "title": "Simpan untuk kemudian",

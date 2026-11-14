@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { BadgeCheck, PhoneCall, RefreshCw, ShieldX } from "lucide-react";
-import { Banner, Button, Card, Skeleton, api } from "@/design";
+import { Banner, Button, Skeleton, VerdictStage, api } from "@/design";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
 import { startSafeBankCall } from "../lib/calls";
@@ -24,25 +24,26 @@ export function Verify() {
       ) : q.isError ? (
         <Banner tone="warning" title={t("common.offlineTitle")}>{t("verify.notCallingBody")}</Banner>
       ) : genuine ? (
-        <Card className="space-y-3 border-2 border-success text-center" role="status">
-          <BadgeCheck aria-hidden className="mx-auto h-16 w-16 text-success" />
-          <h2>{t("verify.genuine")}</h2>
-          <p className="text-lg">{t("verify.genuineBody", { name: q.data!.call!.staff?.display_name })}</p>
-          <ReadAloud text={`${t("verify.genuine")}. ${t("verify.genuineBody", { name: q.data!.call!.staff?.display_name })}`} className="mx-auto" />
-          <Button block onClick={() => nav(`/customer/call/${q.data!.call!.id}`)}>{t("verify.open")}</Button>
-        </Card>
+        <div role="status">
+          <VerdictStage tone="verified" icon={BadgeCheck} title={t("verify.genuine")} checkingLabel={t("check.checking")}>
+            <p className="text-lg font-medium">{t("verify.genuineBody", { name: q.data!.call!.staff?.display_name })}</p>
+            <ReadAloud text={`${t("verify.genuine")}. ${t("verify.genuineBody", { name: q.data!.call!.staff?.display_name })}`} />
+          </VerdictStage>
+          <Button data-after-stage block size="lg" className="mt-4" onClick={() => nav(`/customer/call/${q.data!.call!.id}`)}>{t("verify.open")}</Button>
+        </div>
       ) : (
-        <Card className="space-y-3 border-2 border-danger text-center" role="alert">
-          <ShieldX aria-hidden className="mx-auto h-16 w-16 text-danger" />
-          <h2>{t("verify.notCalling")}</h2>
-          <p className="text-lg">{t("verify.notCallingBody")}</p>
-          <ReadAloud text={`${t("verify.notCalling")} ${t("verify.notCallingBody")}`} className="mx-auto" />
-        </Card>
+        <div role="alert">
+          <VerdictStage tone="risk" icon={ShieldX} title={t("verify.notCalling")} checkingLabel={t("check.checking")}>
+            <p className="text-lg font-medium">{t("verify.notCallingBody")}</p>
+            <ReadAloud text={`${t("verify.notCalling")} ${t("verify.notCallingBody")}`} />
+          </VerdictStage>
+        </div>
       )}
-      <div className="flex flex-col gap-3">
+      <div data-after-stage className="flex flex-col gap-3">
         <Button
           icon={PhoneCall}
           block
+          variant={genuine ? "outline" : "primary"}
           loading={busy}
           onClick={async () => {
             setBusy(true);

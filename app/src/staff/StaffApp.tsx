@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { BarChart3, Flag, History, ListChecks, LogOut, ShieldCheck } from "lucide-react";
 import { Disclaimer, SessionTimeout, cx, useLive, useLiveEvent, useToast } from "@/design";
 import { useSession } from "../state/session";
+import { BrandMark } from "../components/Layout";
 import { Queue } from "./pages/Queue";
 import { Messages } from "./pages/Messages";
 import { Impact } from "./pages/Impact";
@@ -53,8 +54,8 @@ export default function StaffApp() {
       <Disclaimer />
       <div className="flex flex-1 flex-col md:flex-row">
         <aside className="bg-primary text-on-primary md:w-60 md:shrink-0">
-          <div className="flex items-center gap-2 px-4 py-4 text-lg font-bold">
-            <ShieldCheck aria-hidden className="h-7 w-7 text-accent" /> OCBC Verify
+          <div className="flex items-center gap-2 px-4 py-4">
+            <BrandMark />
             <span className="ml-auto text-sm font-normal opacity-80 md:hidden">{user?.display_name}</span>
           </div>
           <nav aria-label="Console">
@@ -65,7 +66,7 @@ export default function StaffApp() {
                     to={n.to}
                     end={n.end}
                     className={({ isActive }) =>
-                      cx("flex min-h-touch w-full items-center gap-2 whitespace-nowrap rounded-btn px-3 text-left font-medium text-on-primary no-underline", isActive ? "bg-white/15" : "hover:bg-white/10")
+                      cx("flex min-h-touch w-full items-center gap-2 whitespace-nowrap rounded-btn px-3 text-left font-medium text-on-primary no-underline", isActive ? "bg-tint-on-dark-strong" : "hover:bg-tint-on-dark")
                     }
                   >
                     <n.icon aria-hidden className="h-5 w-5" /> {n.label}
@@ -73,7 +74,7 @@ export default function StaffApp() {
                 </li>
               ))}
               <li className="md:hidden">
-                <button type="button" onClick={signOut} className="flex min-h-touch items-center gap-2 whitespace-nowrap rounded-btn px-3 hover:bg-white/10">
+                <button type="button" onClick={signOut} className="flex min-h-touch items-center gap-2 whitespace-nowrap rounded-btn px-3 hover:bg-tint-on-dark">
                   <LogOut aria-hidden className="h-5 w-5" /> Sign out
                 </button>
               </li>
@@ -86,7 +87,7 @@ export default function StaffApp() {
               <span aria-hidden className={cx("inline-block h-2 w-2 rounded-full", connected ? "bg-[var(--success)]" : "bg-[var(--warning)]")} />
               {connected ? "Live" : "Reconnecting…"}
             </p>
-            <button type="button" onClick={signOut} className="mt-3 inline-flex min-h-touch items-center gap-2 rounded-btn px-2 hover:bg-white/10">
+            <button type="button" onClick={signOut} className="mt-3 inline-flex min-h-touch items-center gap-2 rounded-btn px-2 hover:bg-tint-on-dark">
               <LogOut aria-hidden className="h-4 w-4" /> Sign out
             </button>
           </div>

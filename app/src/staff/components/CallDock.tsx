@@ -16,7 +16,7 @@ export function CallDock() {
   const ringing = calls.filter((c) => c.status === "ringing" && c.initiated_by === "customer" && !c.staff);
   if (!mine && !ringing.length) return null;
   return (
-    <div className="fixed bottom-4 right-4 z-40 w-[min(24rem,calc(100vw-2rem))] space-y-3">
+    <div className="fixed bottom-4 left-4 z-40 w-[min(24rem,calc(100vw-2rem))] space-y-3 md:left-64">
       {mine && isClaimed(mine.id) ? <LiveCall call={mine} /> : null}
       {mine && !isClaimed(mine.id) ? (
         <section aria-label="Call in another window" className="rounded-card border border-border bg-card p-4 shadow-card">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,20 @@ import {
   X,
   Flag,
   KeyRound,
+  Hand,
+  UserPlus,
+  MessageCircleWarning,
+  MonitorUp,
+  Banknote,
+  TrendingUp,
+  Lock,
+  Globe,
+  CircleHelp,
+  type LucideIcon,
 } from "lucide-react";
 import {
+  VerdictStage,
+  useStaggerIn,
   ApiError,
   Banner,
   Button,
@@ -80,6 +92,11 @@ export function TransferFlow() {
     queryFn: () => api<Transfer>(`/api/transfers/${tid}`),
     refetchInterval: (query) => (query.state.data?.status === "waiting_trusted_contact" ? 5000 : false),
   });
+  // Each step of a payment (questions → pause → saved …) opens at the top of the screen.
+  const step = q.data?.next_step;
+  useEffect(() => {
+    if (step) window.scrollTo({ top: 0 });
+  }, [step]);
   if (q.isLoading)
     return (
       <Screen>
@@ -118,31 +135,60 @@ export function TransferFlow() {
 function PaymentSummary({ tr }: { tr: Transfer }) {
   const { t } = useTranslation();
   return (
-    <Card className="space-y-3">
-      <div>
-        <p className="text-sm text-muted-foreground">{t("review.to")}</p>
-        <p className="flex flex-wrap items-center gap-2 font-semibold">
+    <Card className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-muted-foreground">{t("review.to")}</p>
+        <p className="mt-0.5 flex flex-wrap items-center gap-2 text-lg font-bold">
           <span>{tr.payee.name}</span>
           {tr.payee.is_new && <NewChip />}
         </p>
       </div>
-      <div>
-        <p className="text-sm text-muted-foreground">{t("review.amount")}</p>
-        <p className="tabular text-3xl font-bold">{formatSGD(tr.amount)}</p>
+      <div className="border-t border-dashed border-border pt-3 sm:border-0 sm:pt-0 sm:text-right">
+        <p className="text-sm font-semibold text-muted-foreground">{t("review.amount")}</p>
+        <p className="tabular font-display text-[min(2.25rem,11vw)] font-extrabold leading-none">{formatSGD(tr.amount)}</p>
       </div>
     </Card>
   );
 }
 
+const REASON_ICON: Record<string, LucideIcon> = {
+  new_payee: UserPlus,
+  on_call: PhoneCall,
+  recent_call: PhoneCall,
+  chatting: MessageCircleWarning,
+  q_chat: MessageCircleWarning,
+  screen_sharing: MonitorUp,
+  amount_medium: Banknote,
+  amount_high: Banknote,
+  unusual_amount: TrendingUp,
+  q_phone: PhoneCall,
+  q_secret: Lock,
+  q_online: Globe,
+  payee_reported: Flag,
+  override_new_payee_live: ShieldAlert,
+  override_new_payee_unusual_large: ShieldAlert,
+  signals_unavailable: CircleHelp,
+};
+
 export function ReasonsList({ reasons }: { reasons: Reason[] }) {
   const { t } = useTranslation();
+  const ref = useRef<HTMLUListElement>(null);
+  useStaggerIn(ref, "[data-reason]", [reasons.length]);
   if (!reasons.length) return null;
   return (
-    <ul className="space-y-2">
+    <ul ref={ref} className="space-y-3">
       {reasons.map((r) => (
-        <li key={r.key} className="flex items-start gap-2">
-          <CircleAlert aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-          <span>{t(`reasons.${r.key}`, { defaultValue: r.text })}</span>
+        <li key={r.key} data-reason className="flex items-start gap-3">
+          {(() => {
+            const Icon = REASON_ICON[r.key] ?? CircleAlert;
+            const strong = r.points >= 3 || r.key.startsWith("override") || r.key === "payee_reported";
+            return (
+              <span aria-hidden className={strong ? "grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-danger-soft text-danger" : "grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-warning-soft text-warning"}>
+                <Icon className="h-4 w-4" strokeWidth={2.4} />
+              </span>
+            );
+          })()}
+          <span className="pt-1">{t(`reasons.${r.key}`, { defaultValue: r.text })}</span>
         </li>
       ))}
     </ul>
@@ -194,16 +240,19 @@ function Questions({ tr }: { tr: Transfer }) {
         {t("questions.progress", { n: i + 1, total: QUESTIONS.length })}
       </p>
       <div className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
-        <div className="h-full bg-secondary transition-all duration-300" style={{ width: `${((i + 1) / QUESTIONS.length) * 100}%` }} />
+        <div
+          className="h-full origin-left bg-secondary transition-transform duration-base ease-out"
+          style={{ transform: `scaleX(${(i + 1) / QUESTIONS.length})` }}
+        />
       </div>
       <Card key={key} className="sb-fade-up space-y-4">
-        <h2 className="text-2xl" id={`q-${key}`}>{qText}</h2>
+        <h2 className="text-2xl font-bold sm:text-3xl" id={`q-${key}`}>{qText}</h2>
         <ReadAloud text={qText} />
         <div className="grid grid-cols-2 gap-3" role="group" aria-labelledby={`q-${key}`}>
-          <Button size="lg" variant="navy" block onClick={() => answer(true)} disabled={!!busy} className="min-h-[4rem] text-xl">
+          <Button size="lg" variant="outline" block onClick={() => answer(true)} disabled={!!busy} className="min-h-[4.5rem] font-display text-2xl">
             {t("common.yes")}
           </Button>
-          <Button size="lg" variant="outline" block onClick={() => answer(false)} disabled={!!busy} className="min-h-[4rem] text-xl">
+          <Button size="lg" variant="outline" block onClick={() => answer(false)} disabled={!!busy} className="min-h-[4.5rem] font-display text-2xl">
             {t("common.no")}
           </Button>
         </div>
@@ -293,13 +342,52 @@ function Pause({ tr }: { tr: Transfer }) {
 
   return (
     <div className="sb-screen mx-auto w-full max-w-xl space-y-gap px-4 py-5">
-      <SignalBanners signals={tr.signals} />
-      <section className="rounded-card bg-primary p-6 text-center text-on-primary shadow-card dark:border dark:border-border">
-        <ShieldCheck aria-hidden className="mx-auto h-16 w-16 text-accent" />
-        <h1 tabIndex={-1} className="mt-3 text-3xl">{t("pause.title")}</h1>
-        <p className="mt-2 text-lg opacity-95">{t("pause.subtitle")}</p>
-      </section>
+      <VerdictStage
+        tone="paused"
+        icon={Hand}
+        headingLevel={1}
+        title={t("pause.title")}
+        checkingLabel={t("pay.checking")}
+        aside={
+          !!(tr.signals.on_call || tr.signals.recent_call || tr.signals.chatting) ? (
+            <>
+              {!!(tr.signals.on_call || tr.signals.recent_call) && (
+                <span className="inline-flex items-center gap-2 rounded-pill bg-danger-strong px-3 py-1 text-sm font-bold text-on-danger-strong">
+                  <span aria-hidden className="sb-live-dot h-2 w-2 rounded-pill bg-current" />
+                  <PhoneCall aria-hidden className="h-4 w-4" />
+                  {t("pause.chipCall")}
+                </span>
+              )}
+              {!!tr.signals.chatting && (
+                <span className="inline-flex items-center gap-2 rounded-pill bg-danger-strong px-3 py-1 text-sm font-bold text-on-danger-strong">
+                  <MessageCircleWarning aria-hidden className="h-4 w-4" />
+                  {t("pause.chipChat")}
+                </span>
+              )}
+            </>
+          ) : undefined
+        }
+      >
+        <p className="text-lg font-medium text-on-primary-muted">{t("pause.subtitle")}</p>
+      </VerdictStage>
       <PaymentSummary tr={tr} />
+      {(error || callError) && <Banner tone="warning" alert>{error ?? callError}</Banner>}
+      <h2 data-after-stage className="text-lg">{t("pause.whatNext")}</h2>
+      <div data-after-stage className="flex flex-col gap-3">
+        <Button size="lg" icon={X} block loading={busy === "cancel"} onClick={() => run("cancel", "cancel")}>
+          {t("pause.cancel")}
+        </Button>
+        <Button size="lg" variant="outline" icon={Clock} block onClick={() => setSaving(true)}>
+          {t("pause.save")}
+        </Button>
+        <Button size="lg" variant="outline" icon={PhoneCall} block loading={calling} onClick={callSafeBank}>
+          {t("pause.call")}
+        </Button>
+        <Button size="lg" variant="outline" icon={Users} block loading={busy === "trusted"} disabled={!hasContact} onClick={() => run("trusted", "ask-trusted")}>
+          {hasContact ? t("pause.trusted") : t("pause.trustedNone")}
+        </Button>
+      </div>
+      <SignalBanners signals={tr.signals} />
       {tr.payee_reported && (
         <Banner tone="danger" icon={Flag} title={t("reasons.payee_reported")}>
           {t("pause.reportedBody")}
@@ -315,23 +403,7 @@ function Pause({ tr }: { tr: Transfer }) {
         <ReasonsList reasons={tr.reasons} />
         <ReadAloud text={`${t("pause.title")}. ${t("pause.subtitle")} ${t("pause.because")} ${reasonsText(t, tr.reasons)}`} />
       </Card>
-      {(error || callError) && <Banner tone="warning" alert>{error ?? callError}</Banner>}
-      <h2 className="text-lg">{t("pause.whatNext")}</h2>
-      <div className="flex flex-col gap-3">
-        <Button size="lg" icon={X} block loading={busy === "cancel"} onClick={() => run("cancel", "cancel")}>
-          {t("pause.cancel")}
-        </Button>
-        <Button size="lg" variant="outline" icon={Clock} block onClick={() => setSaving(true)}>
-          {t("pause.save")}
-        </Button>
-        <Button size="lg" variant="outline" icon={PhoneCall} block loading={calling} onClick={callSafeBank}>
-          {t("pause.call")}
-        </Button>
-        <Button size="lg" variant="outline" icon={Users} block loading={busy === "trusted"} disabled={!hasContact} onClick={() => run("trusted", "ask-trusted")}>
-          {hasContact ? t("pause.trusted") : t("pause.trustedNone")}
-        </Button>
-      </div>
-      <div className="pt-2 text-center">
+      <div data-after-stage className="pt-2 text-center">
         {wait > 0 ? (
           <p className="text-sm text-muted-foreground" aria-live="off">
             {t("pause.continueIn", { s: wait })}

@@ -13,3 +13,7 @@ e2e/playwright-report/
 app/android/app/build/
 app/android/.gradle/
 .DS_Store
+
+# design-review screenshots (regenerate with: TOUR=1 npx playwright test tour)
+.impeccable/review/
+e2e/screenshots/

@@ -53,7 +53,7 @@ export function CallScreen() {
   return (
     <Screen title={t("call.title")} back={backTo}>
       <section className="rounded-card bg-primary p-6 text-center text-on-primary shadow-card dark:border dark:border-border">
-        <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-semibold">
+        <p className="inline-flex items-center gap-2 rounded-full bg-tint-on-dark px-3 py-1 font-semibold">
           <BadgeCheck aria-hidden className="h-5 w-5 text-accent" />
           {t("call.verified")}
         </p>

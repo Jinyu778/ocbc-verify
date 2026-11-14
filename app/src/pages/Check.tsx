@@ -1,8 +1,8 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, CircleHelp, Flag, Paperclip, Phone, PhoneCall, ShieldAlert, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
-import { ApiError, Banner, Button, Card, api, cx, formatSGD } from "@/design";
+import { ApiError, Banner, Button, Card, VerdictStage, api, cx, formatSGD, prefersReducedMotion, type VerdictTone } from "@/design";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
@@ -19,11 +19,11 @@ export const SAMPLES: Record<string, string> = {
   bank: "OCBC: Your monthly statement for October is ready. View it in the OCBC app. We will never ask for your OTP, PIN or password.",
 };
 
-const VERDICT: Record<CheckResult["verdict"], { icon: LucideIcon; cls: string }> = {
-  likely_scam: { icon: ShieldAlert, cls: "border-danger text-danger bg-danger-soft" },
-  be_careful: { icon: AlertTriangle, cls: "border-warning text-warning bg-warning-soft" },
-  not_sure: { icon: CircleHelp, cls: "border-secondary text-secondary bg-info-soft" },
-  no_signs: { icon: ShieldCheck, cls: "border-success text-success bg-success-soft" },
+const VERDICT: Record<CheckResult["verdict"], { icon: LucideIcon; tone: VerdictTone }> = {
+  likely_scam: { icon: ShieldAlert, tone: "risk" },
+  be_careful: { icon: AlertTriangle, tone: "caution" },
+  not_sure: { icon: CircleHelp, tone: "caution" },
+  no_signs: { icon: ShieldCheck, tone: "verified" },
 };
 
 /** Splits the checked text into plain and flagged segments (merging overlaps). */
@@ -81,6 +81,11 @@ export function Check() {
     }
   };
 
+  const resultRef = useRef<HTMLElement>(null);
+  // Bring the verdict into view (at 375 px it lands below the fold).
+  useEffect(() => {
+    if (result) resultRef.current?.scrollIntoView?.({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }, [result]);
   const segs = useMemo(() => (result ? segments(checked, result.flags) : []), [result, checked]);
   const v = result ? VERDICT[result.verdict] : null;
 
@@ -125,17 +130,18 @@ export function Check() {
       </form>
 
       {result && v && (
-        <section aria-labelledby="result-h" aria-live="polite" className="space-y-4">
+        <section ref={resultRef} aria-labelledby="result-h" aria-live="polite" className="scroll-mt-20 space-y-4">
           <h2 id="result-h" className="sr-only">{t("check.result")}</h2>
-          <Card className={cx("space-y-2 border-2", v.cls)}>
-            <p className="flex items-center gap-2 text-xl font-bold">
-              <v.icon aria-hidden className="h-7 w-7" />
-              {t(`check.${result.verdict}`)}
-            </p>
-            <p className="text-foreground">{t(`check.${result.verdict}Body`)}</p>
-            <p className="text-sm text-muted-foreground">{t("check.confidence", { p: Math.round(result.ml_probability * 100) })}</p>
+          <VerdictStage key={result.id} tone={v.tone} icon={v.icon} title={t(`check.${result.verdict}`)} checkingLabel={t("check.checking")}>
+            <p className="text-lg font-medium">{t(`check.${result.verdict}Body`)}</p>
+            <div className="flex flex-col items-start gap-1 pt-1">
+              <span aria-hidden className="tabular font-display text-[min(3.75rem,16vw)] font-extrabold leading-none">
+                {Math.round(result.ml_probability * 100)}%
+              </span>
+              <span className="max-w-[40ch] text-sm font-semibold [text-wrap:pretty]">{t("check.confidence", { p: Math.round(result.ml_probability * 100) })}</span>
+            </div>
             <ReadAloud text={`${t(`check.${result.verdict}`)}. ${t(`check.${result.verdict}Body`)}`} />
-          </Card>
+          </VerdictStage>
 
           {result.flags.length > 0 && (
             <Card className="space-y-3">
@@ -175,10 +181,11 @@ export function Check() {
             </Card>
           )}
 
-          <Card className="space-y-3">
+          <Card data-after-stage className="space-y-3">
             <h3 className="text-lg font-bold">{t("check.safeActions")}</h3>
             <Button
               icon={PhoneCall}
+              variant={result.verdict === "no_signs" ? "outline" : "primary"}
               block
               loading={calling}
               onClick={async () => {
@@ -192,7 +199,7 @@ export function Check() {
             >
               {t("help.callInApp")}
             </Button>
-            <a href="tel:1799" className="inline-flex min-h-btn w-full items-center justify-center gap-2 rounded-btn border-2 border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
+            <a href="tel:1799" className="sb-press inline-flex min-h-btn w-full items-center justify-center gap-2 rounded-pill border-2 border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
               <Phone aria-hidden className="h-5 w-5" /> {t("help.helpline")}
             </a>
             {reported ? (

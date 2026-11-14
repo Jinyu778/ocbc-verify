@@ -160,7 +160,9 @@
     "sheetBody": "If anyone is telling you what to do right now, stop. A real bank, MAS or police officer will never rush you.",
     "goBack": "Go back",
     "sendAnyway": "Send anyway",
-    "reportedBody": "Other OCBC customers reported this account in a scam case. Please don't send money until you have checked."
+    "reportedBody": "Other OCBC customers reported this account in a scam case. Please don't send money until you have checked.",
+    "chipCall": "On a call",
+    "chipChat": "Messaging about this"
   },
   "save": {
     "title": "Save for later",

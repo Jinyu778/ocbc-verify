@@ -82,7 +82,7 @@ function RequestCard({ r }: { r: Req }) {
   const reasons = r.reason_keys.map((k) => t(`reasons.${k}`));
   const summary = `${t("contact.from", { name: r.customer_name })}. ${t("contact.amountBand")}: ${r.amount_band}. ${t("contact.payeeType")}: ${r.payee_type === "new" ? t("contact.newPayee") : t("contact.knownPayee")}. ${reasons.join(" ")} ${t("contact.callFirst")}`;
   return (
-    <Card className="space-y-4 border-l-4 border-l-warning">
+    <Card className="space-y-4 border-warning ring-1 ring-warning">
       <p className="flex items-center gap-2 text-xl font-bold">
         <UserRound aria-hidden className="h-6 w-6" />
         {t("contact.from", { name: r.customer_name })}

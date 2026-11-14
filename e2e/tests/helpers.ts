@@ -28,7 +28,14 @@ export async function login(page: Page, username: string) {
 
 /** A second person on another device: new browser context, own login. */
 export async function openAs(browser: Browser, username: string, viewport = { width: 375, height: 812 }) {
-  const ctx = await browser.newContext({ viewport, permissions: ["microphone"], baseURL: "http://localhost:5173" });
+  const ctx = await browser.newContext({
+    viewport,
+    permissions: ["microphone"],
+    baseURL: "http://localhost:5173",
+    // screenshot tours: the second window follows the same theme / motion setting
+    colorScheme: process.env.TOUR_DARK ? "dark" : "light",
+    reducedMotion: process.env.TOUR_RM ? "reduce" : "no-preference",
+  });
   const p = await ctx.newPage();
   await login(p, username);
   return p;

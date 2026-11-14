@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronRight, Clock, Eye, EyeOff, MessageSquareWarning, Send, ShieldCheck, WifiOff } from "lucide-react";
-import { Banner, Button, Card, Skeleton, api, cx, formatSGD } from "@/design";
+import { PhoneIncoming, ChevronRight, Clock, Eye, EyeOff, MessageSquareWarning, Send, ShieldCheck, WifiOff } from "lucide-react";
+import { Banner, Button, Card, Skeleton, api, cx, formatSGD, useStaggerIn } from "@/design";
 import { useSession } from "../state/session";
 import { usePrefs } from "../state/prefs";
 import { Screen } from "../components/Screen";
@@ -23,20 +23,22 @@ export function Home() {
   const payees = useQuery({ queryKey: ["payees"], queryFn: () => api<Payee[]>("/api/me/payees") });
   const saved = activity.data?.filter((x) => x.status === "saved_for_later") ?? [];
   const easy = prefs.easy;
+  const listRef = useRef<HTMLUListElement>(null);
+  useStaggerIn(listRef, "[data-row]", [activity.data?.length], { scroll: true });
   const known = payees.data?.filter((p) => !p.is_new).slice(0, 3) ?? [];
 
   return (
     <Screen title={t("home.greeting", { name: user?.display_name })}>
-      <Card className="bg-primary text-on-primary dark:bg-card dark:text-foreground">
+      <Card className="border-transparent bg-primary text-on-primary dark:border-border dark:bg-primary-2">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="opacity-90">{t("home.balance")}</p>
+            <p className="text-sm font-semibold text-on-primary-muted">{t("home.balance")}</p>
             {account.isLoading ? (
               <Skeleton className="mt-2 h-9 w-40" label={t("common.loading")} />
             ) : account.isError ? (
               <p className="mt-1">{t("common.offlineTitle")}</p>
             ) : (
-              <p className="tabular mt-1 text-3xl font-bold" aria-live="polite">
+              <p className="tabular mt-1 font-display text-[min(2.25rem,11vw)] font-extrabold leading-none" aria-live="polite">
                 {hidden ? <span>••••••<span className="sr-only">{t("home.balanceHidden")}</span></span> : formatSGD(account.data?.balance)}
               </p>
             )}
@@ -45,7 +47,7 @@ export function Home() {
             type="button"
             onClick={() => setHidden((h) => !h)}
             aria-pressed={hidden}
-            className="inline-flex min-h-touch items-center gap-1 rounded-btn px-2 text-sm font-semibold hover:bg-white/10"
+            className="sb-press inline-flex min-h-touch items-center gap-1.5 rounded-pill border border-tint-on-dark-strong px-3 text-sm font-semibold hover:bg-tint-on-dark"
           >
             {hidden ? <Eye aria-hidden className="h-5 w-5" /> : <EyeOff aria-hidden className="h-5 w-5" />}
             {hidden ? t("home.showBalance") : t("home.hideBalance")}
@@ -64,9 +66,11 @@ export function Home() {
       ))}
 
       {saved.map((s) => (
-        <Card key={s.id} className="border-l-4 border-l-warning">
+        <Card key={s.id} className="border-warning bg-warning-soft">
           <div className="flex items-center gap-3">
-            <Clock aria-hidden className="h-6 w-6 shrink-0 text-warning" />
+            <span aria-hidden className="grid h-10 w-10 shrink-0 place-items-center rounded-pill bg-card text-warning">
+              <Clock className="h-5 w-5" />
+            </span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold">{t("home.savedTitle")}</p>
               <p className="tabular">{t("home.savedBody", { amount: formatSGD(s.amount), payee: s.payee.name })}</p>
@@ -82,7 +86,7 @@ export function Home() {
         <Button size="lg" icon={Send} block onClick={() => nav("/customer/pay")}>
           {t("home.pay")}
         </Button>
-        <Button size="lg" variant="navy" icon={ShieldCheck} block onClick={() => nav("/customer/verify")}>
+        <Button size="lg" variant="navy" icon={PhoneIncoming} block onClick={() => nav("/customer/verify")}>
           {t("home.verifyCall")}
         </Button>
       </div>
@@ -122,9 +126,9 @@ export function Home() {
             {t("common.offlineBody")}
           </Banner>
         ) : activity.data?.length ? (
-          <ul className="divide-y divide-border rounded-card border border-border bg-card">
+          <ul ref={listRef} className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card shadow-card">
             {activity.data.slice(0, easy ? 4 : 8).map((x) => (
-              <li key={x.id}>
+              <li key={x.id} data-row>
                 <Link to={`/customer/pay/${x.id}`} className="flex min-h-btn items-center gap-3 px-4 py-3 text-foreground no-underline hover:bg-muted">
                   <StatusIcon status={x.status} />
                   <span className="min-w-0 flex-1">

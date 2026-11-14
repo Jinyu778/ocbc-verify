@@ -1,70 +1,123 @@
 /* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables. */
-@import "@fontsource/ibm-plex-sans/400.css";
-@import "@fontsource/ibm-plex-sans/500.css";
-@import "@fontsource/ibm-plex-sans/600.css";
-@import "@fontsource/ibm-plex-sans/700.css";
+/* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables.
+   Colour roles have ONE meaning each:
+     orange (accent)        = action and brand only
+     green  (success)       = verified / safe
+     red    (danger)        = scam / risk
+     amber  (warning)       = caution
+     navy   (primary)       = the shell and stages
+   "-strong" tokens are full-strength verdict fields; "on-*" is the text colour that passes AA on them. */
+@import "@fontsource-variable/bricolage-grotesque/wght.css";
+@import "@fontsource-variable/figtree/wght.css";
 @import "@fontsource/noto-sans-sc/400.css";
+@import "@fontsource/noto-sans-sc/500.css";
+@import "@fontsource/noto-sans-sc/600.css";
 @import "@fontsource/noto-sans-sc/700.css";
 @import "@fontsource/noto-sans-tamil/400.css";
+@import "@fontsource/noto-sans-tamil/500.css";
+@import "@fontsource/noto-sans-tamil/600.css";
 @import "@fontsource/noto-sans-tamil/700.css";
 
 :root {
-  --primary: #0f172a;
+  /* shell */
+  --primary: #0a1f44;            /* deep blue-navy */
+  --primary-2: #13306b;          /* lifted navy for layered stages */
   --on-primary: #ffffff;
-  --secondary: #1e3a8a;
+  --on-primary-muted: #c9d5ee;   /* 9.6:1 on --primary */
+  --secondary: #1d3f91;          /* navy-blue for links, info, progress (8.7:1 on white) */
   --on-secondary: #ffffff;
-  --accent: #c2410c;
-  --accent-hover: #9a3412;
-  --on-accent: #ffffff;
-  --background: #f8fafc;
+  /* action (orange) */
+  --accent: #ff6b1a;             /* vivid fill; navy text 5.7:1 */
+  --accent-hover: #ff8640;
+  --on-accent: #0a1f44;
+  --accent-ink: #c2410c;         /* orange as text or icon on light surfaces (5.2:1) */
+  /* surfaces */
+  --background: #f2f5fb;
   --card: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
-  --border: #e2e8f0;
-  --border-strong: #94a3b8;
-  --danger: #b91c1c;
-  --danger-soft: #fef2f2;
-  --warning: #b45309;
-  --warning-soft: #fffbeb;
-  --success: #15803d;
-  --success-soft: #f0fdf4;
-  --info-soft: #eff6ff;
-  --ring: #1e3a8a;
-  --shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 16px rgb(15 23 42 / 0.06);
+  --foreground: #0a1f44;
+  --muted: #e8edf6;
+  --muted-foreground: #46526b;   /* 7.3:1 on --background */
+  --border: #d5ddea;
+  --border-strong: #75839c;      /* 3.7:1 on white (UI boundary) */
+  /* semantic inks (text and icons on light), soft fills, strong fields */
+  --danger: #c81e1e;             /* 6.0:1 on white */
+  --danger-soft: #fdeceb;
+  --danger-strong: #e11d2e;      /* white text 4.7:1 (display sizes) */
+  --on-danger-strong: #ffffff;
+  --warning: #9a5200;            /* 5.6:1 on white */
+  --warning-soft: #fff3d9;
+  --warning-strong: #ffb020;     /* navy text 8.4:1 */
+  --on-warning-strong: #0a1f44;
+  --success: #047a48;            /* 5.5:1 on white */
+  --success-soft: #e2f8ec;
+  --success-strong: #17c06b;     /* navy text 7.0:1 */
+  --on-success-strong: #0a1f44;
+  --info-soft: #e8eefb;
+  --ring: #1d4ed8;
+  --navy-fill: #0a1f44;          /* filled navy buttons */
+  --scrim: rgb(5 14 34 / 0.55);
+  --tint-on-dark: rgb(255 255 255 / 0.12);
+  --tint-on-dark-strong: rgb(255 255 255 / 0.2);
 
-  --font-sans: "IBM Plex Sans", "Noto Sans SC", "Noto Sans Tamil", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* depth: offset + soft blur, tinted from the navy */
+  --shadow: 0 1px 2px rgb(10 31 68 / 0.06), 0 8px 24px -8px rgb(10 31 68 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(10 31 68 / 0.08), 0 18px 40px -12px rgb(10 31 68 / 0.28);
+
+  /* type */
+  --font-sans: "Figtree Variable", "Noto Sans SC", "Noto Sans Tamil", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Noto Sans SC", "Noto Sans Tamil", "Figtree Variable", system-ui, sans-serif;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 140ms;
+  --dur-fast: 180ms;
+  --dur-base: 260ms;
+  --dur-slow: 420ms;
+
   --text-scale: 1;
   --base-size: 16px;
-  --btn-h: 48px;
+  --btn-h: 52px;
   --gap: 1rem;
   color-scheme: light;
 }
 
 :root.dark {
-  --primary: #0b1222;
-  --on-primary: #f8fafc;
-  --secondary: #93c5fd;
-  --on-secondary: #0f172a;
-  --accent: #fb923c;
-  --accent-hover: #fdba74;
-  --on-accent: #0f172a;
-  --background: #0f172a;
-  --card: #1e293b;
-  --foreground: #f8fafc;
-  --muted: #273449;
-  --muted-foreground: #cbd5e1;
-  --border: #334155;
-  --border-strong: #64748b;
-  --danger: #f87171;
-  --danger-soft: #3b1d24;
-  --warning: #fbbf24;
-  --warning-soft: #3a2e16;
+  --primary: #050f27;
+  --primary-2: #0d2252;
+  --on-primary: #f2f6ff;
+  --on-primary-muted: #b9c6e3;
+  --secondary: #9db8ff;
+  --on-secondary: #0a1f44;
+  --accent: #ff8a3d;
+  --accent-hover: #ffa366;
+  --on-accent: #0a1f44;
+  --accent-ink: #ffa366;
+  --background: #071330;
+  --card: #0f2148;
+  --foreground: #f2f6ff;
+  --muted: #18295a;
+  --muted-foreground: #c3cce0;
+  --border: #2a3b6b;
+  --border-strong: #7384ad;
+  --danger: #ff8a93;
+  --danger-soft: #3a1426;
+  --danger-strong: #e11d2e;      /* same vivid red as light; white text 4.7:1 */
+  --on-danger-strong: #ffffff;
+  --navy-fill: #1d3f91;          /* filled navy buttons on the dark ground (white text 9.6:1) */
+  --warning: #ffc960;
+  --warning-soft: #3a2c10;
+  --warning-strong: #ffc247;
+  --on-warning-strong: #0a1f44;
   --success: #4ade80;
-  --success-soft: #14321f;
-  --info-soft: #1c2a4a;
-  --ring: #93c5fd;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+  --success-soft: #0e3324;
+  --success-strong: #2bd983;
+  --on-success-strong: #0a1f44;
+  --info-soft: #14275a;
+  --ring: #9db8ff;
+  --scrim: rgb(0 0 0 / 0.6);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.45), 0 18px 40px -12px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
 
@@ -73,12 +126,12 @@
   --base-size: 20px;
   --btn-h: 60px;
   --gap: 1.5rem;
-  --muted-foreground: #334155;
-  --border: #cbd5e1;
+  --muted-foreground: #334160;
+  --border: #c3cee0;
 }
 :root.easy.dark {
-  --muted-foreground: #e2e8f0;
-  --border: #475569;
+  --muted-foreground: #e2e8f5;
+  --border: #3a4d82;
 }
 
 html {
@@ -93,39 +146,66 @@ body {
   font-family: var(--font-sans);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
-:lang(zh) body, :lang(zh) { font-family: "IBM Plex Sans", "Noto Sans SC", system-ui, sans-serif; }
-:lang(ta) body, :lang(ta) { font-family: "IBM Plex Sans", "Noto Sans Tamil", system-ui, sans-serif; line-height: 1.6; }
+/* Chinese and Tamil: the Latin faces don't carry these scripts, so Noto leads. */
+:lang(zh) body, :lang(zh) { --font-sans: "Noto Sans SC", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans SC", "Bricolage Grotesque Variable", system-ui, sans-serif; }
+:lang(ta) body, :lang(ta) { --font-sans: "Noto Sans Tamil", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans Tamil", "Bricolage Grotesque Variable", system-ui, sans-serif; line-height: 1.6; }
 
-.tabular { font-variant-numeric: tabular-nums; }
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+:lang(ta) h1, :lang(ta) h2, :lang(ta) h3, :lang(ta) .font-display,
+:lang(zh) h1, :lang(zh) h2, :lang(zh) h3, :lang(zh) .font-display { letter-spacing: 0; }
 
+.tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* browser surfaces carry the design too */
+::selection { background: var(--accent); color: var(--on-accent); }
+html { accent-color: var(--accent-ink); caret-color: var(--secondary); scrollbar-color: var(--border-strong) transparent; }
 :focus-visible {
   outline: 3px solid var(--ring);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline-offset: 3px;
+  border-radius: 10px;
 }
+a { text-underline-offset: 0.2em; text-decoration-thickness: 0.08em; }
 
-.sb-skeleton {
-  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 37%, var(--muted) 63%);
-  background-size: 400% 100%;
-  animation: sb-shimmer 1.4s ease infinite;
-  border-radius: 8px;
-}
-@keyframes sb-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
-@keyframes sb-slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
-@keyframes sb-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* press feedback for anything pressable (transform only, never transition: all) */
+.sb-press { transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease, border-color var(--dur-fast) ease; }
+.sb-press:active:not(:disabled) { transform: scale(0.97); }
+
+/* While the verdict stage plays, the ACTIONS that answer it (marked data-after-stage) are held back and
+   not clickable, then fade in. Evidence such as the payment summary stays visible throughout. */
+[data-after-stage] { transition: opacity var(--dur-base) var(--ease-out); }
+body:has([data-stage-running]) [data-after-stage] { opacity: 0; pointer-events: none; }
+
+/* loading placeholder: opacity pulse instead of a background-position shimmer */
+.sb-skeleton { background: var(--muted); border-radius: 12px; animation: sb-pulse 1.2s var(--ease-in-out) infinite alternate; }
+@keyframes sb-pulse { from { opacity: 1; } to { opacity: 0.55; } }
+@keyframes sb-slide-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes sb-fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes sb-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sb-tick { from { stroke-dashoffset: 48; } to { stroke-dashoffset: 0; } }
-.sb-screen { animation: sb-slide-in 220ms ease-out; }
-.sb-fade-up { animation: sb-fade-up 200ms ease-out; }
-.sb-tick path { stroke-dasharray: 48; animation: sb-tick 300ms ease-out 100ms both; }
+@keyframes sb-spin { to { transform: rotate(360deg); } }
+@keyframes sb-ping { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(2.2); opacity: 0; } }
+.sb-screen { animation: sb-slide-in var(--dur-base) var(--ease-out); }
+.sb-fade-up { animation: sb-fade-up var(--dur-fast) var(--ease-out); }
+.sb-tick path { stroke-dasharray: 48; animation: sb-tick 320ms var(--ease-out) 120ms both; }
+.sb-live-dot { position: relative; display: inline-flex; }
+.sb-live-dot::after { content: ""; position: absolute; inset: 0; border-radius: 999px; background: currentColor; animation: sb-ping 1.4s var(--ease-out) infinite; }
 
+/* Reduced motion: no movement. Screens and entrances become a short fade; loops stop. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
+  .sb-screen, .sb-fade-up { animation: sb-fade 160ms ease-out !important; }
+  .sb-skeleton, .sb-live-dot::after { animation: none !important; }
+  .sb-press:active:not(:disabled) { transform: none; }
 }
 
 .sr-only {

@@ -28,7 +28,7 @@ function Toggle({ id, label, desc, checked, onChange }: { id: string; label: str
         onClick={() => onChange(!checked)}
         className={cx("relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border-2 transition-colors duration-200", checked ? "border-accent bg-accent" : "border-border-strong bg-muted")}
       >
-        <span className={cx("inline-block h-6 w-6 rounded-full bg-white shadow transition-transform duration-200", checked ? "translate-x-6" : "translate-x-0.5")} />
+        <span className={cx("inline-block h-6 w-6 rounded-full bg-on-primary shadow transition-transform duration-200", checked ? "translate-x-6" : "translate-x-0.5")} />
         <span className="sr-only">{checked ? "On" : "Off"}</span>
       </button>
     </div>

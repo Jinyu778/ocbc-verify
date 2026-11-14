@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Ban, Clock, Flag, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { ListChecks, Ban, Clock, Flag, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { Banner, Button, RiskChip, Skeleton, api, cx, formatSGD, timeAgo, useNow, type Tier } from "@/design";
 import { STATUS_LABEL, TIER_LABEL, type CaseRow, type Summary } from "../types";
 import { CaseDrawer } from "../components/CaseDrawer";
@@ -29,7 +29,7 @@ export function Queue() {
   });
 
   const cards = [
-    { label: "Cases today", value: summary.data?.cases_today, icon: ShieldCheck },
+    { label: "Cases today", value: summary.data?.cases_today, icon: ListChecks },
     { label: "Paused", value: summary.data?.paused, icon: PauseCircle },
     { label: "Waiting on trusted contact", value: summary.data?.waiting_trusted_contact, icon: Users },
     { label: "In call", value: summary.data?.in_call, icon: PhoneCall },
@@ -108,7 +108,7 @@ export function Queue() {
                     {c.payee.name}
                     {c.is_new_payee && (
                       <span className="inline-flex items-center gap-0.5 rounded-full border border-warning px-1.5 text-xs font-bold text-warning">
-                        <Sparkles aria-hidden className="h-3 w-3" />NEW
+                        <UserPlus aria-hidden className="h-3 w-3" />NEW
                       </span>
                     )}
                     {c.payee_reported && (

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Home, LifeBuoy, MessageSquareWarning, Phone, PhoneCall, Send, Settings as Cog, ShieldCheck } from "lucide-react";
+import { PhoneIncoming, ArrowLeft, Home, LifeBuoy, MessageSquareWarning, Phone, PhoneCall, Send, Settings as Cog, ShieldCheck } from "lucide-react";
 import { Button, Dialog, Disclaimer, LANGUAGES, cx, useLive, type LangCode } from "@/design";
 import { usePrefs } from "../state/prefs";
 import { savePrefsToServer, useSession } from "../state/session";
@@ -17,22 +17,21 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-btn focus:bg-card focus:p-3">
         Skip to content
       </a>
-      <Disclaimer text={t("common.disclaimer")} />
-      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-xl flex-wrap items-center gap-2 px-4 py-2">
-          <span className="flex min-w-0 items-center gap-2 text-lg font-bold text-foreground">
-            <ShieldCheck aria-hidden className="h-7 w-7 text-accent" />
-            {t("common.appName")}
-          </span>
+      <Disclaimer text={t("common.disclaimer")} className="border-b border-tint-on-dark" />
+      <header className="sticky top-0 z-30 bg-primary text-on-primary shadow-card">
+        <div className="mx-auto flex max-w-xl flex-wrap items-center gap-2 px-4 py-2.5">
+          <BrandMark />
           <span className="flex-1" />
-          <LanguageSelect />
-          <Button variant="outline" size="sm" icon={LifeBuoy} onClick={() => setHelp(true)}>
+          <LanguageSelect onDark />
+          <button type="button" onClick={() => setHelp(true)} className={HEADER_BTN}>
+            <LifeBuoy aria-hidden className="h-4 w-4" />
             {t("common.help")}
-          </Button>
+          </button>
           {!customer && (
-            <Button variant="outline" size="sm" icon={Cog} onClick={() => nav("/contact/settings")}>
+            <button type="button" onClick={() => nav("/contact/settings")} className={HEADER_BTN}>
+              <Cog aria-hidden className="h-4 w-4" />
               {t("nav.settings")}
-            </Button>
+            </button>
           )}
         </div>
         {!connected && (
@@ -50,7 +49,23 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
   );
 }
 
-export function LanguageSelect({ id = "lang-header", showLabel = false }: { id?: string; showLabel?: boolean }) {
+const HEADER_BTN =
+  "sb-press inline-flex min-h-touch items-center gap-1.5 rounded-pill border border-tint-on-dark-strong bg-tint-on-dark px-3 text-sm font-semibold text-on-primary hover:bg-tint-on-dark-strong";
+
+/** Wordmark: an authored monogram, not the shield (the shield-check is reserved for "verified"). */
+export function BrandMark({ className }: { className?: string }) {
+  const { t } = useTranslation();
+  return (
+    <span className={cx("flex min-w-0 items-center gap-2", className)}>
+      <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-accent font-display text-xl font-extrabold leading-none text-on-accent shadow-card">
+        V
+      </span>
+      <span className="whitespace-nowrap font-display text-base font-extrabold tracking-[-0.02em] sm:text-lg">{t("common.appName")}</span>
+    </span>
+  );
+}
+
+export function LanguageSelect({ id = "lang-header", showLabel = false, onDark = false }: { id?: string; showLabel?: boolean; onDark?: boolean }) {
   const { t, i18n } = useTranslation();
   const { setLang } = usePrefs();
   const { user } = useSession();
@@ -67,7 +82,11 @@ export function LanguageSelect({ id = "lang-header", showLabel = false }: { id?:
           setLang(l);
           if (user) savePrefsToServer({ preferred_language: l });
         }}
-        className={cx("min-h-touch rounded-btn border-2 border-border-strong bg-card px-2 text-foreground", showLabel && "min-h-btn w-full")}
+        className={cx(
+          "min-h-touch rounded-field border-2 px-2.5 font-medium",
+          onDark ? "max-w-[6rem] border-tint-on-dark-strong bg-primary-2 text-on-primary sm:max-w-[9.5rem]" : "border-border-strong bg-card text-foreground",
+          showLabel && "min-h-btn w-full",
+        )}
       >
         {LANGUAGES.map((l) => (
           <option key={l.code} value={l.code} lang={l.code}>
@@ -99,13 +118,15 @@ function BottomNav() {
               className={({ isActive }) =>
                 cx(
                   "flex min-h-btn min-w-0 flex-col items-center justify-center gap-0.5 rounded-btn px-0.5 py-1 text-center text-sm font-medium leading-tight no-underline [overflow-wrap:anywhere]",
-                  isActive ? "text-accent" : "text-muted-foreground hover:text-foreground",
+                  isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon aria-hidden className={cx("h-6 w-6", isActive && "stroke-[2.5]")} />
+                  <span aria-hidden className={cx("grid h-8 w-14 place-items-center rounded-pill transition-[transform,background-color] duration-fast ease-out", isActive ? "bg-accent text-on-accent" : "bg-transparent")}>
+                    <Icon className={cx("h-[22px] w-[22px]", isActive && "stroke-[2.4]")} />
+                  </span>
                   <span className={isActive ? "font-bold" : ""}>{label}</span>
                 </>
               )}
@@ -144,13 +165,13 @@ function HelpSheet({ open, onClose, customer }: { open: boolean; onClose: () => 
             {t("help.callInApp")}
           </Button>
         )}
-        <a href="tel:1799" className="inline-flex min-h-btn items-center justify-center gap-2 rounded-btn border-2 border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
+        <a href="tel:1799" className="sb-press inline-flex min-h-btn items-center justify-center gap-2 rounded-pill border-2 border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
           <Phone aria-hidden className="h-5 w-5" />
           {t("help.helpline")}
         </a>
         <p className="text-sm text-muted-foreground">{t("help.helplineDesc")}</p>
         {customer && (
-          <Button variant="ghost" icon={ShieldCheck} block onClick={() => (onClose(), nav("/customer/verify"))}>
+          <Button variant="ghost" icon={PhoneIncoming} block onClick={() => (onClose(), nav("/customer/verify"))}>
             {t("help.verify")}
           </Button>
         )}

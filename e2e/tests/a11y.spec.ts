@@ -6,7 +6,9 @@ const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 async function scan(page: Page, name: string) {
   await page.waitForLoadState("networkidle", { timeout: 3000 }).catch(() => undefined);
-  await page.waitForTimeout(300); // let entry animations finish
+  // wait for the verdict stage (GSAP) to settle, then for short CSS entrances
+  await page.waitForFunction(() => !document.querySelector("[data-stage-running]"), null, { timeout: 5000 }).catch(() => undefined);
+  await page.waitForTimeout(400);
   const res = await new AxeBuilder({ page }).withTags(TAGS).analyze();
   const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
   if (bad.length) console.log(name, JSON.stringify(bad.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target).slice(0, 5) })), null, 2));
