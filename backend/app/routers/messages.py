@@ -9,6 +9,7 @@ from ..models import MessageCheck, User
 from ..realtime import hub
 from ..redact import redact
 from ..security import require_role
+from ..services import attached_messages, get_owned_transfer, notify_transfer
 
 router = APIRouter(prefix="/api/messages", tags=["message checker"])
 customer_only = require_role("customer")
@@ -46,3 +47,34 @@ def report(check_id: int, user: User = Depends(customer_only), db: Session = Dep
         db.commit()
         hub.notify({"type": "message.reported", "id": mc.id}, staff=True)
     return {"id": mc.id, "reported": True}
+
+
+class AttachIn(BaseModel):
+    transfer_id: int
+
+
+@router.post("/{check_id}/attach")
+def attach_to_payment(check_id: int, body: AttachIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    """Attach a checked message to one of the customer's payments as evidence for OCBC staff.
+
+    Stored as an append-only evidence event on the case (redacted text only). Attaching also
+    reports the message, so it appears under Reported messages too.
+    """
+    mc = db.get(MessageCheck, check_id)
+    if not mc or mc.user_id != user.id:
+        raise HTTPException(404, "We couldn't find that check.")
+    t = get_owned_transfer(db, body.transfer_id, user)
+    if any(m.id == mc.id for m in attached_messages(db, t.id)):
+        raise HTTPException(409, "This message is already attached to that payment.")
+    log_event(db, t.id, "customer", "message_attached", {
+        "message_check_id": mc.id, "verdict": mc.verdict, "flags": [f["key"] for f in mc.flags_json or []],
+        "text_redacted": mc.text_redacted,
+    })
+    if not mc.reported:
+        mc.reported = True
+        mc.review_status = "pending"
+        log_event(db, None, "customer", "message_reported", {"message_check_id": mc.id, "verdict": mc.verdict})
+    db.commit()
+    hub.notify({"type": "message.reported", "id": mc.id}, staff=True)
+    notify_transfer(db, t)
+    return {"id": mc.id, "transfer_id": t.id, "attached": True}

@@ -28,6 +28,7 @@ class Rule:
     pattern: re.Pattern
     strong: bool
     explanation: str
+    requires: tuple = ()  # extra patterns that must ALL also appear somewhere in the message
 
 
 def _r(p: str) -> re.Pattern:
@@ -42,7 +43,7 @@ RULES: list[Rule] = [
     Rule("secrecy", _r(r"(do ?n[o']t|don't) (tell|inform)|keep (it |this )?(secret|confidential)|confidential|\bNDA\b|保密|不要告诉|rahsia|jangan beritahu"), True,
          "Being told to keep a payment secret is a big warning sign."),
     Rule("credentials", _r(r"\b(OTP|PIN|password|passcode|6-digit code|one-time|login details)\b|验证码|kod OTP|your login"), True,
-         "Never share your OTP, PIN or password. SafeBank will never ask for them."),
+         "Never share your OTP, PIN or password. OCBC will never ask for them."),
     Rule("install_app", _r(r"install (the |this )?app|download (the |this )?app|\.apk\b|remote access"), True,
          "Installing an app from a link can let scammers control your phone."),
     Rule("link", _r(r"https?://\S+|www\.\S+|\b[\w-]+\.(info|top|xyz|cc|online|click|shop|work|win)\b"), False,
@@ -59,6 +60,10 @@ RULES: list[Rule] = [
          "Scammers move you to Telegram or WhatsApp where they are harder to trace."),
     Rule("paynow_first", _r(r"pay ?now (first|deposit)|transfer first|no meet ?up|no COD|先.{0,4}付款|不见面|tiada jumpa|PayNow dahulu"), True,
          "'Pay first, no meetup' is how most online shopping and ticket scams work."),
+    Rule("preorder_scam", _r(r"\bpre-?\s?orders?\b|预购|预订|pra-?tempah"), True,
+         "A 'pre-order' you must pay for first, with no meetup, is a common collectibles scam (e.g. Pokémon cards).",
+         requires=(_r(r"pay ?now|transfer|deposit|先.{0,4}付款|bayar"),
+                   _r(r"no meet ?-?ups?|cannot meet|can't meet|不见面|tiada jumpa"))),
     Rule("family_new_number", _r(r"new number|my phone (broke|is broken)|lost my phone|换了新号码|nombor baru|in trouble|bail money"), True,
          "A 'family member' with a new number asking for money: call their old number first."),
 ]
@@ -69,6 +74,8 @@ STRONG_KEYS = {r.key for r in RULES if r.strong}
 def apply_rules(text: str) -> list[dict]:
     flags: list[dict] = []
     for rule in RULES:
+        if rule.requires and not all(r.search(text) for r in rule.requires):
+            continue
         spans = [(m.start(), m.end()) for m in rule.pattern.finditer(text) if m.end() > m.start()]
         if spans:
             flags.append({"key": rule.key, "strong": rule.strong, "explanation": rule.explanation,

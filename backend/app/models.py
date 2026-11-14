@@ -68,6 +68,8 @@ class User(Base):
     preferred_language: Mapped[str] = mapped_column(String(4), default="en")
     easy_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     phone_masked: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    # bcrypt hash of the family code word (customer accounts). Never returned, logged or shown.
+    family_code_word_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
 
     account: Mapped[Account | None] = relationship(back_populates="user", uselist=False)
 

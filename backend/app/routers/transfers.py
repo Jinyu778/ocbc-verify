@@ -22,6 +22,7 @@ from ..services import (
     move_money,
     notify_transfer,
     payee_is_new,
+    payee_report_count,
     require_not_done,
     transfer_out,
 )
@@ -85,6 +86,7 @@ def _score(db: Session, t: Transfer, answers: dict | None):
         history_mean=acct.typical_transfer_mean,
         history_std=acct.typical_transfer_std,
         answers=answers,
+        payee_reported_by_others=payee_report_count(db, t.payee, t.customer_user_id),
     )
 
 

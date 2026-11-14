@@ -15,6 +15,7 @@ from ..evidence import log_event
 from ..models import Transfer, TrustedContact, User, utcnow
 from ..security import require_role
 from ..services import active_trusted_contact, amount_band, as_utc, notify_transfer
+from ..codeword import hash_code_word
 
 router = APIRouter(prefix="/api/trusted", tags=["trusted contact"])
 contact_only = require_role("trusted_contact")
@@ -85,3 +86,29 @@ def decide(transfer_id: int, body: DecisionIn, user: User = Depends(contact_only
     db.commit()
     notify_transfer(db, t, extra_users=[user.id])
     return request_view(t)
+
+
+# --- family code word, set by the trusted contact for the customer they look after -------------
+class CodeWordIn(BaseModel):
+    code_word: str
+
+
+@router.get("/customers")
+def my_customers(user: User = Depends(contact_only), db: Session = Depends(get_db)):
+    out = []
+    for cid in _customers_for(db, user):
+        c = db.get(User, cid)
+        out.append({"id": c.id, "display_name": c.display_name, "code_word_is_set": bool(c.family_code_word_hash)})
+    return out
+
+
+@router.put("/customers/{customer_id}/code-word")
+def set_customer_code_word(customer_id: int, body: CodeWordIn, user: User = Depends(contact_only),
+                           db: Session = Depends(get_db)):
+    if customer_id not in _customers_for(db, user):
+        raise HTTPException(404, "You are not the trusted contact for this customer.")
+    c = db.get(User, customer_id)
+    c.family_code_word_hash = hash_code_word(body.code_word)
+    log_event(db, None, "trusted_contact", "family_code_word_set", {"customer_id": c.id, "set_by": "trusted_contact"})
+    db.commit()
+    return {"id": c.id, "code_word_is_set": True}

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
@@ -9,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from .config import get_settings
 from .evidence import log_event
-from .models import FINAL_STATUSES, Account, CallSession, Payee, Transfer, TrustedContact, User, utcnow
+from .models import FINAL_STATUSES, Account, CallSession, EvidenceEvent, MessageCheck, Payee, Transfer, TrustedContact, User, utcnow
 from .realtime import hub
 
 DONE_STATUSES = FINAL_STATUSES | {"under_staff_review"}
@@ -37,6 +38,44 @@ def active_trusted_contact(db: Session, customer_id: int, now: datetime | None =
         if as_utc(tc.active_from) <= now and (tc.pending_removal_at is None or as_utc(tc.pending_removal_at) > now):
             return tc
     return None
+
+
+def normalize_account(ref: str) -> str:
+    return re.sub(r"[^A-Z0-9]", "", ref.upper())
+
+
+def payee_report_count(db: Session, payee: Payee, customer_id: int) -> int:
+    """How many OTHER customers reported this payee account.
+
+    A report is an existing case on the same account number that staff escalated to the
+    Anti-Scam Centre, or that the customer attached a checked (reported) message to.
+    """
+    norm = normalize_account(payee.account_ref)
+    same = [p.id for p in db.scalars(select(Payee).where(Payee.owner_user_id != customer_id)).all()
+            if normalize_account(p.account_ref) == norm]
+    if not same:
+        return 0
+    ts = db.scalars(select(Transfer).where(Transfer.payee_id.in_(same), Transfer.is_seed_history.is_(False))).all()
+    if not ts:
+        return 0
+    with_msg = set(db.scalars(select(EvidenceEvent.transfer_id).where(
+        EvidenceEvent.transfer_id.in_([t.id for t in ts]), EvidenceEvent.event_type == "message_attached")).all())
+    return len({t.customer_user_id for t in ts if t.status == "escalated" or t.id in with_msg})
+
+
+def attached_messages(db: Session, transfer_id: int) -> list[MessageCheck]:
+    ids = [e.detail_json.get("message_check_id") for e in db.scalars(select(EvidenceEvent).where(
+        EvidenceEvent.transfer_id == transfer_id, EvidenceEvent.event_type == "message_attached")).all()]
+    return [m for m in (db.get(MessageCheck, i) for i in ids if i) if m]
+
+
+def code_word_prompt(db: Session, t: Transfer) -> bool:
+    """Prompt for the family code word on a live call, or when a 'family emergency' message is attached."""
+    sig = t.signals_json or {}
+    answers = t.answers_json or {}
+    if sig.get("on_call") or sig.get("recent_call") or answers.get("q_phone"):
+        return True
+    return any(any(f.get("key") == "family_new_number" for f in (m.flags_json or [])) for m in attached_messages(db, t.id))
 
 
 def next_step(t: Transfer) -> str:
@@ -92,6 +131,9 @@ def transfer_out(db: Session, t: Transfer) -> dict:
         "trusted_contact_name": tc.contact.display_name if tc else None,
         "active_call_id": call.id if call else None,
         "false_positive": t.false_positive,
+        "payee_reported": any(r.get("key") == "payee_reported" for r in (t.reasons_json or [])),
+        "code_word_prompt": code_word_prompt(db, t),
+        "code_word_set": bool(t.customer.family_code_word_hash),
         "next_step": next_step(t),
         "created_at": as_utc(t.created_at),
         "updated_at": as_utc(t.updated_at),

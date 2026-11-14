@@ -120,3 +120,61 @@ def test_every_reason_has_text():
             answers={"q_phone": True, "q_secret": True, "q_online": True, "q_chat": True})
     assert all(x.text for x in r.reasons)
     assert r.score == 2 + 8 + 2 + 2 + 12
+
+
+# --- coached-victim override (judge finding #1) -------------------------------------------
+import itertools  # noqa: E402
+
+ALL_NO = {"q_phone": False, "q_secret": False, "q_online": False, "q_chat": False}
+TAN = dict(mean="186", std="140")  # roughly Mdm Tan's seeded history
+
+
+def test_coached_victim_new_unusual_large_pauses_with_all_no():
+    r = run("8000", new=True, answers=ALL_NO, **TAN)
+    assert r.score == 5  # new 2 + amount 1 + unusual 2 -> would only be "ask" by points
+    assert r.tier == "pause" and r.override
+    assert "override_new_payee_unusual_large" in keys(r)
+
+
+@pytest.mark.parametrize("amount,tier", [("4999.99", "ask"), ("5000", "pause"), ("5000.00", "pause")])
+def test_coached_override_boundary(amount, tier):
+    assert run(amount, new=True, answers=ALL_NO, **TAN).tier == tier
+
+
+def test_coached_override_needs_new_payee_and_unusual():
+    assert run("8000", new=False, answers=ALL_NO, **TAN).tier == "ask"  # known payee
+    assert run("8000", new=True, answers=ALL_NO, mean="6000", std="3000").tier == "ask"  # not unusual
+
+
+def test_scenario2_hospital_bill_still_ask():
+    r = run("3200", new=True, answers=ALL_NO, **TAN)
+    assert r.tier == "ask" and not r.override
+
+
+@pytest.mark.parametrize("amount,new,sig", [
+    ("45", False, NO), ("3200", True, NO), ("8000", True, NO), ("600", True, Signals(chatting=True)),
+    ("20", True, Signals(on_call=True)), ("20000", False, NO),
+])
+def test_answers_can_only_raise_risk(amount, new, sig):
+    order = {"none": 0, "ask": 1, "pause": 2}
+    base = run(amount, new=new, sig=sig, **TAN)
+    for combo in itertools.product([False, True], repeat=4):
+        answered = run(amount, new=new, sig=sig, answers=dict(zip(QUESTION_KEYS_T, combo)), **TAN)
+        assert answered.score >= base.score
+        assert order[answered.tier] >= order[base.tier]
+
+
+QUESTION_KEYS_T = ("q_phone", "q_secret", "q_online", "q_chat")
+
+
+# --- payee reported by other customers (judge finding #6) ---------------------------------
+def test_reported_payee_adds_four_points_and_pauses_new_payee():
+    r = assess(amount=D("50"), is_new_payee=True, signals=NO, history_mean=D("186"), history_std=D("140"),
+               payee_reported_by_others=2)
+    assert "payee_reported" in keys(r) and r.score == 6 and r.tier == "pause"
+    assert next(x for x in r.reasons if x.key == "payee_reported").text == "This account was reported by other customers."
+
+
+def test_no_reports_no_signal():
+    r = assess(amount=D("50"), is_new_payee=True, signals=NO, history_mean=D("186"), history_std=D("140"))
+    assert "payee_reported" not in keys(r)

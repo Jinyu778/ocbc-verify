@@ -45,6 +45,12 @@ NEW_PAYEES = [
     "HR Onboarding – J. Wong",
     "Carousell Seller – ticketsg88",
 ]
+NEW_PAYEE_ACCOUNTS = {
+    "MAS Safety Account – Lim K.": "SB-7731-0042",
+    "Hospital – NUH Billing": "SB-2210-5180",
+    "HR Onboarding – J. Wong": "SB-5501-2233",
+    "Carousell Seller – ticketsg88": "SB-8864-1907",
+}
 TRUSTED = [("tan.siewlan", "daniel.tan", "child"), ("ryan.lim", "mrs.lim", "parent")]
 
 
@@ -86,7 +92,9 @@ def seed(db: Session, rng_seed: int = 2026) -> None:
                                     risk_tier="none", risk_score=0, signals_json={}, reasons_json=[],
                                     is_seed_history=True, created_at=when, updated_at=when, completed_at=when))
         for j, name in enumerate(NEW_PAYEES):
-            db.add(Payee(owner_user_id=owner.id, name=name, account_ref=f"SB-NEW{j}-{rng.randint(1000, 9999)}",
+            # Same account number for every customer: scam "mule" accounts are shared across
+            # victims, which is what makes "reported by other customers" possible.
+            db.add(Payee(owner_user_id=owner.id, name=name, account_ref=NEW_PAYEE_ACCOUNTS[name],
                          first_added_at=now - timedelta(days=rng.randint(0, 2))))
         acct = owner.account or db.query(Account).filter_by(user_id=owner.id).one()
         acct.typical_transfer_mean = _money(statistics.mean(amounts))
@@ -105,8 +113,19 @@ def reset_database() -> None:
         seed(s)
 
 
+def _upgrade_dev_db() -> None:
+    """Dev databases made by create_all (not Alembic) get the one column added in migration 0002."""
+    from sqlalchemy import inspect, text
+
+    cols = {c["name"] for c in inspect(db_module.engine).get_columns("users")}
+    if "family_code_word_hash" not in cols:
+        with db_module.engine.begin() as conn:
+            conn.execute(text("ALTER TABLE users ADD COLUMN family_code_word_hash VARCHAR(128)"))
+
+
 def ensure_seeded() -> None:
     Base.metadata.create_all(bind=db_module.engine)
+    _upgrade_dev_db()
     with db_module.SessionLocal() as s:
         if s.query(User).count() == 0:
             seed(s)

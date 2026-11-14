@@ -14,7 +14,7 @@ from ..evidence import log_event, staff_actor
 from ..models import HELD_STATUSES, Account, CallSession, EvidenceEvent, MessageCheck, StaffAction, Transfer, User, utcnow
 from ..realtime import hub
 from ..security import require_role
-from ..services import as_utc, move_money, notify_transfer, transfer_out
+from ..services import as_utc, attached_messages, move_money, notify_transfer, transfer_out
 from .calls import call_out, staff_starts_call
 
 router = APIRouter(prefix="/api/staff", tags=["staff"])
@@ -103,6 +103,10 @@ def case_detail(case_id: int, user: User = Depends(staff_only), db: Session = De
                   "times_usual": float(round(t.amount / mean, 1)) if mean else None},
         "evidence": evidence_for(db, t),
         "calls": [call_out(c) for c in calls],
+        "attached_messages": [{"id": m.id, "text_redacted": m.text_redacted, "verdict": m.verdict,
+                               "flags": [f["key"] for f in m.flags_json or []], "ml_probability": m.ml_probability,
+                               "review_status": m.review_status, "created_at": as_utc(m.created_at)}
+                              for m in attached_messages(db, t.id)],
         "staff_actions": [{"id": a.id, "staff": a.staff.display_name, "action": a.action, "note": a.note,
                            "created_at": as_utc(a.created_at)} for a in actions],
     }
@@ -155,7 +159,7 @@ def referral_data(db: Session, t: Transfer, staff: User) -> dict:
         "answers": t.answers_json,
         "evidence_timeline": [{k: str(v) if k == "created_at" else v for k, v in e.items() if k != "id"}
                               for e in evidence_for(db, t)],
-        "disclaimer": "Student proof of concept – synthetic data – not an OCBC product.",
+        "disclaimer": "Student prototype for OCBC IGNITE 2026, not an official OCBC product.",
     }
 
 

@@ -498,3 +498,192 @@ def test_reset_is_a_cli_script():
     out = subprocess.run([sys.executable, "-m", "app.seed", "--help-not-a-flag"], cwd=Path(__file__).parents[1],
                          capture_output=True, text=True, env={**__import__("os").environ, "DATABASE_URL": "sqlite://"})
     assert out.returncode == 0 and "--reset" in out.stdout
+
+
+# --- judge findings ---------------------------------------------------------------------------
+BROWSER_NO = {"on_call": False, "recent_call": False, "chatting": False, "screen_sharing": False,
+              "available": True, "source": "customer_answer"}
+
+
+def test_task1_coached_victim_mas_8000_all_no_pauses(client, auth):
+    """Browser: the customer says they are NOT on a call and answers No to everything."""
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused" and p["risk_tier"] == "pause"
+    assert any(r["key"] == "override_new_payee_unusual_large" for r in p["reasons"])
+
+
+def test_task1_scenario2_hospital_bill_still_ask(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "Hospital – NUH Billing", "3200", BROWSER_NO).json()
+    a = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert a["risk_tier"] == "ask" and a["status"] == "checking" and a["next_step"] == "confirm"
+
+
+def test_task3_trusted_contact_pauses_for_review_never_permanently(client, auth):
+    h = auth("ryan.lim")
+    before = Decimal(balance(client, h))
+    t = create(client, h, "HR Onboarding – J. Wong", "600", {"chatting": True}).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    client.post(f"/api/transfers/{t['id']}/ask-trusted", headers=h)
+    client.post(f"/api/trusted/requests/{t['id']}/decision", headers=auth("mrs.lim"), json={"decision": "stop"})
+    tr = client.get(f"/api/transfers/{t['id']}", headers=h).json()
+    assert tr["status"] == "under_staff_review"
+    assert client.post(f"/api/transfers/{t['id']}/send", headers=h).status_code == 409  # paused for review
+    # never permanent: staff can release it with a note
+    r = client.post(f"/api/staff/cases/{t['id']}/actions", headers=auth("staff.anna"),
+                    json={"action": "approve", "note": "Spoke to Ryan and the employer; genuine."})
+    assert r.json()["case"]["status"] == "approved_by_staff"
+    assert Decimal(balance(client, h)) == before - Decimal("600")
+
+
+def test_task3_customer_can_still_cancel_while_under_review(client, auth):
+    h = auth("ryan.lim")
+    t = create(client, h, "HR Onboarding – J. Wong", "600", {"chatting": True}).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    client.post(f"/api/transfers/{t['id']}/ask-trusted", headers=h)
+    client.post(f"/api/trusted/requests/{t['id']}/decision", headers=auth("mrs.lim"), json={"decision": "stop"})
+    assert client.post(f"/api/transfers/{t['id']}/cancel", headers=h).json()["status"] == "cancelled"
+
+
+# --- Task 4: family code word -------------------------------------------------------------------
+SECRET = "Kopi Peng Uncle"
+
+
+def _user_row(username):
+    from app.models import User
+    with db_module.SessionLocal() as s:
+        return s.scalar(select(User).where(User.username == username))
+
+
+def test_task4_customer_sets_code_word_stored_hashed_never_returned(client, auth):
+    h = auth("tan.siewlan")
+    assert client.get("/api/me/code-word", headers=h).json() == {"is_set": False}
+    r = client.put("/api/me/code-word", headers=h, json={"code_word": SECRET})
+    assert r.json() == {"is_set": True} and SECRET.lower() not in r.text.lower()
+    stored = _user_row("tan.siewlan").family_code_word_hash
+    assert stored and stored.startswith("$2") and "kopi" not in stored.lower()
+    from app.security import verify_password
+    assert verify_password("kopi peng uncle", stored)  # normalised: case and spaces
+
+
+def test_task4_trusted_contact_can_set_for_their_customer_only(client, auth):
+    tan = _user_row("tan.siewlan")
+    dan = auth("daniel.tan")
+    cust = client.get("/api/trusted/customers", headers=dan).json()
+    assert cust == [{"id": tan.id, "display_name": "Mdm Tan Siew Lan", "code_word_is_set": False}]
+    assert client.put(f"/api/trusted/customers/{tan.id}/code-word", headers=dan, json={"code_word": SECRET}).status_code == 200
+    assert client.put(f"/api/trusted/customers/{tan.id}/code-word", headers=auth("mrs.lim"),
+                      json={"code_word": "hacked"}).status_code == 404
+    assert client.get("/api/me/code-word", headers=auth("tan.siewlan")).json() == {"is_set": True}
+
+
+def test_task4_code_word_never_in_logs_console_or_errors(client, auth):
+    h = auth("tan.siewlan")
+    bad = client.put("/api/me/code-word", headers=h, json={"code_word": "ab"})
+    assert bad.status_code == 422 and "ab" not in bad.json()["detail"]["message"]
+    client.put("/api/me/code-word", headers=h, json={"code_word": SECRET})
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    staff = auth("staff.anna")
+    blobs = [client.get(f"/api/staff/cases/{t['id']}", headers=staff).text,
+             client.get(f"/api/staff/cases/{t['id']}/referral.json", headers=staff).text,
+             client.get("/api/staff/audit", headers=staff).text,
+             client.get(f"/api/transfers/{t['id']}", headers=h).text]
+    with db_module.SessionLocal() as s:
+        blobs += [str(e.detail_json) for e in s.scalars(select(EvidenceEvent))]
+    for b in blobs:
+        assert "kopi" not in b.lower() and "$2b$" not in b
+
+
+def test_task4_pause_prompts_code_word_on_live_call(client, auth):
+    h = auth("tan.siewlan")
+    client.put("/api/me/code-word", headers=h, json={"code_word": SECRET})
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused" and p["code_word_prompt"] is True and p["code_word_set"] is True
+
+
+def test_task4_no_prompt_without_call_or_family_signal(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused" and p["code_word_prompt"] is False and p["code_word_set"] is False
+
+
+def test_task4_family_emergency_message_triggers_prompt(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    m = client.post("/api/messages/check", headers=h, json={
+        "text": "Ma, this is my new number, my phone broke. I'm in trouble, please send $8,000 now, don't tell anyone."}).json()
+    assert any(f["key"] == "family_new_number" for f in m["flags"])
+    client.post(f"/api/messages/{m['id']}/attach", headers=h, json={"transfer_id": t["id"]})
+    assert client.get(f"/api/transfers/{t['id']}", headers=h).json()["code_word_prompt"] is True
+
+
+# --- Task 5: attach a checked message to a case ---------------------------------------------------
+TICKET = "Selling Coldplay tickets! PayNow first, no meetup. WhatsApp 9123 4567 or https://tix-sg.shop/pay now"
+
+
+def test_task5_attach_message_to_case_redacted_in_detail_and_timeline(client, auth):
+    h = auth("ryan.lim")
+    t = create(client, h, "Carousell Seller – ticketsg88", "300", {"chatting": True}).json()
+    m = client.post("/api/messages/check", headers=h, json={"text": TICKET}).json()
+    r = client.post(f"/api/messages/{m['id']}/attach", headers=h, json={"transfer_id": t["id"]})
+    assert r.status_code == 200
+    assert client.post(f"/api/messages/{m['id']}/attach", headers=h, json={"transfer_id": t["id"]}).status_code == 409
+    d = client.get(f"/api/staff/cases/{t['id']}", headers=auth("staff.anna")).json()
+    att = d["attached_messages"]
+    assert len(att) == 1 and att[0]["verdict"] == "likely_scam"
+    assert "9123" not in att[0]["text_redacted"] and "[link: tix-sg.shop]" in att[0]["text_redacted"]
+    ev = [e for e in d["evidence"] if e["event_type"] == "message_attached"]
+    assert ev and "9123" not in str(ev[0]["detail"]) and ev[0]["detail"]["message_check_id"] == m["id"]
+    # attaching also reports it to staff
+    assert any(x["id"] == m["id"] for x in client.get("/api/staff/messages", headers=auth("staff.anna")).json())
+
+
+def test_task5_cannot_attach_to_someone_elses_payment(client, auth):
+    tan = auth("tan.siewlan")
+    t = create(client, tan, "SP Group", "45").json()
+    ryan = auth("ryan.lim")
+    m = client.post("/api/messages/check", headers=ryan, json={"text": TICKET}).json()
+    assert client.post(f"/api/messages/{m['id']}/attach", headers=ryan, json={"transfer_id": t["id"]}).status_code == 404
+    assert client.post(f"/api/messages/{m['id']}/attach", headers=tan, json={"transfer_id": t["id"]}).status_code == 404
+
+
+# --- Task 6: payee reported by other customers --------------------------------------------------
+def test_task6_payee_reported_by_other_customer_adds_signal(client, auth):
+    ryan = auth("ryan.lim")
+    t = create(client, ryan, "HR Onboarding – J. Wong", "600", {"chatting": True}).json()
+    m = client.post("/api/messages/check", headers=ryan, json={
+        "text": "HR Onboarding: you're hired! Pay an upfront training fee of $600 before your first day. Telegram us now."}).json()
+    client.post(f"/api/messages/{m['id']}/attach", headers=ryan, json={"transfer_id": t["id"]})
+    # Aisha pays the SAME account (shared mule account), small amount, no call
+    aisha = auth("aisha.rahman")
+    t2 = create(client, aisha, "HR Onboarding – J. Wong", "50", BROWSER_NO).json()
+    assert t2["payee_reported"] is True
+    assert any(r["key"] == "payee_reported" and r["text"] == "This account was reported by other customers."
+               for r in t2["reasons"])
+    p = client.post(f"/api/transfers/{t2['id']}/answers", headers=aisha, json=ALL_NO).json()
+    assert p["status"] == "paused"  # new payee 2 + reported 4 = 6
+    row = next(c for c in client.get("/api/staff/cases", headers=auth("staff.anna")).json() if c["id"] == t2["id"])
+    assert row["payee_reported"] is True
+
+
+def test_task6_escalated_case_counts_as_report_but_own_reports_do_not(client, auth):
+    tan = auth("tan.siewlan")
+    t = create(client, tan, "MAS Safety Account – Lim K.", "8000", CALL).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=tan, json=ALL_NO)
+    client.post(f"/api/staff/cases/{t['id']}/actions", headers=auth("staff.anna"),
+                json={"action": "escalate", "note": "MAS impersonation."})
+    again = create(client, tan, "MAS Safety Account – Lim K.", "20", BROWSER_NO).json()
+    assert again["payee_reported"] is False  # her own case is not "other customers"
+    ryan = create(client, auth("ryan.lim"), "MAS Safety Account – Lim K.", "20", BROWSER_NO).json()
+    assert ryan["payee_reported"] is True
+
+
+def test_task6_unrelated_account_not_reported(client, auth):
+    t = create(client, auth("aisha.rahman"), "Hospital – NUH Billing", "50", BROWSER_NO).json()
+    assert t["payee_reported"] is False

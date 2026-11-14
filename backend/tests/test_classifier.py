@@ -41,3 +41,13 @@ def test_redaction():
     out = redact("Call +65 9123 4567 or 81234567, email a@b.com, visit https://evil.example.com/path?x=1")
     assert "9123" not in out and "81234567" not in out and "a@b.com" not in out
     assert "[link: evil.example.com]" in out and "/path" not in out
+
+
+def test_task9_pokemon_preorder_rule():
+    scam = "Pokemon card pre-order! Booster box $120, PayNow first to secure your slot, no meetup, will mail when stock arrives."
+    r = classifier.check(scam)
+    assert r["verdict"] == "likely_scam"
+    assert {"preorder_scam", "paynow_first"} <= {f["key"] for f in r["flags"]}
+    # all three parts are needed: a normal shop pre-order is not flagged
+    assert "preorder_scam" not in {f["key"] for f in classifier.apply_rules("Pokémon pre-orders open on our website. Pay when you collect in store.")}
+    assert "preorder_scam" not in {f["key"] for f in classifier.apply_rules("Pre-order now, PayNow accepted, meet at Bishan MRT.")}

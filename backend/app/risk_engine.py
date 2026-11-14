@@ -1,4 +1,4 @@
-"""SafeBank Shield risk engine.
+"""OCBC Verify risk engine.
 
 Pure function: no I/O, no clock, no database. The server always calls this to decide the
 tier; the client never does.
@@ -13,9 +13,14 @@ Points
   Amount S$10,000 and above                   +2   (not cumulative with the band above)
   Unusual amount (z-score >= 3 vs history)    +2
   Each "Yes" to a safety question             +3
+  Payee account reported by other customers   +4
 
 Tiers: < 3 none, 3-5 ask, >= 6 pause.
 Override: new payee AND any live signal (call, recent call, chatting, screen share) -> pause.
+Override: new payee AND unusual amount (z >= 3) AND amount >= S$5,000 -> pause, whatever the
+          customer answers. A coached victim who answers "No" to everything is still paused.
+
+Answers can only RAISE risk: every "Yes" adds points and no answer removes any.
 """
 
 from __future__ import annotations
@@ -39,12 +44,15 @@ REASON_TEXT = {
     "q_online": "You have only met this person online or by phone.",
     "q_chat": "You said someone is messaging you, telling you to pay.",
     "override_new_payee_live": "A new payee while you are on a call or chat is a common scam pattern.",
+    "override_new_payee_unusual_large": "A large, unusual payment to someone new is how most scams end. We always pause these.",
+    "payee_reported": "This account was reported by other customers.",
     "signals_unavailable": "We could not check your phone for calls, so we're asking a few questions.",
 }
 
 LIVE_SIGNALS = ("on_call", "recent_call", "chatting", "screen_sharing")
 UNUSUAL_Z = Decimal("3")
 MEDIUM_MIN = Decimal("1000")
+COACHED_PAUSE_MIN = Decimal("5000")
 HIGH_MIN = Decimal("10000")
 
 
@@ -112,6 +120,7 @@ def assess(
     history_mean: Decimal | None,
     history_std: Decimal | None,
     answers: dict | None = None,
+    payee_reported_by_others: int = 0,
 ) -> RiskResult:
     amount = Decimal(amount)
     answers = answers or {}
@@ -141,6 +150,9 @@ def assess(
     if z is not None and z >= float(UNUSUAL_Z):
         add("unusual_amount", 2)
 
+    if payee_reported_by_others > 0:
+        add("payee_reported", 4)
+
     for q in QUESTION_KEYS:
         if answers.get(q) is True:
             add(q, 3)
@@ -154,6 +166,13 @@ def assess(
         tier = "pause"
         override = True
         reasons.append(Reason("override_new_payee_live", 0, REASON_TEXT["override_new_payee_live"]))
+
+    # Coached-victim override: does not depend on any answer or self-reported signal.
+    unusual = z is not None and z >= float(UNUSUAL_Z)
+    if is_new_payee and unusual and amount >= COACHED_PAUSE_MIN and tier != "pause":
+        tier = "pause"
+        override = True
+        reasons.append(Reason("override_new_payee_unusual_large", 0, REASON_TEXT["override_new_payee_unusual_large"]))
 
     # Unknown signals (permission denied / provider failed): we cannot rule out a call, so a
     # new payee or a large amount gets the questions instead of zero friction.

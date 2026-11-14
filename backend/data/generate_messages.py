@@ -14,7 +14,7 @@ OUT = Path(__file__).with_name("messages.csv")
 names = ["Mr Lim", "Ms Tan", "Officer Wong", "Inspector Lee", "Mr Ng", "Ms Chua", "Mr Goh", "Ms Teo", "Aunty Mary", "Uncle Ben"]
 amounts = ["$500", "$1,200", "$3,000", "$8,000", "$15,000", "$250", "$80", "$2,500", "$6,800"]
 small = ["$1.99", "$2.50", "$3.20", "$1.50", "$4.80"]
-domains = ["sg-parcel-track.info", "mas-verify.top", "safebank-secure-login.xyz", "singpost-redeliver.cc",
+domains = ["sg-parcel-track.info", "mas-verify.top", "ocbc-secure-login.xyz", "singpost-redeliver.cc",
            "ica-check.online", "dbs-refund.click", "concert-tix-sg.shop", "job-hub-sg.work", "lazada-promo.win"]
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 artists = ["Taylor", "Coldplay", "Jay Chou", "BLACKPINK", "Ed Sheeran", "Mayday"]
@@ -31,7 +31,7 @@ scam_templates = [
     "Inspector {name}: your account will be frozen today. Transfer funds to the safe account I give you. This call is secret, do not hang up.",
     "Official: you are under investigation. Install the app from {domain} so we can check your phone. Do not tell the bank staff.",
     # bank impersonation / OTP phishing
-    "SafeBank: unusual login detected. Verify now at https://{domain}/login or your account will be suspended within 2 hours.",
+    "OCBC: unusual login detected. Verify now at https://{domain}/login or your account will be suspended within 2 hours.",
     "Your bank card is blocked. Reply with your OTP and PIN to unlock it immediately.",
     "Dear customer, confirm your password at http://{domain} to avoid account closure today.",
     "Security team: we need the 6-digit code we just sent you to cancel a {amount} transaction. Please share it quickly.",
@@ -58,6 +58,9 @@ scam_templates = [
     "Last 2 {artist} tickets cat 1, {amount} only. Must PayNow deposit now, many people asking. No meetup sorry.",
     "Carousell: item reserved for you. Pay via this link {domain} to confirm. Seller can't meet, will courier.",
     "Cheap iPhone 16 Pro {amount}, brand new. Transfer first, delivery tomorrow. No COD.",
+    "Pokemon card pre-order! Booster box {amount}, PayNow first to secure your slot, no meetup, will mail when stock arrives.",
+    "Pokémon 151 ETB pre-order, limited slots. Full payment by PayNow first, no meetup sorry, shipping next month.",
+    "Pre-order One Piece / Pokemon cards cheapest in SG! Transfer deposit now, no meet up, courier only. Selling fast!",
     "Free {game} diamonds! Log in with your account at {domain} to claim 10,000 gems now, limited time.",
     "{game} top-up 90% off! Pay by gift card. Send me the gift card code to receive your credits.",
     "You won a {game} giveaway! Pay {small} shipping and give us your login to receive the prize.",
@@ -96,8 +99,8 @@ scam_ms = [
 ]
 
 legit_templates = [
-    "SafeBank: Your monthly statement for {month} is ready. View it in the SafeBank app. We will never ask for your OTP or password.",
-    "SafeBank: A payment of {amount} to SP Group was made on {day}. If this wasn't you, call us using the number on your card.",
+    "OCBC: Your monthly statement for {month} is ready. View it in the OCBC app. We will never ask for your OTP or password.",
+    "OCBC: A payment of {amount} to SP Group was made on {day}. If this wasn't you, call us using the number on your card.",
     "Reminder: your Town Council S&CC charges are due on the 15th. Pay through your usual bank app.",
     "SP Group: your utilities bill for {month} is {amount}. Pay through AXS, GIRO or your bank app.",
     "Hi Mum, I'll be home late tonight, don't wait for dinner. Love you.",
@@ -106,6 +109,8 @@ legit_templates = [
     "NUH: your appointment reminder for {day} 2pm, Clinic B. To reschedule, call the number on your appointment card.",
     "Your GrabFood order is on the way! Track it in the Grab app.",
     "Carousell: buyer {name} sent you an offer. Meet up at the MRT station to deal in person.",
+    "Pokemon cards for sale, meet at Bishan MRT on {day}, you can check the cards first then pay cash or PayNow.",
+    "Our shop's Pokémon pre-orders open on the official website. Pay at the counter when you collect in store.",
     "Selling my old textbook, $15, can meet at Tampines MRT on {day}. Cash or PayNow on the spot.",
     "Team, the project meeting is moved to {day} 3pm in room 4. Please bring your laptops.",
     "Lecturer: assignment 2 deadline extended to {day} 11:59pm. Submit on the school portal.",
@@ -121,14 +126,14 @@ legit_templates = [
     "Library: your books are due on {day}. Renew online or at any branch.",
     "Gym class tomorrow at 7am cancelled due to maintenance. Sorry for the inconvenience.",
     "Aunty, the church gathering is on {day} 6pm. Bring a dish if you can!",
-    "SafeBank will never ask you to transfer money to a 'safe account'. If in doubt, call us in the app.",
+    "OCBC will never ask you to transfer money to a 'safe account'. If in doubt, call us in the app.",
     "Your monthly salary of {amount} has been credited to your account.",
     "Hey can you send me the notes from today's lecture? Thanks!",
     "Mum, I reached school already. Will call you later.",
     "Your Singtel bill of {amount} for {month} is ready. View it in the My Singtel app.",
     "Hi, your dental cleaning is scheduled for {day} at 9am. Reply C to confirm or R to reschedule.",
     "Movie night at my place {day}? I'll get the snacks.",
-    "Reminder from SafeBank: update your app to the latest version from the official app store.",
+    "Reminder from OCBC: update your app to the latest version from the official app store.",
     "Your transfer of {amount} to Tan Wei Ming was successful.",
     "Thanks for your donation of {amount} to the community food bank. Receipt attached.",
     "Grandpa, I passed my exams! Thanks for all your support.",
@@ -138,7 +143,7 @@ legit_templates = [
 legit_zh = [
     "妈，我今晚晚点回家，不用等我吃饭。",
     "您的诊所预约在{day}上午10点，请带身份证。",
-    "SafeBank：您的{month}月结单已经可以在应用程序中查看。我们绝不会向您索取验证码。",
+    "OCBC：您的{month}月结单已经可以在应用程序中查看。我们绝不会向您索取验证码。",
     "星期天一起去喝茶吗？我来接你。",
     "您的水电费账单已出，请通过银行应用程序付款。",
     "孙子考试通过了，谢谢大家的关心！",
@@ -146,7 +151,7 @@ legit_zh = [
 legit_ms = [
     "Mak, saya balik lambat malam ini. Jangan tunggu makan malam.",
     "Temujanji klinik anda pada {day} jam 10 pagi. Sila bawa kad pengenalan.",
-    "SafeBank: penyata bulanan anda sudah tersedia dalam aplikasi.",
+    "OCBC: penyata bulanan anda sudah tersedia dalam aplikasi.",
     "Jumpa di masjid hari Jumaat nanti, insya-Allah.",
     "Bil SP Group anda untuk bulan {month} ialah {amount}. Bayar melalui aplikasi bank anda.",
     "Kelas tuisyen esok dibatalkan. Jumpa minggu depan.",

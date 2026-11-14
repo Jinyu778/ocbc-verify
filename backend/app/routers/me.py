@@ -14,6 +14,7 @@ from ..models import Account, Payee, Transfer, TrustedContact, User, utcnow
 from ..security import get_current_user, require_role
 from ..services import active_trusted_contact, as_utc, payee_is_new, transfer_out
 from .auth import user_out
+from ..codeword import hash_code_word
 
 router = APIRouter(prefix="/api/me", tags=["me"])
 customer_only = require_role("customer")
@@ -147,3 +148,31 @@ def remove_trusted(tc_id: int, user: User = Depends(customer_only), db: Session 
               {"customer_id": user.id, "contact_id": tc.contact_user_id, "takes_effect": str(tc.pending_removal_at)})
     db.commit()
     return _tc_out(tc, now)
+
+
+# --- family code word -------------------------------------------------------------------------
+class CodeWordIn(BaseModel):
+    code_word: str
+
+
+@router.get("/code-word")
+def code_word_status(user: User = Depends(customer_only)):
+    return {"is_set": bool(user.family_code_word_hash)}
+
+
+@router.put("/code-word")
+def set_code_word(body: CodeWordIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    user.family_code_word_hash = hash_code_word(body.code_word)
+    db.add(user)
+    log_event(db, None, "customer", "family_code_word_set", {"customer_id": user.id, "set_by": "customer"})
+    db.commit()
+    return {"is_set": True}
+
+
+@router.delete("/code-word")
+def clear_code_word(user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    user.family_code_word_hash = None
+    db.add(user)
+    log_event(db, None, "customer", "family_code_word_cleared", {"customer_id": user.id})
+    db.commit()
+    return {"is_set": False}
