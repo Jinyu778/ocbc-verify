@@ -13,7 +13,7 @@ export function mockFetch(routes: Record<string, unknown> = {}) {
     const body = hit
       ? hit[1]
       : path.startsWith("/api/config")
-        ? { save_for_later_options_minutes: [60, 360, 1440], trusted_contact_timeout_minutes: 1440, contact_change_cooling_minutes: 1440, continue_anyway_seconds: 30 }
+        ? { save_for_later_options_minutes: [60, 360, 1440], trusted_contact_timeout_minutes: 1440, contact_change_cooling_minutes: 1440, continue_anyway_seconds: 60, hang_up_wait_minutes: 1 }
         : {};
     return new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } });
   });

@@ -4,9 +4,9 @@ Pure functions: no I/O and no clock (the caller passes the times in), like the r
 
 Zero-trust idea: an inbound caller is never proof of anything, and phone scams depend on keeping
 the victim on the line. So when a phone call is part of a paused payment, "Continue anyway" stays
-locked until the call has ended AND a cooling-off time has passed (by default 10 minutes, the same
-window in which the risk engine still treats a finished call as a live risk). A scammer can say
-"wait 30 seconds and tap Continue"; they cannot stay on the line while the call-free wait runs.
+locked until the call has ended AND a cooling-off time has passed (HANG_UP_WAIT_MINUTES, by default
+1 minute). A scammer can say "wait a moment and tap Continue"; they cannot stay on the line while
+the call-free wait runs.
 
 Nothing is blocked permanently: once the wait is over, the customer decides.
 """

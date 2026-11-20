@@ -329,7 +329,7 @@ function Pause({ tr }: { tr: Transfer }) {
   const wait = secondsLeft(tr.continue_anyway_at, now);
   const { config } = useSession();
   const device = useSignals();
-  const hangUpWait = config?.hang_up_wait_minutes ?? 10;
+  const hangUpWait = config?.hang_up_wait_minutes ?? 1;
   // Zero trust: whoever called or messaged, they are unverified. Offer the app's own numbers.
   const inbound = !!(tr.signals.on_call || tr.signals.recent_call || tr.signals.chatting || tr.answers?.q_phone || tr.answers?.q_chat);
   const mustHangUp = tr.hang_up_required && !tr.call_ended_at;

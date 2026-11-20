@@ -29,7 +29,7 @@ const base: Transfer = {
   answers: { q_phone: false, q_secret: false, q_online: false, q_chat: false },
   wait_until: null,
   pause_shown_at: new Date().toISOString(),
-  continue_anyway_at: new Date(Date.now() + 30000).toISOString(),
+  continue_anyway_at: new Date(Date.now() + 60000).toISOString(),
   hang_up_required: false,
   call_ended_at: null,
   trusted_requested_at: null,
@@ -69,7 +69,7 @@ describe("Pause screen", () => {
     }
   });
 
-  it("hides 'Continue anyway' until the 30-second countdown ends", () => {
+  it("hides 'Continue anyway' until the 1-minute countdown ends", () => {
     renderPause(base);
     expect(screen.getByText(/Continue anyway \(available in \d+ s\)/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Continue anyway" })).not.toBeInTheDocument();
@@ -308,7 +308,7 @@ describe("Zero trust – an inbound contact is never proof", () => {
   it("locks 'Continue anyway' until the customer hangs up, and says why", () => {
     renderPause(onCall);
     expect(screen.getByRole("heading", { name: "Hang up first" })).toBeInTheDocument();
-    expect(screen.getByText(/opens 10 minutes after the call ends/)).toBeInTheDocument();
+    expect(screen.getByText(/opens 1 minute after the call ends/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Continue anyway" })).not.toBeInTheDocument();
     expect(screen.queryByText(/Continue anyway \(available in/)).not.toBeInTheDocument();
   });
