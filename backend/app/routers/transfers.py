@@ -18,8 +18,10 @@ from ..services import (
     active_trusted_contact,
     amount_band,
     as_utc,
+    continue_ready_at,
     get_owned_transfer,
     move_money,
+    needs_hang_up,
     notify_transfer,
     payee_is_new,
     payee_report_count,
@@ -57,6 +59,17 @@ class AnswersIn(BaseModel):
 
 class SaveIn(BaseModel):
     minutes: int
+
+
+class CallStateIn(BaseModel):
+    on_call: bool
+    # native = the Android call-state plugin; customer_answer = the customer tapped "I've hung up"
+    source: Literal["native", "customer_answer"]
+
+
+class CallBackIn(BaseModel):
+    # Which number from the app's built-in official directory the customer chose to call back.
+    target: Literal["ocbc_hotline", "scamshield", "police"]
 
 
 def field_error(field: str, message: str):
@@ -111,6 +124,8 @@ def create_transfer(body: CreateIn, user: User = Depends(customer_only), db: Ses
 
     sig = body.signals.model_dump()
     t = Transfer(customer_user_id=user.id, payee_id=payee.id, amount=amount, status="checking", signals_json=sig)
+    if body.signals.recent_call and not body.signals.on_call:
+        t.call_ended_at = utcnow()  # the call is already over; the cooling-off time counts from now
     t.payee = payee
     db.add(t)
     db.flush()
@@ -199,14 +214,60 @@ def continue_anyway(transfer_id: int, user: User = Depends(customer_only), db: S
     if t.status not in ("paused", "waiting_trusted_contact") or t.trusted_decision == "stop":
         require_not_done(t)
         raise HTTPException(409, "This option isn't available for this payment.")
+    s = get_settings()
     shown = as_utc(t.pause_shown_at)
-    wait = get_settings().continue_anyway_seconds
-    if shown is None or (utcnow() - shown).total_seconds() < wait:
+    hang_up = needs_hang_up(t)
+    if hang_up and t.call_ended_at is None:
+        log_event(db, t.id, "customer", "continue_anyway_rejected_on_call", {})
+        db.commit()
+        raise HTTPException(409, "Please hang up first. Scammers keep you on the line so you can't stop and check. "
+                                 f"You can continue {s.hang_up_wait_minutes} minutes after the call ends.")
+    ready = continue_ready_at(t)
+    if ready is None or utcnow() < ready:
         log_event(db, t.id, "customer", "continue_anyway_rejected_too_early", {})
         db.commit()
-        raise HTTPException(409, f"Please take {wait} seconds to read the warning before continuing.")
-    log_event(db, t.id, "customer", "continue_anyway", {"seconds_after_pause": int((utcnow() - shown).total_seconds())})
+        if hang_up:
+            raise HTTPException(409, f"Please wait {s.hang_up_wait_minutes} minutes after the call before continuing.")
+        raise HTTPException(409, f"Please take {s.continue_anyway_seconds} seconds to read the warning before continuing.")
+    log_event(db, t.id, "customer", "continue_anyway", {"seconds_after_pause": int((utcnow() - shown).total_seconds()),
+                                                        "after_phone_call": hang_up})
     move_money(db, t, "sent", "customer")
+    db.commit()
+    notify_transfer(db, t)
+    # The customer overrode a warning: tell staff so someone can follow up quickly.
+    hub.notify({"type": "case.continued_anyway", "transfer_id": t.id, "customer_name": user.display_name,
+                "amount": str(t.amount), "after_phone_call": hang_up}, staff=True)
+    return transfer_out(db, t)
+
+
+@router.post("/{transfer_id}/call-state")
+def call_state(transfer_id: int, body: CallStateIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    """The phone call behind a paused payment ended (or a call started again).
+
+    On Android the call-state plugin reports this by itself; in a browser the customer taps
+    "I've hung up". A new call after that resets the wait, because scammers often call back.
+    """
+    t = get_owned_transfer(db, transfer_id, user)
+    if t.status not in ("paused", "waiting_trusted_contact"):
+        raise HTTPException(409, "This payment isn't waiting on a phone call.")
+    if needs_hang_up(t):
+        if body.on_call and t.call_ended_at is not None:
+            t.call_ended_at = None
+            log_event(db, t.id, "system" if body.source == "native" else "customer", "call_resumed", {"source": body.source})
+        elif not body.on_call and t.call_ended_at is None:
+            t.call_ended_at = utcnow()
+            log_event(db, t.id, "system" if body.source == "native" else "customer", "call_ended_reported",
+                      {"source": body.source})
+        db.commit()
+        notify_transfer(db, t)
+    return transfer_out(db, t)
+
+
+@router.post("/{transfer_id}/call-back")
+def call_back(transfer_id: int, body: CallBackIn, user: User = Depends(customer_only), db: Session = Depends(get_db)):
+    """Evidence only: the customer chose to call back on a number from the app's official directory."""
+    t = get_owned_transfer(db, transfer_id, user)
+    log_event(db, t.id, "customer", "official_callback_chosen", {"target": body.target})
     db.commit()
     notify_transfer(db, t)
     return transfer_out(db, t)

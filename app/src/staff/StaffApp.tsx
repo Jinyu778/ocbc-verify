@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { BarChart3, Flag, History, ListChecks, LogOut, ShieldCheck } from "lucide-react";
-import { SessionTimeout, cx, useLive, useLiveEvent, useToast } from "@/design";
+import { SessionTimeout, cx, formatSGD, useLive, useLiveEvent, useToast } from "@/design";
 import { useSession } from "../state/session";
 import { BrandMark } from "../components/Layout";
 import { Queue } from "./pages/Queue";
@@ -36,6 +36,10 @@ export default function StaffApp() {
       qc.invalidateQueries({ queryKey: ["calls"] });
       qc.invalidateQueries({ queryKey: ["cases"] });
       if (m.type === "call.incoming" && m.customer_name) toast(`Incoming verification call from ${m.customer_name}`, "warning");
+    } else if (m.type === "case.continued_anyway") {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      const amount = formatSGD(String(m.amount));
+      toast(`${m.customer_name} sent ${amount} anyway after a ${m.after_phone_call ? "phone-call " : ""}warning. Consider a follow-up call.`, "warning");
     } else if (m.type.startsWith("message.")) {
       qc.invalidateQueries({ queryKey: ["messages"] });
       if (m.type === "message.reported") toast("A customer reported a suspicious message", "info");

@@ -9,6 +9,7 @@ import { Pay } from "../pages/Pay";
 import { Check } from "../pages/Check";
 import { ContactHome } from "../pages/ContactHome";
 import { CodeWordCard } from "../components/CodeWord";
+import { Verify } from "../pages/Verify";
 import { mockFetch, renderApp } from "./utils";
 import type { Transfer } from "../types";
 
@@ -29,6 +30,8 @@ const base: Transfer = {
   wait_until: null,
   pause_shown_at: new Date().toISOString(),
   continue_anyway_at: new Date(Date.now() + 30000).toISOString(),
+  hang_up_required: false,
+  call_ended_at: null,
   trusted_requested_at: null,
   trusted_timeout_at: null,
   trusted_decision: null,
@@ -289,5 +292,72 @@ describe("Judge fixes – message checker", () => {
     fireEvent.click(screen.getByRole("button", { name: "Check message" }));
     await screen.findByText("Likely scam");
     expect(screen.queryByRole("button", { name: "Add message to this payment" })).not.toBeInTheDocument();
+  });
+});
+
+describe("Zero trust – an inbound contact is never proof", () => {
+  const onCall: Transfer = {
+    ...base,
+    signals: { on_call: true, source: "customer_answer" },
+    hang_up_required: true,
+    call_ended_at: null,
+    continue_anyway_at: null,
+  };
+
+  it("locks 'Continue anyway' until the customer hangs up, and says why", () => {
+    renderPause(onCall);
+    expect(screen.getByRole("heading", { name: "Hang up first" })).toBeInTheDocument();
+    expect(screen.getByText(/opens 10 minutes after the call ends/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Continue anyway" })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Continue anyway \(available in/)).not.toBeInTheDocument();
+  });
+
+  it("in a browser, 'I've hung up' tells the server (which starts the wait)", async () => {
+    const fetchMock = mockFetch({ "/api/transfers/7/call-state": { ...onCall, call_ended_at: new Date().toISOString() } });
+    renderPause(onCall);
+    fireEvent.click(screen.getByRole("button", { name: "I've hung up" }));
+    await act(async () => undefined);
+    const call = fetchMock.mock.calls.find(([url]) => String(url).includes("/api/transfers/7/call-state"));
+    expect(JSON.parse(String((call?.[1] as unknown as RequestInit).body))).toEqual({ on_call: false, source: "customer_answer" });
+  });
+
+  it("after the call, counts down in minutes and suggests calling back", () => {
+    renderPause({ ...onCall, call_ended_at: new Date().toISOString(), continue_anyway_at: new Date(Date.now() + 600_000).toISOString() });
+    expect(screen.getByText(/Continue anyway \(available in (9:5\d|10:00)\)/)).toBeInTheDocument();
+    expect(screen.getByText(/call back on a number you already know/)).toBeInTheDocument();
+  });
+
+  it("offers only the app's own numbers to call back, and logs the choice as evidence", async () => {
+    const fetchMock = mockFetch();
+    renderPause(onCall);
+    expect(screen.getByRole("heading", { name: "Hang up. Call back on a number you already know." })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ScamShield Helpline 1799/ })).toHaveAttribute("href", "tel:1799");
+    expect(screen.getByRole("link", { name: /OCBC 24-hour hotline 6363 3333/ })).toHaveAttribute("href", "tel:+6563633333");
+    expect(screen.getByRole("link", { name: /Police Hotline 1800 255 0000/ })).toHaveAttribute("href", "tel:18002550000");
+    fireEvent.click(screen.getByRole("link", { name: /ScamShield Helpline 1799/ }));
+    await act(async () => undefined);
+    const call = fetchMock.mock.calls.find(([url]) => String(url).includes("/api/transfers/7/call-back"));
+    expect(JSON.parse(String((call?.[1] as unknown as RequestInit).body))).toEqual({ target: "scamshield" });
+  });
+
+  it("does not show the call-back card when nobody contacted the customer", () => {
+    renderPause(base);
+    expect(screen.queryByRole("heading", { name: /Call back on a number you already know/ })).not.toBeInTheDocument();
+  });
+
+  it("Verify a call always offers the official call-back numbers", async () => {
+    mockFetch({ "/api/calls/active": { genuine: false, call: null } });
+    renderApp(<Verify />);
+    expect(await screen.findByText("OCBC is NOT calling you right now.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /ScamShield Helpline 1799/ })).toBeInTheDocument();
+  });
+
+  it("the message checker never shows a green 'safe' verdict", async () => {
+    mockFetch({ "/api/messages/check": { id: 9, verdict: "no_signs", ml_probability: 0.04, flags: [] }, "/api/me/activity": [] });
+    renderApp(<Check />);
+    fireEvent.change(screen.getByLabelText("Message to check"), { target: { value: "See you at 7?" } });
+    fireEvent.click(screen.getByRole("button", { name: "Check message" }));
+    expect(await screen.findByText("No known warning signs")).toBeInTheDocument();
+    expect(screen.getByText(/doesn't prove it's real/)).toBeInTheDocument();
   });
 });

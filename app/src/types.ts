@@ -35,7 +35,11 @@ export interface Transfer {
   answers: Record<string, boolean> | null;
   wait_until: string | null;
   pause_shown_at: string | null;
+  /** null while the customer still has to hang up, or before the pause screen was shown */
   continue_anyway_at: string | null;
+  /** a phone call is part of this payment: Continue anyway needs the call to end first */
+  hang_up_required: boolean;
+  call_ended_at: string | null;
   trusted_requested_at: string | null;
   trusted_timeout_at: string | null;
   trusted_decision: "ok" | "stop" | null;

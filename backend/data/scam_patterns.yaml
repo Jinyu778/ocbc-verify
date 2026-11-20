@@ -385,3 +385,18 @@ patterns:
     source: GovTech TechNews 30 Jul 2024; ScamShield
     source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
     confidence: verified
+
+  # ------------------------------------------------------------------ zero trust (added from a teammate's change)
+  # Not a scam sign by itself: a message that asks you to ACT can't prove who sent it. AI writes fluent,
+  # typo-free messages, so "no red flags" must never read as "safe" when money or a login is at stake.
+  # It keeps such a message out of the calmest verdict and never counts towards "Likely scam".
+  - id: asks_action
+    family: action
+    scam_type: null
+    weight: 1
+    unless_before: '(never|do not|don''t|will not|won''t|cannot|can''t|jangan|切勿|绝不)[^.!?。]{0,40}$'
+    pattern: '\b(transfer(ring)?|pay ?now|pay (the|a|an|your|me|us|via|by|within|to|for|now|it)|make (a |the )?payment|send (me|us|money|the money|over|your)|lend me|click|tap (the |this |on )?(link|here|below)|log ?in (to|at|here|now|via)|sign in (to|at|here)|verify your|update your|confirm your|reply with|share (your|the) (code|otp|pin|details)|scan (the|this) (qr|code)|top ?up)\b|转账|汇款|付款|点击|登录|pindahkan|bayar|klik|hantar (wang|duit)'
+    explanation: 'It asks you to pay, click, log in or share something. A message can''t prove who sent it, so check through a number you already know before you act.'
+    source: 'Team rule (zero trust): inbound contact is never proof of who sent it'
+    confidence: unverified
+

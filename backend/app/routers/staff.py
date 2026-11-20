@@ -41,9 +41,12 @@ def case_row(db: Session, t: Transfer) -> dict:
     base = transfer_out(db, t)
     now = utcnow()
     waiting = (as_utc(t.completed_at) or now) - as_utc(t.created_at)
+    continued = db.scalar(select(EvidenceEvent.id).where(EvidenceEvent.transfer_id == t.id,
+                                                         EvidenceEvent.event_type == "continue_anyway").limit(1))
     return {**base, "customer": {"id": t.customer.id, "display_name": t.customer.display_name, "age": t.customer.age},
             "waiting_seconds": int(waiting.total_seconds()),
-            "is_new_payee": any(r["key"] == "new_payee" for r in t.reasons_json or [])}
+            "is_new_payee": any(r["key"] == "new_payee" for r in t.reasons_json or []),
+            "continued_anyway": continued is not None}
 
 
 @router.get("/summary")

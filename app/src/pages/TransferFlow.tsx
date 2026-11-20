@@ -8,6 +8,7 @@ import {
   Clock,
   Home as HomeIcon,
   PhoneCall,
+  PhoneOff,
   Search,
   Send,
   ShieldAlert,
@@ -48,9 +49,11 @@ import {
 } from "@/design";
 import { Screen, SignalBanners } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
+import { OfficialContacts } from "../components/OfficialContacts";
 import { NewChip } from "./Pay";
 import { useSession } from "../state/session";
 import { startSafeBankCall } from "../lib/calls";
+import { useSignals } from "../signals";
 import type { Reason, Transfer } from "../types";
 
 const QUESTIONS = ["q_phone", "q_secret", "q_online", "q_chat"] as const;
@@ -339,6 +342,23 @@ function Pause({ tr }: { tr: Transfer }) {
   const hasContact = !!tr.trusted_contact_name;
   const wait = secondsLeft(tr.continue_anyway_at, now);
   const { config } = useSession();
+  const device = useSignals();
+  const hangUpWait = config?.hang_up_wait_minutes ?? 10;
+  // Zero trust: whoever called or messaged, they are unverified. Offer the app's own numbers.
+  const inbound = !!(tr.signals.on_call || tr.signals.recent_call || tr.signals.chatting || tr.answers?.q_phone || tr.answers?.q_chat);
+  const mustHangUp = tr.hang_up_required && !tr.call_ended_at;
+
+  // Android: the call-state plugin tells the server when the call ends, or when a new call starts
+  // (scammers call back). In a browser the customer taps "I've hung up" instead.
+  useEffect(() => {
+    if (!tr.hang_up_required || device.source !== "native") return;
+    if (!device.on_call && !tr.call_ended_at) void run("hangup", "call-state", { on_call: false, source: "native" });
+    else if (device.on_call && tr.call_ended_at) void run("hangup", "call-state", { on_call: true, source: "native" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only react to call-state changes
+  }, [device.on_call, device.source, tr.hang_up_required, tr.call_ended_at]);
+
+  const logCallBack = (target: string) =>
+    void api(`/api/transfers/${tr.id}/call-back`, { method: "POST", body: { target } }).catch(() => undefined);
 
   const [callError, setCallError] = useState<string | null>(null);
   const callSafeBank = async () => {
@@ -402,6 +422,11 @@ function Pause({ tr }: { tr: Transfer }) {
           {hasContact ? t("pause.trusted") : t("pause.trustedNone")}
         </Button>
       </div>
+      {inbound && (
+        <div>
+          <OfficialContacts onPick={logCallBack} />
+        </div>
+      )}
       <SignalBanners signals={tr.signals} />
       {tr.payee_reported && (
         <Banner tone="danger" icon={Flag} title={t("reasons.payee_reported")}>
@@ -419,11 +444,42 @@ function Pause({ tr }: { tr: Transfer }) {
         <ReadAloud text={`${t("pause.title")}. ${t("pause.subtitle")} ${t("pause.because")} ${reasonsText(t, tr.reasons)}`} />
       </Card>
       <div className="pt-2 text-center">
-        {wait > 0 ? (
-          <p className="inline-flex items-center gap-2 text-sm text-muted-foreground" aria-live="off">
-            <CountdownRing left={wait} total={config?.continue_anyway_seconds ?? 30} />
-            {t("pause.continueIn", { s: wait })}
-          </p>
+        {mustHangUp ? (
+          <Card className="space-y-3 text-left">
+            <h2 className="flex items-start gap-2 text-lg">
+              <PhoneOff aria-hidden className="mt-1 h-5 w-5 shrink-0 text-danger" />
+              {t("pause.hangUpTitle")}
+            </h2>
+            <p>{t("pause.hangUpBody", { time: formatMinutes(t, hangUpWait) })}</p>
+            {device.source === "native" ? (
+              <p className="text-sm text-muted-foreground">{t("pause.hangUpNative")}</p>
+            ) : (
+              <Button
+                variant="outline"
+                block
+                icon={PhoneOff}
+                loading={busy === "hangup"}
+                onClick={() => run("hangup", "call-state", { on_call: false, source: "customer_answer" })}
+              >
+                {t("pause.hungUp")}
+              </Button>
+            )}
+          </Card>
+        ) : wait > 0 ? (
+          tr.hang_up_required ? (
+            <div className="space-y-1">
+              <p className="inline-flex items-center gap-2 text-sm text-muted-foreground" aria-live="off">
+                <CountdownRing left={wait} total={Math.max(wait, hangUpWait * 60)} />
+                {t("pause.continueInTime", { time: formatDuration(wait) })}
+              </p>
+              <p className="text-sm">{t("pause.callEndedWait")}</p>
+            </div>
+          ) : (
+            <p className="inline-flex items-center gap-2 text-sm text-muted-foreground" aria-live="off">
+              <CountdownRing left={wait} total={config?.continue_anyway_seconds ?? 30} />
+              {t("pause.continueIn", { s: wait })}
+            </p>
+          )
         ) : (
           <button type="button" onClick={() => setSheet(true)} className="sb-fade-up min-h-touch px-2 text-sm font-semibold text-secondary underline">
             {t("pause.continue")}

@@ -106,27 +106,27 @@
       }
     },
     "checker": {
-      "accuracy": 0.894,
-      "precision_scam": 0.896,
+      "accuracy": 0.843,
+      "precision_scam": 0.819,
       "recall_scam": 0.909,
-      "f1_scam": 0.902,
-      "false_positive_rate": 0.122,
+      "f1_scam": 0.861,
+      "false_positive_rate": 0.234,
       "confusion_matrix": {
-        "true_legit": 165,
-        "false_scam": 23,
+        "true_legit": 144,
+        "false_scam": 44,
         "missed_scam": 20,
         "caught_scam": 199
       },
       "legit_shown_likely_scam": 0.0,
-      "legit_shown_be_careful": 0.122,
+      "legit_shown_be_careful": 0.234,
       "hard_negative_shown_likely_scam": 0.0,
-      "hard_negative_flagged": 0.198,
+      "hard_negative_flagged": 0.307,
       "scam_shown_likely_scam": 0.817,
       "verdict_split": {
         "likely_scam": 179,
-        "be_careful": 43,
-        "not_sure": 49,
-        "no_signs": 136
+        "be_careful": 64,
+        "not_sure": 39,
+        "no_signs": 125
       }
     }
   },
@@ -146,27 +146,27 @@
       }
     },
     "checker": {
-      "accuracy": 0.953,
-      "precision_scam": 1.0,
-      "recall_scam": 0.917,
-      "f1_scam": 0.957,
-      "false_positive_rate": 0.0,
+      "accuracy": 0.906,
+      "precision_scam": 0.895,
+      "recall_scam": 0.944,
+      "f1_scam": 0.919,
+      "false_positive_rate": 0.143,
       "confusion_matrix": {
-        "true_legit": 28,
-        "false_scam": 0,
-        "missed_scam": 3,
-        "caught_scam": 33
+        "true_legit": 24,
+        "false_scam": 4,
+        "missed_scam": 2,
+        "caught_scam": 34
       },
       "legit_shown_likely_scam": 0.0,
-      "legit_shown_be_careful": 0.0,
+      "legit_shown_be_careful": 0.143,
       "hard_negative_shown_likely_scam": 0.0,
       "hard_negative_flagged": 0.0,
       "scam_shown_likely_scam": 0.639,
       "verdict_split": {
         "likely_scam": 23,
-        "be_careful": 10,
-        "not_sure": 7,
-        "no_signs": 24
+        "be_careful": 15,
+        "not_sure": 5,
+        "no_signs": 21
       }
     }
   },

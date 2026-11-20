@@ -119,6 +119,7 @@ def _upgrade_dev_db() -> None:
 
     insp = inspect(db_module.engine)
     wanted = {"users": {"family_code_word_hash": "VARCHAR(128)"},
+              "transfers": {"call_ended_at": "TIMESTAMP"},
               "message_checks": {"source_channel": "VARCHAR(16)", "claimed_sender": "VARCHAR(120)", "scam_type": "VARCHAR(32)",
                                  "rule_pack_version": "VARCHAR(16)", "user_feedback": "VARCHAR(16)",
                                  "training_candidate": "BOOLEAN NOT NULL DEFAULT 0"}}

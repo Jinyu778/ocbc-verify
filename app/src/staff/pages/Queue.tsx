@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ListChecks, Ban, Clock, Flag, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { ListChecks, Ban, Clock, FastForward, Flag, PauseCircle, PhoneCall, PiggyBank, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { Banner, Button, RiskChip, Skeleton, api, cx, formatSGD, timeAgo, useNow, type Tier } from "@/design";
 import { STATUS_LABEL, TIER_LABEL, type CaseRow, type Summary } from "../types";
 import { CaseDrawer } from "../components/CaseDrawer";
@@ -122,6 +122,11 @@ export function Queue() {
                     {c.payee_reported && (
                       <span className="inline-flex items-center gap-0.5 rounded-[6px] bg-danger-soft px-1.5 text-xs font-semibold text-danger">
                         <Flag aria-hidden className="h-3 w-3" />REPORTED
+                      </span>
+                    )}
+                    {c.continued_anyway && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full border border-danger px-1.5 text-xs font-bold text-danger" title="The customer used Continue anyway on a warning. Consider a follow-up call.">
+                        <FastForward aria-hidden className="h-3 w-3" />SENT ANYWAY
                       </span>
                     )}
                   </span>

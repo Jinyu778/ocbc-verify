@@ -14,7 +14,7 @@ const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircl
   { id: "genuine", label: "Mark as genuine", key: "G", icon: ThumbsUp, variant: "outline", help: "Releases it and records a false positive for the metrics." },
 ];
 const CLOSED = ["sent", "cancelled", "approved_by_staff"];
-const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No obvious signs" };
+const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No known signs" };
 const QUESTION_LABEL: Record<string, string> = {
   q_phone: "Someone on the phone telling them to pay",
   q_secret: "Told to keep secret / 'safe account'",

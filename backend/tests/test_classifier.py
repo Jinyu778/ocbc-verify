@@ -1,3 +1,5 @@
+import pytest
+
 from app import classifier
 from app.redact import redact
 
@@ -118,3 +120,33 @@ def test_new_playbooks():
 def test_empty_and_odd_input():
     assert classifier.check("ok")["verdict"] in {"no_signs", "not_sure"}
     assert classifier.check("<script>alert(1)</script>")["verdict"] != "likely_scam"
+
+
+# --- zero trust: a message that asks you to act is never "no signs" ----------------------------
+def test_request_to_act_is_never_no_signs():
+    flags = classifier.apply_rules("Hi, please pay your outstanding bill of $42.10 by Friday.")
+    assert "asks_action" in {f["key"] for f in flags}
+    assert classifier.verdict_for(flags, 0.05) == "be_careful"
+
+
+def test_request_to_act_alone_never_makes_likely_scam():
+    # one strong sign + a request is not "two signs": the request is not a scam sign by itself
+    strong = {"key": "credentials", "strong": True}
+    action = {"key": "asks_action", "strong": False}
+    assert classifier.verdict_for([strong, action], 0.2) == "be_careful"
+    assert classifier.verdict_for([strong, {"key": "urgency", "strong": False}], 0.2) == "likely_scam"
+
+
+def test_plain_chat_still_no_signs():
+    assert "asks_action" not in {f["key"] for f in classifier.apply_rules("Are we still meeting at 7 on Friday?")}
+
+
+@pytest.mark.parametrize("text", [
+    "Click here to claim your prize",
+    "Please transfer the balance today",
+    "Log in to update your account details",
+    "请立即转账",
+    "Sila bayar sekarang",
+])
+def test_action_phrases(text):
+    assert "asks_action" in {f["key"] for f in classifier.apply_rules(text)}

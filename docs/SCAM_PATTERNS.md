@@ -11,7 +11,7 @@ Rule pack version **2026.11.1**, last reviewed 2026-11-20. Source of truth: [`ba
 3. **Playbook rules** below. Protective wording is skipped: a rule with `unless_before` ignores a match such as "never share your OTP".
 4. **Model** (TF-IDF + calibrated logistic regression) gives a probability. It can raise caution but can never produce "Likely scam" on its own.
 
-**Likely scam** needs a *critical* rule, or a strong rule plus a second signal family (model ≥ 0.5), or three families (model ≥ 0.5), or any rule with model ≥ 0.85. One weak signal never does it. **Not sure** is shown when the model is between 0.4 and 0.6 and no strong rule fired (and, with no rule at all, up to 0.9). **No obvious signs** never means safe: the result always says what we can't tell.
+**Likely scam** needs a *critical* rule, or a strong rule plus a second signal family, or three families (model ≥ 0.5), or any rule with model ≥ 0.85. One weak signal never does it. **Zero trust:** a message that *asks you to act* (pay, click, log in, share a code; the `asks_action` rule) is never shown as "No known signs", because AI writes fluent messages and a message can't prove who sent it. That request is not a scam sign, so it never counts towards "Likely scam". **Not sure** is shown when the model is between 0.4 and 0.6 and no strong rule fired (and, with no rule at all, up to 0.9). **No known signs** never means safe: the result always says what we can't tell.
 
 ## Signal families
 
@@ -74,6 +74,7 @@ Rule pack version **2026.11.1**, last reviewed 2026-11-20. Source of truth: [`ba
 | `prize_win` | reward | prize |  | 2 | A prize you never entered for, or one that needs a fee, is a scam. | ScamShield (team addition, confirm wording) |  | unverified |
 | `romance_money` | emotion | romance |  | 2 | Someone you only know online asking for money for an emergency or customs fee is a romance scam. | [ScamShield scam types, internet love scams](https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/) |  | reported |
 | `urgency` | urgency | cross-cutting |  | 1 | Scammers rush you so you do not have time to think or check. | [GovTech TechNews 30 Jul 2024; ScamShield](https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/) |  | verified |
+| `asks_action` | action | cross-cutting |  | 1 | It asks you to pay, click, log in or share something. A message can't prove who sent it, so check through a number you already know before you act. | Team rule (zero trust): inbound contact is never proof of who sent it |  | unverified |
 
 ## Checks in code (not in the YAML)
 

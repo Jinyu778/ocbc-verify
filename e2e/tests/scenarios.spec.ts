@@ -85,7 +85,15 @@ test("Scenario 4 – customer answers 'on a call', then No to everything → sti
   await startPayment(page, "MAS Safety Account", "8000", "call");
   await answerAllNo(page);
   await expect(page.getByRole("heading", { name: "Let's pause this payment" })).toBeVisible();
-  await expect(page.getByText(/Continue anyway \(available in/)).toBeVisible();
+  // Zero trust: the caller is unverified. Call back on the app's own numbers; Continue anyway is locked while on the call.
+  await expect(page.getByRole("heading", { name: "Hang up. Call back on a number you already know." })).toBeVisible();
+  await expect(page.getByRole("link", { name: /ScamShield Helpline 1799/ })).toHaveAttribute("href", "tel:1799");
+  await expect(page.getByRole("heading", { name: "Hang up first" })).toBeVisible();
+  await expect(page.getByText(/Continue anyway \(available in/)).toHaveCount(0);
+  await page.getByRole("button", { name: "I've hung up" }).click();
+  // HANG_UP_WAIT_MINUTES=1 in the e2e environment
+  await expect(page.getByText(/Continue anyway \(available in [01]:\d\d\)/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue anyway" })).toHaveCount(0);
 });
 
 test("Scenario 5 – fake job deposit: Ryan adds the payee, chatting, trusted contact stops it → staff", async ({ page, browser }) => {

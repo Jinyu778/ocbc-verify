@@ -121,6 +121,8 @@ class Transfer(Base):
     reasons_json: Mapped[list] = mapped_column(JSON, default=list)
     wait_until: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)
     pause_shown_at: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)
+    # When the phone call behind this payment ended (reported by the Android plugin or by the customer).
+    call_ended_at: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)
     trusted_requested_at: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)
     trusted_decision: Mapped[str | None] = mapped_column(String(8), nullable=True)  # ok | stop
     trusted_decided_at: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)

@@ -17,7 +17,7 @@ interface Reported {
   training_candidate: boolean;
   created_at: string;
 }
-const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No obvious signs" };
+const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No known signs" };
 const VERDICT_TONE: Record<string, string> = { likely_scam: "bg-danger-soft text-danger", be_careful: "bg-warning-soft text-warning", not_sure: "bg-warning-soft text-warning", no_signs: "bg-success-soft text-success" };
 const TYPES: [string, string][] = [
   ["", "Not set"], ["government_official", "Government official"], ["fake_friend", "Fake friend / family"], ["phishing", "Phishing"],

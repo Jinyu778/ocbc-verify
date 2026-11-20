@@ -178,3 +178,14 @@ def test_reported_payee_adds_four_points_and_pauses_new_payee():
 def test_no_reports_no_signal():
     r = assess(amount=D("50"), is_new_payee=True, signals=NO, history_mean=D("186"), history_std=D("140"))
     assert "payee_reported" not in keys(r)
+
+
+# --- zero trust: inbound contact is never proof -------------------------------------------------
+def test_phone_answer_is_a_live_signal_for_new_payee():
+    r = run("20", new=True, answers={"q_phone": True, "q_secret": False, "q_online": False, "q_chat": False})
+    assert r.tier == "pause" and r.override and "override_new_payee_live" in keys(r)
+
+
+def test_phone_answer_known_payee_no_override():
+    r = run("45", answers={"q_phone": True})
+    assert r.tier == "ask" and not r.override

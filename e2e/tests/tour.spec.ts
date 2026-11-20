@@ -112,7 +112,7 @@ for (const width of [375, 1440] as const) {
     await full("06-check-scam");
     await page.getByLabel("Message to check").fill("Hey, are we still meeting at the hawker centre at 7 on Friday?");
     await page.getByRole("button", { name: "Check message" }).click();
-    await expect(page.getByText("No obvious signs", { exact: true })).toBeVisible();
+    await expect(page.getByText("No known warning signs", { exact: true })).toBeVisible();
     await vp("07-check-safe");
     await full("07-check-safe");
 

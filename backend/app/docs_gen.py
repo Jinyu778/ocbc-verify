@@ -41,10 +41,11 @@ def scam_patterns() -> str:
         "4. **Model** (TF-IDF + calibrated logistic regression) gives a probability. It can raise caution but can "
         "never produce \"Likely scam\" on its own.",
         "",
-        "**Likely scam** needs a *critical* rule, or a strong rule plus a second signal family (model ≥ 0.5), or "
+        "**Likely scam** needs a *critical* rule, or a strong rule plus a second signal family, or "
         "three families (model ≥ 0.5), or any rule with model ≥ 0.85. One weak signal never does it. "
+        "**Zero trust:** a message that *asks you to act* (pay, click, log in, share a code; the `asks_action` rule) is never shown as \"No known signs\", because AI writes fluent messages and a message can't prove who sent it. That request is not a scam sign, so it never counts towards \"Likely scam\". "
         "**Not sure** is shown when the model is between 0.4 and 0.6 and no strong rule fired (and, with no rule "
-        "at all, up to 0.9). **No obvious signs** never means safe: the result always says what we can't tell.",
+        "at all, up to 0.9). **No known signs** never means safe: the result always says what we can't tell.",
         "",
         "## Signal families",
         "",
@@ -211,7 +212,7 @@ def model_card() -> str:
         "accuracy is unknown.",
         "- Tamil rows are machine-assisted and not reviewed by a native speaker.",
         "- We cannot see who really sent a message, and we never open links, so a well-written scam with no link, "
-        "no payment request and no pressure can pass as \"No obvious signs\".",
+        "no payment request and no pressure can pass as \"No known signs\".",
         "- **Not a replacement for ScamShield** (app, or Helpline 1799).",
         "- The model is **never retrained automatically**. Staff can mark reported messages as training candidates; "
         "they are exported to CSV for offline review by people first.",

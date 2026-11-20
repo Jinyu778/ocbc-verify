@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-  AlertTriangle, CircleCheck, CircleHelp, Copy, EyeOff, Flag, Paperclip, Phone, PhoneCall, Plus, ShieldAlert, ShieldCheck,
+  AlertTriangle, CircleCheck, CircleHelp, Copy, EyeOff, Flag, Paperclip, Phone, PhoneCall, Plus, ShieldAlert, ShieldCheck, ShieldQuestion,
   ThumbsDown, ThumbsUp, TriangleAlert, type LucideIcon,
 } from "lucide-react";
 import { ApiError, Banner, Button, Card, VerdictStage, api, cx, formatSGD, prefersReducedMotion, type VerdictTone } from "@/design";
@@ -31,7 +31,8 @@ const VERDICT: Record<CheckResult["verdict"], { icon: LucideIcon; tone: VerdictT
   likely_scam: { icon: ShieldAlert, tone: "risk" },
   be_careful: { icon: AlertTriangle, tone: "caution" },
   not_sure: { icon: CircleHelp, tone: "caution" },
-  no_signs: { icon: ShieldCheck, tone: "verified" },
+  // Zero trust: "no known signs" is not proof, so no green tick. See VerdictStage "neutral".
+  no_signs: { icon: ShieldQuestion, tone: "neutral" },
 };
 
 /** Splits the checked text into plain and flagged segments (merging overlaps). Rendered as text, never HTML. */

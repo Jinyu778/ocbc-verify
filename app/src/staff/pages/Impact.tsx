@@ -25,7 +25,7 @@ interface CheckerScores {
   legit_shown_likely_scam: number;
   legit_shown_be_careful: number;
 }
-const VERDICTS: [string, string][] = [["likely_scam", "Likely scam"], ["be_careful", "Be careful"], ["not_sure", "Not sure"], ["no_signs", "No obvious signs"]];
+const VERDICTS: [string, string][] = [["likely_scam", "Likely scam"], ["be_careful", "Be careful"], ["not_sure", "Not sure"], ["no_signs", "No known signs"]];
 
 export function Impact() {
   const q = useQuery({ queryKey: ["metrics"], queryFn: () => api<Metrics>("/api/metrics"), refetchInterval: 10000 });

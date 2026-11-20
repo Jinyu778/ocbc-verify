@@ -74,6 +74,8 @@ SHORTENERS = set(_DOMAINS["shorteners"])
 ZERO_WIDTH = dict.fromkeys(map(ord, "​‌‍⁠﻿­"), None)
 URL_RE = re.compile(r"(?:https?://|www\.)[^\s<>\"')]+|\b(?:[a-z0-9-]+\.)+(?:com|sg|net|org|info|top|xyz|cc|online|click|shop|work|win|vip|icu|live|co|io|link|ly|gl|is)(?:/[^\s<>\"')]*)?", re.IGNORECASE)
 SPACED_RE = re.compile(r"(?<![A-Za-z0-9])(?:[A-Za-z] ){3,}[A-Za-z](?![A-Za-z0-9])")
+# Flags that describe a REQUEST rather than a scam sign. They never count towards "likely scam".
+ACTION_KEYS = {"asks_action"}
 
 
 def normalise(text: str) -> tuple[str, list[int]]:
@@ -416,17 +418,26 @@ def ml_probability(text: str) -> float | None:
 def verdict_for(flags: list[dict], p: float) -> str:
     """One weak signal never makes "Likely scam". It takes a critical rule, two different signal
     families, or a very confident model. Protective wording ("never share your OTP") never counts,
-    because those rules are dropped before this point."""
-    families = {f.get("family", f["key"]) for f in flags}
-    strong = [f for f in flags if f["strong"]]
-    critical = [f for f in flags if f.get("critical", f["strong"] and f["key"] in CRITICAL_KEYS)]
-    if critical or (strong and len(families) >= 2 and p >= 0.5) or (len(families) >= 3 and p >= 0.5) or (flags and p >= 0.85):
+    because those rules are dropped before this point.
+
+    Zero trust: a message that asks you to ACT (pay, click, log in, share a code) can't prove who sent
+    it, and AI writes fluent messages with no red flags. Such a request is not a scam sign, so it never
+    counts towards "Likely scam", but it keeps the message out of the calmest verdict ("no_signs" means
+    "no KNOWN signs", never "safe")."""
+    signs = [f for f in flags if f["key"] not in ACTION_KEYS]
+    asks_action = len(signs) < len(flags)
+    families = {f.get("family", f["key"]) for f in signs}
+    strong = [f for f in signs if f["strong"]]
+    critical = [f for f in signs if f.get("critical", f["strong"] and f["key"] in CRITICAL_KEYS)]
+    if critical or (strong and len(families) >= 2) or (len(families) >= 3 and p >= 0.5) or (signs and p >= 0.85):
         return "likely_scam"
-    if not flags:  # the model alone can raise caution, never a "Likely scam"
-        return "be_careful" if p >= 0.9 else "not_sure" if p >= 0.4 else "no_signs"
+    if not signs:  # the model alone can raise caution, never a "Likely scam"
+        if p >= 0.9 or asks_action:
+            return "be_careful"
+        return "not_sure" if p >= 0.4 else "no_signs"
     if not strong and 0.4 <= p <= 0.6 and len(families) < 2:
         return "not_sure"
-    if strong or p >= 0.3 or len(families) >= 2:
+    if strong or p >= 0.3 or len(families) >= 2 or asks_action:
         return "be_careful"
     return "no_signs"
 

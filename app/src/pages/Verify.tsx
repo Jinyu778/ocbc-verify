@@ -6,6 +6,7 @@ import { BadgeCheck, PhoneCall, RefreshCw, ShieldX } from "lucide-react";
 import { Banner, Button, Skeleton, VerdictStage, api } from "@/design";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
+import { OfficialContacts } from "../components/OfficialContacts";
 import { startSafeBankCall } from "../lib/calls";
 import type { CallInfo } from "../types";
 
@@ -59,6 +60,10 @@ export function Verify() {
         <Button variant="outline" icon={RefreshCw} block onClick={() => q.refetch()}>
           {t("verify.checkAgain")}
         </Button>
+      </div>
+      {/* A real OCBC call shows up above. Anyone else (MAS, police, "family") is checked by calling back. */}
+      <div data-after-stage>
+        <OfficialContacts />
       </div>
     </Screen>
   );

@@ -4,21 +4,24 @@ import { cx } from "./components";
 
 /**
  * The verdict card: the product's judgement in one place, readable from across a room.
- *   verified = green tint + seal   (verify-call genuine, checker "no obvious signs")
+ *   verified = green tint + seal   (verify-call genuine, the ONLY thing the app can actually prove)
  *   risk     = risk-red tint        (verify-call "not calling", checker "likely scam")
  *   caution  = amber tint           (checker "be careful" / "not sure")
  *   paused   = neutral white card   (payment pause: calm, never alarming, never red)
+ *   neutral  = grey card + question seal (checker "no known signs": not alarming, but never a green tick,
+ *              because a message without known signs is still unverified)
  *
  * Always icon + word + colour. It appears once with a 0.98 scale-in; nothing waits for it, so every
  * action below it is usable immediately. `checkingLabel` is kept for callers and screen readers only.
  */
-export type VerdictTone = "verified" | "risk" | "caution" | "paused";
+export type VerdictTone = "verified" | "risk" | "caution" | "paused" | "neutral";
 
 const FIELD: Record<VerdictTone, { card: string; seal: string; heading: string }> = {
   verified: { card: "bg-success-soft", seal: "bg-success-strong text-on-success-strong", heading: "text-success" },
   risk: { card: "bg-danger-soft", seal: "bg-danger-strong text-on-danger-strong", heading: "text-danger" },
   caution: { card: "bg-warning-soft", seal: "bg-warning-strong text-on-warning-strong", heading: "text-warning" },
   paused: { card: "bg-card border border-border", seal: "bg-muted text-foreground", heading: "text-foreground" },
+  neutral: { card: "bg-muted", seal: "bg-card text-foreground", heading: "text-foreground" },
 };
 
 export function VerdictStage({

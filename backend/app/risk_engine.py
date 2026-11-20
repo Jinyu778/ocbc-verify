@@ -17,7 +17,8 @@ Points
   Customer's own message check in the last 60 minutes was "Likely scam"   +2
 
 Tiers: < 3 none, 3-5 ask, >= 6 pause.
-Override: new payee AND any live signal (call, recent call, chatting, screen share) -> pause.
+Override: new payee AND any live signal (call, recent call, chatting, screen share, or a "Yes" to
+          "is someone on the phone telling you to pay?") -> pause. An inbound contact is never proof.
 Override: new payee AND unusual amount (z >= 3) AND amount >= S$5,000 -> pause, whatever the
           customer answers. A coached victim who answers "No" to everything is still paused.
 
@@ -165,7 +166,8 @@ def assess(
     score = sum(r.points for r in reasons)
     tier = tier_for(score)
 
-    live = signals.on_call or signals.recent_call or chatting or signals.screen_sharing
+    phone_answer = bool(answers.get("q_phone"))
+    live = signals.on_call or signals.recent_call or chatting or signals.screen_sharing or phone_answer
     override = False
     if is_new_payee and live and tier != "pause":
         tier = "pause"
