@@ -72,6 +72,14 @@ class CallBackIn(BaseModel):
     target: Literal["ocbc_hotline", "scamshield", "police"]
 
 
+def _duration(seconds: int) -> str:
+    """60 -> "1 minute", 600 -> "10 minutes", 45 -> "45 seconds"."""
+    if seconds % 60:
+        return f"{seconds} seconds"
+    m = seconds // 60
+    return f"{m} minute" if m == 1 else f"{m} minutes"
+
+
 def field_error(field: str, message: str):
     raise HTTPException(422, {"field": field, "message": message})
 
@@ -221,14 +229,14 @@ def continue_anyway(transfer_id: int, user: User = Depends(customer_only), db: S
         log_event(db, t.id, "customer", "continue_anyway_rejected_on_call", {})
         db.commit()
         raise HTTPException(409, "Please hang up first. Scammers keep you on the line so you can't stop and check. "
-                                 f"You can continue {s.hang_up_wait_minutes} minutes after the call ends.")
+                                 f"You can continue {_duration(s.hang_up_wait_minutes * 60)} after the call ends.")
     ready = continue_ready_at(t)
     if ready is None or utcnow() < ready:
         log_event(db, t.id, "customer", "continue_anyway_rejected_too_early", {})
         db.commit()
         if hang_up:
-            raise HTTPException(409, f"Please wait {s.hang_up_wait_minutes} minutes after the call before continuing.")
-        raise HTTPException(409, f"Please take {s.continue_anyway_seconds} seconds to read the warning before continuing.")
+            raise HTTPException(409, f"Please wait {_duration(s.hang_up_wait_minutes * 60)} after the call before continuing.")
+        raise HTTPException(409, f"Please take {_duration(s.continue_anyway_seconds)} to read the warning before continuing.")
     log_event(db, t.id, "customer", "continue_anyway", {"seconds_after_pause": int((utcnow() - shown).total_seconds()),
                                                         "after_phone_call": hang_up})
     move_money(db, t, "sent", "customer")

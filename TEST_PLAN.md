@@ -71,7 +71,7 @@ To read Mdm Tan's screens in English, use the language menu at the top. The choi
 
 ## 4. Customer lies
 **Account:** `tan.siewlan`. On a real call (Android), or answer **Yes – I'm on a call** in the browser. Pay S$8,000 to "MAS Safety Account – Lim K." → answer **No** to every safety question.
-**Expected:** still **"Let's pause this payment"**. New payee plus a live call always pauses. "Continue anyway" only appears after a visible 30-second countdown, and then opens "Scammers often tell you to ignore warnings. Are you sure?" with **Go back** as the main button.
+**Expected:** still **"Let's pause this payment"**. New payee plus a live call always pauses. "Continue anyway" only appears after a visible 1-minute countdown, and then opens "Scammers often tell you to ignore warnings. Are you sure?" with **Go back** as the main button.
 
 **4b. Coached victim who denies everything (browser).** Same payment, but answer **No** to "Are you on a phone call or chatting…?" and **No** to every safety question.
 **Expected:** still **"Let's pause this payment"**, with the reason "A large, unusual payment to someone new is how most scams end. We always pause these." A new payee + an amount far above her usual + S$5,000 or more always pauses. Answers can only raise risk.

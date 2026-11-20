@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     save_for_later_options_minutes: str = "60,360,1440"
     trusted_contact_timeout_minutes: int = 1440
     contact_change_cooling_minutes: int = 1440
-    continue_anyway_seconds: int = 30
+    continue_anyway_seconds: int = 60
     # After a pause that involved a phone call, "Continue anyway" unlocks only this long after the call ends.
-    hang_up_wait_minutes: int = 10
+    hang_up_wait_minutes: int = 1
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,capacitor://localhost,http://localhost"
     turn_url: str = ""
     turn_username: str = ""

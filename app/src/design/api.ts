@@ -17,8 +17,21 @@ interface Session {
 }
 
 const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
-export const API_BASE: string =
-  env.VITE_API_URL || (typeof location !== "undefined" ? `${location.protocol}//${location.hostname}:8000` : "http://localhost:8000");
+
+/**
+ * Where the API lives.
+ *  - VITE_API_URL if set (e.g. the Android app pointing at a laptop on the LAN).
+ *  - GitHub Codespaces (*.app.github.dev): each port has its own address, so the app calls its own
+ *    origin and the Vite dev server forwards /api (and the WebSocket) to the backend.
+ *  - Otherwise the same host on port 8000 (local development).
+ */
+export function apiBaseFor(loc: { protocol: string; hostname: string; origin: string } | undefined, configured?: string): string {
+  if (configured) return configured;
+  if (!loc) return "http://localhost:8000";
+  if (loc.hostname.endsWith(".app.github.dev")) return loc.origin;
+  return `${loc.protocol}//${loc.hostname}:8000`;
+}
+export const API_BASE: string = apiBaseFor(typeof location !== "undefined" ? location : undefined, env.VITE_API_URL);
 
 export const DEFAULT_TIMEOUT_MS = 5000;
 

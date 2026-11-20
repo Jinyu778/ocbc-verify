@@ -179,16 +179,16 @@ def test_override_small_amount_new_payee_on_call(client, auth):
     assert any(r["key"] == "override_new_payee_live" for r in p["reasons"])
 
 
-def test_continue_anyway_requires_30_seconds(client, auth):
-    """No phone call involved (coached-victim override): only the 30-second reading time applies."""
+def test_continue_anyway_requires_1_minute(client, auth):
+    """No phone call involved (coached-victim override): only the 1-minute reading time applies."""
     h = auth("tan.siewlan")
     before = Decimal(balance(client, h))
     t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
     p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
     assert p["status"] == "paused" and p["hang_up_required"] is False
     r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
-    assert r.status_code == 409 and "30 seconds" in r.json()["detail"]
-    backdate(t["id"], "pause_shown_at", 29)
+    assert r.status_code == 409 and "1 minute to read" in r.json()["detail"]
+    backdate(t["id"], "pause_shown_at", 59)
     assert client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h).status_code == 409
     backdate(t["id"], "pause_shown_at", 2)
     r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
@@ -742,7 +742,7 @@ def test_recent_likely_scam_check_adds_risk(client, auth):
 
 # --- zero trust: inbound contact is never proof -----------------------------------------------
 def test_on_call_pause_needs_hang_up_before_continue_anyway(client, auth):
-    """A scammer can say 'wait 30 seconds and tap Continue'. They can't stay on the line during the wait."""
+    """A scammer can say 'wait a moment and tap Continue'. They can't stay on the line during the wait."""
     h = auth("tan.siewlan")
     before = Decimal(balance(client, h))
     t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
@@ -757,10 +757,10 @@ def test_on_call_pause_needs_hang_up_before_continue_anyway(client, auth):
                     json={"on_call": False, "source": "customer_answer"}).json()
     assert e["call_ended_at"] and e["continue_anyway_at"]
     r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
-    assert r.status_code == 409 and "10 minutes after the call" in r.json()["detail"]
-    backdate(t["id"], "call_ended_at", 9 * 60)
+    assert r.status_code == 409 and "wait 1 minute after the call" in r.json()["detail"]
+    backdate(t["id"], "call_ended_at", 50)
     assert client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h).status_code == 409
-    backdate(t["id"], "call_ended_at", 61)
+    backdate(t["id"], "call_ended_at", 11)
     r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
     assert r.status_code == 200 and r.json()["status"] == "sent"
     assert Decimal(balance(client, h)) == before - Decimal("8000")
@@ -839,4 +839,4 @@ def test_other_customer_cannot_report_call_state(client, auth):
 
 
 def test_public_config_has_hang_up_wait(client):
-    assert client.get("/api/config").json()["hang_up_wait_minutes"] == 10
+    assert client.get("/api/config").json()["hang_up_wait_minutes"] == 1
