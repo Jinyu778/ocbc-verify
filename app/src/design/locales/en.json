@@ -5,7 +5,6 @@
   },
   "common": {
     "appName": "OCBC Verify",
-    "disclaimer": "Student prototype for OCBC IGNITE 2026, not an official OCBC product",
     "back": "Back",
     "next": "Next",
     "cancel": "Cancel",
@@ -25,7 +24,8 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "offlineTitle": "We can't reach OCBC right now",
     "offlineBody": "Please check your internet connection, then try again.",
-    "liveOff": "Live updates paused – reconnecting"
+    "liveOff": "Live updates paused – reconnecting",
+    "newPayeeTag": "New payee"
   },
   "nav": {
     "main": "Main",
@@ -50,7 +50,9 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "submit": "Sign in",
-    "required": "Please enter your username and password."
+    "required": "Please enter your username and password.",
+    "heroTitle": "A pause before you pay.",
+    "heroBody": "We step in only when a payment looks risky. Everyday payments stay instant."
   },
   "home": {
     "greeting": "Hello, {{name}}",
@@ -69,7 +71,9 @@
     "savedOpen": "Open",
     "offlineDraft": "Not sent – saved on this phone while OCBC was unreachable",
     "offlineDraftRetry": "Check it now",
-    "offlineDraftRemove": "Remove"
+    "offlineDraftRemove": "Remove",
+    "checkMessageDesc": "Paste a message and we will show you the warning signs.",
+    "payAgain": "Pay again"
   },
   "status": {
     "draft": "Draft",
@@ -102,7 +106,13 @@
     "failBody": "So we have NOT sent it. Your money is safe. You can try again, save it on this phone for later, or cancel.",
     "failSave": "Save for later",
     "failCancel": "Cancel payment",
-    "failSaved": "Saved on this phone. Nothing was sent."
+    "failSaved": "Saved on this phone. Nothing was sent.",
+    "groupKnown": "People and billers you've paid before",
+    "groupNew": "New payees – check these carefully",
+    "groupNewHint": "Scammers often ask you to pay a new account. We'll ask a few quick questions.",
+    "search": "Search payees",
+    "searchNone": "No payees match \"{{q}}\". Check the spelling, or add a new payee.",
+    "amountPrefix": "Singapore dollars"
   },
   "reasons": {
     "title": "Why we're checking",
@@ -294,7 +304,24 @@
       "paynow_first": "'Pay first, no meetup'",
       "family_new_number": "Family member with a new number",
       "preorder_scam": "Pay-first pre-order, no meetup",
-      "asks_action": "Asks you to act"
+      "accusation": "Accuses you of a crime",
+      "handover_cash": "Asks you to hand over cash or valuables",
+      "transferred_call": "Call 'transferred' to the police",
+      "account_problem": "Says your account has a problem",
+      "delivery_fee": "Parcel fee or new address",
+      "money_request": "Asks for money in a rush",
+      "scarcity": "'Only a few left'",
+      "loan_offer": "Instant loan offer",
+      "change_bank_details": "Bank details have 'changed'",
+      "prize_win": "Prize you didn't enter for",
+      "romance_money": "Online partner asks for money",
+      "short_link": "Shortened link",
+      "lookalike_link": "Link doesn't match",
+      "bank_sms_link": "Bank or SingPost SMS with a link",
+      "foreign_sender": "Foreign sender number",
+      "sender_name_mismatch": "Sender name looks wrong",
+      "email_domain_mismatch": "Email address doesn't match",
+"asks_action": "Asks you to act"
     },
     "explain": {
       "urgency": "Scammers rush you so you don't have time to think or check.",
@@ -318,7 +345,127 @@
     "attachBody": "Is this message about a payment you're making? Add it, so OCBC staff can see it when they review that payment.",
     "attachPick": "Which payment?",
     "attachButton": "Add message to this payment",
-    "attached": "Added. OCBC staff will see this message with your payment to {{payee}}."
+    "attached": "Added. OCBC staff will see this message with your payment to {{payee}}.",
+    "sourceLabel": "Where did it come from?",
+    "sources": {
+      "sms": "SMS",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram",
+      "email": "Email",
+      "call": "Phone call",
+      "social": "Social media",
+      "other": "Other"
+    },
+    "sourceHint": "For a phone call, type what the caller said.",
+    "moreDetails": "Add sender details (optional)",
+    "claimedLabel": "Who does it say it is from?",
+    "senderLabel": "Sender number or address",
+    "senderHint": "Type it in yourself. We never read your messages, inbox or contacts.",
+    "errLong": "This message is too long. Paste up to 5,000 characters.",
+    "count": "{{n}} of 5,000 characters",
+    "typeIs": "This looks like {{type}}.",
+    "typeUnknown": "We can't tell which type of scam this is.",
+    "sourceName": "Source: {{name}}",
+    "normalTitle": "Things that look normal",
+    "normal": {
+      "no_link": "There is no link.",
+      "no_payment": "It doesn't ask for money or a payment.",
+      "protective_advice": "It warns you not to share codes or passwords, which real banks do.",
+      "no_pressure": "It doesn't rush you or ask you to keep it secret.",
+      "official_domain": "The link is an official website address. We still did not open it."
+    },
+    "cantTellTitle": "What we can't tell",
+    "cantSender": "We can't see who really sent this. Names and numbers can be faked.",
+    "cantLink": "We did not open any link, so we can't see where it leads.",
+    "cantSafe": "\"No obvious signs\" doesn't mean it's safe.",
+    "doNowTitle": "What to do now",
+    "doNowDefault": [
+      "Don't reply, click links or send money until you've checked.",
+      "Contact the organisation using a number from its official website or app.",
+      "If you're unsure, call the ScamShield Helpline on 1799."
+    ],
+    "share": "Share a warning",
+    "shareCopied": "Warning copied. Paste it into a chat with your family.",
+    "shareFailed": "We couldn't copy the warning. Select the text below and copy it yourself.",
+    "shareText": "Watch out: I got a message that looks like {{type}}. Don't reply, click links or send money. If unsure, call ScamShield on 1799.",
+    "shareTextGeneric": "Watch out: I got a message that looks like a scam. Don't reply, click links or send money. If unsure, call ScamShield on 1799.",
+    "helpfulQ": "Was this helpful?",
+    "helpfulYes": "Yes",
+    "helpfulNo": "No",
+    "helpfulThanks": "Thank you. OCBC staff use this to improve the checker.",
+    "rulesOnly": "Our checker is running on its warning-sign rules only right now, so the result is less certain.",
+    "s_investment": "Investment group invite",
+    "s_police": "Look-alike police link",
+    "types": {
+      "government_official": "a government-official impersonation scam",
+      "fake_friend": "a fake friend or family scam",
+      "phishing": "a phishing scam",
+      "ecommerce": "an online shopping or ticket scam",
+      "job": "a job scam",
+      "investment": "an investment scam",
+      "loan": "a loan scam",
+      "romance": "an internet love scam",
+      "business_email": "a business email scam",
+      "prize": "a prize or lucky-draw scam",
+      "tech_support": "a tech support or remote-access scam"
+    },
+    "advice": {
+      "government_official": [
+        "Hang up. Government officials never ask you to transfer money or share bank login details over a call.",
+        "Don't hand over cash, gold or valuables to anyone who says they're from the police or a ministry.",
+        "Call the ScamShield Helpline on 1799 to check."
+      ],
+      "fake_friend": [
+        "Don't pay. Call the person on the number you already have for them.",
+        "Ask something only the real person would know, or use your family code word.",
+        "If a second caller says they're the police or MAS, hang up and call 1799."
+      ],
+      "phishing": [
+        "Don't click the link or call the number in the message.",
+        "Open the official app, or type the official website address yourself.",
+        "OCBC and other Singapore banks never ask for your OTP, PIN or password."
+      ],
+      "ecommerce": [
+        "Don't pay first or pay outside the platform.",
+        "Use the platform's own payment protection, or meet and pay when you collect.",
+        "If the seller refuses to meet, walk away."
+      ],
+      "job": [
+        "Real employers never charge you to start work or to unlock earnings.",
+        "Don't pay, and don't share your Singpass or bank details.",
+        "Check the company on its official website before you reply."
+      ],
+      "investment": [
+        "High, guaranteed returns are a warning sign.",
+        "Don't join a group chat or app that a stranger invites you to.",
+        "Check the MAS Investor Alert List before you send money."
+      ],
+      "loan": [
+        "A real lender never asks for a fee before paying out the loan.",
+        "Licensed moneylenders aren't allowed to advertise by unsolicited message.",
+        "Check the lender on the Registry of Moneylenders."
+      ],
+      "romance": [
+        "Never send money to someone you haven't met in person.",
+        "Customs, hospital or travel emergencies are the usual stories scammers tell.",
+        "Talk to your family or call 1799 before you pay."
+      ],
+      "business_email": [
+        "Call the sender on a number you already know before changing any bank details.",
+        "Treat \"new account number\" plus \"urgent\" as a reason to stop.",
+        "Ask a colleague to check the request with you."
+      ],
+      "prize": [
+        "A real prize never needs you to pay a fee or share your OTP.",
+        "Don't click the link. Check on the company's official website.",
+        "If unsure, call ScamShield on 1799."
+      ],
+      "tech_support": [
+        "Hang up. Banks, telcos and software companies don't call to fix your phone.",
+        "Never install an app from a link, or share your screen, because someone asked you to.",
+        "Only install apps from Google Play or the Apple App Store."
+      ]
+    }
   },
   "settings": {
     "title": "Settings",

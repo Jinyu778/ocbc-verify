@@ -1,0 +1,65 @@
+text,label,scam_type
+"Good afternoon, I am calling from the Commercial Affairs Department. A bank account opened with your NRIC received criminal proceeds. To prove your innocence we need to audit your funds in a secured government account.",scam,government_official
+"Ma'am this is Sergeant Koh, your case is now with MAS. For the investigation you must withdraw your savings and pass them to our officer at your void deck. Please do not discuss this with your children.",scam,government_official
+"N0tice from the C0urt: hearing on Monday. Settle the fine of $2,300 via the link below to avoid detention.  hxxp://court-notice-sg[.]top/pay",scam,government_official
+"警方：你的银行卡被人用来洗钱。为了配合调查，请把存款转去我们给你的监管账户，这件事必须保密。",scam,government_official
+"Saya dari Mahkamah. Kes jenayah dibuka atas nama anda. Pindahkan simpanan ke akaun pegawai untuk siasatan, jangan beritahu keluarga.",scam,government_official
+"Hello aunty, do you know who this is? It's your nephew lah. I in a bit of trouble, can you help me transfer $1,800 to my colleague's account first?",scam,fake_friend
+"Hi it's Jess! Got a new phone so new number. My card got blocked, can u pay my $640 bill to this account? Will pay u back tonight promise",scam,fake_friend
+"爸，是我，我在外面出事了，现在不方便讲电话，可以马上转三千块到这个户口吗？",scam,fake_friend
+"Your DBS account has been temporarily restricted due to an unrecognised device. Restore access: dbs-sg-secure[.]com/restore",scam,phishing
+"LTA: you have an outstanding ERP charge of $3.40. Pay before 11:59pm to avoid a $50 admin fee: lta-erp-pay.top",scam,phishing
+"Hi, this is Singpass. A new device was added to your account. If this was not you, reply with the code we just sent to block it.",scam,phishing
+"[NinjaVan] Delivery attempt failed. Confirm your address and pay a S$1.80 re-routing charge within 12 hours: bit.ly/nv-redeliver",scam,phishing
+"Your OCBC card ending 4412 has been charged $1,299 at an overseas merchant. Press 1 to speak to our fraud team and verify your card details.",scam,phishing
+"Seller here, the Labubu blind box is still available but many people want. Just transfer the full amount now and I will send by courier, sorry no meet up I'm busy.",scam,ecommerce
+"Hi, I'm interested in your sofa! I've paid through the platform. Please click this link to collect the payment and key in your card details: carou-pay-sg.shop",scam,ecommerce
+"Taylor Swift VIP x2 still have. 先给deposit $400 then I send tickets. Cannot meet sorry.",scam,ecommerce
+"Condo room available, $900 all-in. I'm overseas so viewing not possible, transfer 2 months deposit to secure, keys will be couriered.",scam,ecommerce
+"Hi! We found your resume online. Remote role, 30 min a day, earn $180-$450 daily by boosting app ratings. Message our mentor on Telegram to start.",scam,job
+"Congrats on passing the trial task! To withdraw your $620 commission, please complete a merchant task by topping up $300 first.",scam,job
+"We are hiring brand ambassadors. No interview needed. Pay $68 for your starter kit and start earning today.",scam,job
+"日赚$400，只需在家给商品点赞，先交$50押金开通账号。",scam,job
+"Exclusive community for SG investors. Our analyst's signals made members 280% this quarter. Fund your wallet via USDT to join the next round — only 12 seats.",scam,investment
+"Hi, I accidentally added you, but since we are chatting, have you heard of this forex platform? I made $20k last month, I can teach you. Download the app first.",scam,investment
+"Pelaburan emas, untung pasti 40% dalam sebulan. Pindahkan wang ke akaun syarikat kami hari ini.",scam,investment
+"Your personal loan of $10,000 is pre-approved! Before disbursement, transfer the 5% security deposit. Offer valid today only.",scam,loan
+"Licensed lender, approval in 10 min, no payslip needed. Send a photo of your NRIC and pay the stamp fee to receive.",scam,loan
+"Dear, the hospital won't release my mother unless I pay. I'll be in Singapore next month to meet you finally. Can you lend me $3,500?",scam,romance
+"Babe, the parcel with your gift is stuck at customs. The agent says you need to pay the clearance fee of $780 so they can release it.",scam,romance
+"Please note: following our bank migration, all future payments for PO-77812 should be made to the account below. Kindly process today as the shipment is on hold.",scam,business_email
+"Are you at your desk? I need a quick favour, a confidential payment to a new vendor. I'm in a board meeting so just email me when done.",scam,business_email
+"Lucky you! Your number was drawn for a $500 FairPrice voucher. Claim by paying a $2.90 delivery fee here: fp-vouchers.win",scam,prize
+"You are eligible for a $600 government rebate. Key in your banking credentials at rebate-sg.online to receive it.",scam,prize
+"This is the bank's technical department. To secure your account, please install the helper app from this link and keep the screen sharing on while I guide you.",scam,tech_support
+"Your WhatsApp will be suspended today. Install the official verification apk from wa-verify.top to keep your account.",scam,tech_support
+"MAS here, s a f e   a c c o u n t ready for you. Transfer before 5pm. Tell no one.",scam,government_official
+"Ur OTP pls, I sent wrong to ur number by mistake. Need it urgently to log in.",scam,phishing
+"OCBC: Your One-Time Password is 902114. It expires in 5 minutes. We will never call or message you for it.",legit,
+"DBS: You have received $1,250.00 from TAN AH KOW via PayNow. No action needed.",legit,
+"SingPost: Your parcel SG2290341 is ready for collection at Toa Payoh Post Office. Bring this SMS and your ID.",legit,
+"Hi Mrs Lim, this is Mdm Wong from the school office. The excursion fee of $35 can be paid in the Parents Gateway app by Friday.",legit,
+"Bro, I short a bit this month, can lend me $200? No pressure, if cannot also ok. Can meet at the kopitiam to pass you back next week.",legit,
+"Hey, it's Priya from the badminton group! I'm using my work phone today. See you on Saturday at 9.",legit,
+"Thank you for applying to the Barista role. Please come for an interview on Thursday at 2pm at our Bugis outlet. We never charge any fees.",legit,
+"Flash sale this weekend only: 30% off sneakers in our app and stores. No code needed.",legit,
+"IRAS: Your 2026 Notice of Assessment is ready. Log in to myTax Portal yourself to view it. We will not send links by SMS.",legit,
+"Police advisory: scammers impersonate government officials. Officials will never ask you to transfer money or hand over valuables. Call 1799 if unsure.",legit,
+"Reminder: your HDB season parking renewal is due next month. Renew on the Parking.sg app.",legit,
+"Grandma, Mum says dinner at 7 on Sunday. I'll fetch you at 6.30.",legit,
+"Your Grab ride is arriving in 2 minutes. Driver: Ahmad, SNB 1234 X.",legit,
+"Yo, ticket for the concert I bought already, you pay me back when we meet ok. No rush.",legit,
+"Hi, your Carousell listing has an offer of $40. Chat with the buyer in the app to arrange a meetup.",legit,
+"Finance team reminder: Q3 expense claims close on 30 Sep. Submit through the HR portal as usual.",legit,
+"ok noted",legit,
+"can lah",legit,
+"Wah today so hot, drink more water ah.",legit,
+"您的账户本月有一笔$45的水电费自动扣款。如有疑问，请拨打卡背面的电话。",legit,
+"明天早上九点在巴刹门口等你，一起去买菜。",legit,
+"Ayah, saya dah sampai rumah. Esok jumpa.",legit,
+"Kod pengesahan Grab anda: 4471. Jangan kongsi dengan sesiapa.",legit,
+"நாளை காலை 8 மணிக்கு பள்ளிக்கு அழைத்துச் செல்வேன்.",legit,
+"Your appointment at the polyclinic has been moved to 3pm. Reply 1 to confirm.",legit,
+"Hi all, gentle reminder the HOA meeting is tonight at 8pm in the void deck.",legit,
+"Selling my old PS4, $120, meet at Jurong East MRT, test it first then pay.",legit,
+"OCBC: You have set up a new payee TAN WEI MING. If this was not you, call the number on the back of your card.",legit,

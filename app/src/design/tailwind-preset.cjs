@@ -36,7 +36,13 @@ module.exports = {
         "on-success-strong": v("on-success-strong"),
         "info-soft": v("info-soft"),
         ring: v("ring"),
-        "navy-fill": v("navy-fill"),
+        "dark-fill": v("dark-fill"),
+        "brand-red": v("brand-red"),
+        "brand-deep": v("brand-deep"),
+        "on-brand-deep-muted": v("on-brand-deep-muted"),
+        "ink-950": v("ink-950"),
+        "accent-pressed": v("accent-pressed"),
+        "nav-glass": v("nav-glass"),
         scrim: v("scrim"),
         "tint-on-dark": v("tint-on-dark"),
         "tint-on-dark-strong": v("tint-on-dark-strong"),
@@ -44,23 +50,25 @@ module.exports = {
       fontFamily: { sans: v("font-sans"), display: v("font-display") },
       /* One type scale, used everywhere. rem, so Easy Mode and text size scale it. */
       fontSize: {
-        xs: ["0.8125rem", { lineHeight: "1.45" }],
-        sm: ["0.875rem", { lineHeight: "1.5" }],
-        base: ["1rem", { lineHeight: "1.55" }],
-        lg: ["1.125rem", { lineHeight: "1.5" }],
-        xl: ["1.375rem", { lineHeight: "1.3" }],
-        "2xl": ["1.75rem", { lineHeight: "1.2" }],
-        "3xl": ["2.25rem", { lineHeight: "1.1" }],
-        "4xl": ["3rem", { lineHeight: "1.05" }],
-        "5xl": ["3.75rem", { lineHeight: "1" }],
+        /* Readability scale: nothing the user must read is under 14 px. */
+        xs: ["0.875rem", { lineHeight: "1.4" }],   /* 14: meta, chips, staff table cells */
+        sm: ["1rem", { lineHeight: "1.4" }],       /* 16: secondary lines, helper text */
+        base: ["1.0625rem", { lineHeight: "1.5" }], /* 17: body */
+        lg: ["1.125rem", { lineHeight: "1.3" }],   /* 18: primary lines, button labels */
+        xl: ["1.25rem", { lineHeight: "1.25" }],   /* 20: section headings */
+        "2xl": ["1.5rem", { lineHeight: "1.25" }],
+        "3xl": ["2rem", { lineHeight: "1.15" }],    /* display 32 */
+        "4xl": ["2.75rem", { lineHeight: "1.05" }],  /* display 44 */
+        "5xl": ["3.75rem", { lineHeight: "1" }],     /* display 60, login and Home hero only */
       },
-      borderRadius: { card: "20px", btn: "14px", field: "14px", pill: "999px" },
-      boxShadow: { card: v("shadow"), lift: v("shadow-lift") },
+      borderRadius: { tile: "20px", card: "16px", btn: "14px", field: "12px", pill: "999px" },
+      boxShadow: { card: v("shadow"), lift: v("shadow-lift"), hover: v("shadow-hover") },
+      backgroundImage: { hero: v("hero-gradient"), glow: v("hero-glow") },
       minHeight: { btn: v("btn-h"), touch: "44px" },
       minWidth: { touch: "44px" },
       spacing: { gap: v("gap") },
       transitionTimingFunction: { out: v("ease-out"), "in-out": v("ease-in-out") },
-      transitionDuration: { press: "140ms", fast: "180ms", base: "260ms", slow: "420ms" },
+      transitionDuration: { press: "120ms", fast: "120ms", base: "220ms", slow: "360ms" },
     },
   },
 };

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { PhoneOff, ChevronRight, CircleUserRound, MessageCircleWarning, PhoneCall, RefreshCw, Save, ShieldAlert, ShieldCheck, Sparkles, UserPlus, X } from "lucide-react";
+import { PhoneOff, ChevronRight, MessageCircleWarning, PhoneCall, RefreshCw, Save, Search, ShieldAlert, ShieldCheck, Sparkles, UserPlus, X } from "lucide-react";
 import { ApiError, Banner, Button, Card, Field, Skeleton, api, cx, formatSGD, useStaggerIn } from "@/design";
 import { Screen, SignalBanners } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
@@ -13,11 +13,54 @@ import type { Payee, Transfer } from "../types";
 export function NewChip() {
   const { t } = useTranslation();
   return (
-    <span className="inline-flex items-center gap-1 rounded-pill border border-warning bg-warning-soft px-2.5 py-0.5 text-sm font-bold tracking-wide text-warning" title={t("common.newPayeeA11y")}>
-      <UserPlus aria-hidden className="h-4 w-4" strokeWidth={2.4} />
-      <span aria-hidden>{t("common.newChip")}</span>
+    <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[8px] bg-warning-soft px-2 py-1 text-xs font-semibold text-warning" title={t("common.newPayeeA11y")}>
+      <UserPlus aria-hidden className="h-4 w-4" strokeWidth={2.25} />
+      <span aria-hidden>{t("common.newPayeeTag")}</span>
       <span className="sr-only">{t("common.newPayeeA11y")}</span>
     </span>
+  );
+}
+
+/** Initials from the payee's name ("Tan Wei Ming (son)" -> "TW"), so each row is recognisable at a glance. */
+function initials(name: string) {
+  const words = name.replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter(Boolean);
+  return ((words[0]?.[0] ?? "") + (words[1]?.[0] ?? "")).toUpperCase() || "?";
+}
+
+export function PayeeAvatar({ payee }: { payee: Payee }) {
+  return (
+    <span
+      aria-hidden
+      className={cx(
+        "grid h-11 w-11 shrink-0 place-items-center rounded-full font-display text-base font-bold",
+        payee.is_new ? "bg-warning-soft text-warning" : "bg-muted text-foreground",
+      )}
+    >
+      {initials(payee.name)}
+    </span>
+  );
+}
+
+function PayeeRow({ payee, onChoose }: { payee: Payee; onChoose: (p: Payee) => void }) {
+  return (
+    <li data-payee>
+      <button
+        type="button"
+        onClick={() => onChoose(payee)}
+        className="sb-press flex min-h-[4.5rem] w-full items-center gap-4 px-4 py-3 text-left hover:bg-muted active:bg-muted sm:px-5"
+      >
+        <PayeeAvatar payee={payee} />
+        {/* the tag sits under the name, so long names keep the full width at 375 px and in Easy Mode */}
+        <span className="min-w-0 flex-1">
+          <span className="block text-lg font-semibold leading-snug text-foreground">{payee.name}</span>
+          <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="sb-ref text-sm text-muted-foreground">{payee.account_ref}</span>
+            {payee.is_new && <NewChip />}
+          </span>
+        </span>
+        <ChevronRight aria-hidden className="h-5 w-5 shrink-0 text-muted-foreground" />
+      </button>
+    </li>
   );
 }
 
@@ -40,7 +83,8 @@ export function Pay() {
   const [failed, setFailed] = useState(false);
   const [savedOffline, setSavedOffline] = useState(false);
   const amountRef = useRef<HTMLInputElement>(null);
-  const payeeListRef = useRef<HTMLUListElement>(null);
+  const payeeListRef = useRef<HTMLDivElement>(null);
+  const [query, setQuery] = useState("");
   useStaggerIn(payeeListRef, "[data-payee]", [payees.data?.length, step]);
 
   const choose = (p: Payee) => {
@@ -194,35 +238,17 @@ export function Pay() {
     return (
       <Screen title={t("pay.choosePayee")} back="/customer">
         {error?.field === "payee" && <Banner tone="danger" alert>{error.msg}</Banner>}
-        <Button variant="outline" icon={UserPlus} block onClick={() => setStep("add")}>
+        <Button variant="outline" size="lg" icon={UserPlus} block onClick={() => setStep("add")} className="min-h-[3.5rem]">
           {t("addPayee.button")}
         </Button>
         {payees.isLoading ? (
-          <div className="space-y-2">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-16" label={t("common.loading")} />)}</div>
+          <div className="space-y-2">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-[4.5rem]" label={t("common.loading")} />)}</div>
         ) : payees.isError ? (
           <Banner tone="warning" title={t("common.offlineTitle")} action={<Button size="sm" variant="outline" onClick={() => payees.refetch()}>{t("common.retry")}</Button>}>
             {t("common.offlineBody")}
           </Banner>
         ) : (
-          <ul ref={payeeListRef} className="space-y-2">
-            {payees.data?.map((p) => (
-              <li key={p.id} data-payee>
-                <button
-                  type="button"
-                  onClick={() => choose(p)}
-                  className="flex min-h-btn w-full items-center gap-3 rounded-card border border-border bg-card p-4 text-left shadow-card hover:bg-muted"
-                >
-                  <CircleUserRound aria-hidden className="h-8 w-8 shrink-0 text-muted-foreground" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold">{p.name}</span>
-                    <span className="block text-sm text-muted-foreground">{p.account_ref}</span>
-                  </span>
-                  {p.is_new && <NewChip />}
-                  <ChevronRight aria-hidden className="h-5 w-5 shrink-0" />
-                </button>
-              </li>
-            ))}
-          </ul>
+          <PayeeGroups payees={payees.data ?? []} query={query} setQuery={setQuery} onChoose={choose} listRef={payeeListRef} />
         )}
       </Screen>
     );
@@ -233,22 +259,36 @@ export function Pay() {
   return (
     <Screen title={t("pay.title")} onBack={() => setStep(needsLiveQuestion(device, payee.is_new) ? "live" : "payee")}>
       <SignalBanners signals={signals} />
-      <Card className="space-y-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <CircleUserRound aria-hidden className="h-8 w-8 shrink-0 text-muted-foreground" />
-          <p className="font-semibold">{payee.name}</p>
-          {payee.is_new && <NewChip />}
+      <Card className="space-y-2">
+        <div className="flex items-center gap-4">
+          <PayeeAvatar payee={payee} />
+          <div className="min-w-0 flex-1">
+            <p className="text-lg font-semibold leading-snug">{payee.name}</p>
+            <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="sb-ref text-sm text-muted-foreground">{payee.account_ref}</span>
+              {payee.is_new && <NewChip />}
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-muted-foreground">{payee.account_ref}</p>
-        {payee.is_new && <p className="text-sm">{t("pay.newPayeeHint")}</p>}
+        {payee.is_new && <p className="text-sm text-muted-foreground">{t("pay.newPayeeHint")}</p>}
       </Card>
       <form onSubmit={submit} noValidate className="space-y-4">
-        <div className="text-center">
-          <label htmlFor="amount" className="block text-lg font-semibold">
+        <div>
+          <label htmlFor="amount" className="block font-display text-xl font-semibold">
             {t("pay.amountLabel")}
           </label>
-          <div className={cx("mx-auto mt-2 flex max-w-xs items-center rounded-card border-2 bg-card px-4", amountErr ? "border-danger" : "border-border-strong")}>
-            <span aria-hidden className="text-3xl font-bold text-muted-foreground">S$</span>
+          {/* One field: the S$ prefix and the number share one box; the focus ring is on the box, not the input. */}
+          <div
+            onClick={() => amountRef.current?.focus()}
+            className={cx(
+              "mt-2 flex cursor-text items-center gap-2 rounded-field border bg-card px-5 transition-[border-color,box-shadow] duration-fast",
+              "focus-within:border-foreground focus-within:shadow-[0_0_0_1px_var(--foreground)]",
+              amountErr ? "border-danger shadow-[0_0_0_1px_var(--danger)]" : "border-border-strong hover:border-foreground",
+            )}
+          >
+            <span className="font-display text-3xl font-bold text-muted-foreground">
+              S$<span className="sr-only"> {t("pay.amountPrefix")}</span>
+            </span>
             <input
               ref={amountRef}
               id="amount"
@@ -259,14 +299,14 @@ export function Pay() {
               aria-invalid={amountErr ? true : undefined}
               aria-describedby={cx("amount-help", amountErr && "amount-err")}
               placeholder="0.00"
-              className="tabular min-h-[4rem] w-full bg-transparent text-center text-3xl font-bold text-foreground outline-none placeholder:text-muted-foreground"
+              className="tabular min-h-[4.5rem] w-full min-w-0 bg-transparent font-display text-4xl font-bold tracking-[-0.02em] text-foreground caret-accent placeholder:text-border-strong focus:outline-none focus-visible:shadow-none focus-visible:outline-none"
             />
           </div>
-          <p id="amount-help" className="mt-1 text-sm text-muted-foreground">
-            {account.data ? t("pay.amountHelper", { balance: formatSGD(account.data.balance) }) : " "}
+          <p id="amount-help" className="mt-2 text-sm text-muted-foreground">
+            {account.data ? t("pay.amountHelper", { balance: formatSGD(account.data.balance) }) : "\u00a0"}
           </p>
           {amountErr && (
-            <p id="amount-err" role="alert" className="mt-1 font-medium text-danger">
+            <p id="amount-err" role="alert" className="mt-1 font-semibold text-danger">
               {amountErr}
             </p>
           )}
@@ -276,6 +316,57 @@ export function Pay() {
         </Button>
       </form>
     </Screen>
+  );
+}
+
+/** Trusted payees first; new payees in their own clearly marked group. Search appears with more than 6 payees. */
+function PayeeGroups({ payees, query, setQuery, onChoose, listRef }: {
+  payees: Payee[]; query: string; setQuery: (q: string) => void; onChoose: (p: Payee) => void; listRef: React.RefObject<HTMLDivElement>;
+}) {
+  const { t } = useTranslation();
+  const q = query.trim().toLowerCase();
+  const shown = q ? payees.filter((p) => `${p.name} ${p.account_ref}`.toLowerCase().includes(q)) : payees;
+  const known = shown.filter((p) => !p.is_new);
+  const fresh = shown.filter((p) => p.is_new);
+  return (
+    <div ref={listRef} className="space-y-6">
+      {payees.length > 6 && (
+        <div className="relative">
+          <label htmlFor="payee-search" className="sr-only">{t("pay.search")}</label>
+          <Search aria-hidden className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+          <input
+            id="payee-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("pay.search")}
+            autoComplete="off"
+            className="block min-h-btn w-full rounded-field border border-border-strong bg-card pl-12 pr-4 text-lg text-foreground placeholder:text-muted-foreground hover:border-foreground focus-visible:border-foreground"
+          />
+        </div>
+      )}
+      {shown.length === 0 && <p className="text-muted-foreground">{t("pay.searchNone", { q: query.trim() })}</p>}
+      {known.length > 0 && (
+        <section aria-labelledby="g-known">
+          <h2 id="g-known" className="mb-3 text-xl">{t("pay.groupKnown")}</h2>
+          <ul className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card">
+            {known.map((p) => <PayeeRow key={p.id} payee={p} onChoose={onChoose} />)}
+          </ul>
+        </section>
+      )}
+      {fresh.length > 0 && (
+        <section aria-labelledby="g-new" aria-describedby="g-new-hint">
+          <h2 id="g-new" className="flex items-center gap-2 text-xl">
+            <ShieldAlert aria-hidden className="h-5 w-5 shrink-0 text-warning" />
+            {t("pay.groupNew")}
+          </h2>
+          <p id="g-new-hint" className="mb-3 mt-1 text-sm text-muted-foreground">{t("pay.groupNewHint")}</p>
+          <ul className="divide-y divide-border overflow-hidden rounded-card border border-warning bg-card">
+            {fresh.map((p) => <PayeeRow key={p.id} payee={p} onChoose={onChoose} />)}
+          </ul>
+        </section>
+      )}
+    </div>
   );
 }
 

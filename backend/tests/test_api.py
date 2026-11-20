@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy import select
 
 from app import db as db_module
-from app.models import EvidenceEvent, EvidenceImmutableError, Transfer
+from app.models import EvidenceEvent, EvidenceImmutableError, MessageCheck, Transfer
 
 from .conftest import backdate, balance, payee_id
 
@@ -689,6 +689,55 @@ def test_task6_escalated_case_counts_as_report_but_own_reports_do_not(client, au
 def test_task6_unrelated_account_not_reported(client, auth):
     t = create(client, auth("aisha.rahman"), "Hospital – NUH Billing", "50", BROWSER_NO).json()
     assert t["payee_reported"] is False
+
+
+# ---- message checker upgrade -------------------------------------------------------------
+MAS_MSG = "This is Inspector Lim from the Police. Your identity was used in money laundering. Transfer your savings to a safe account and tell no one."
+
+
+def test_check_returns_type_advice_and_stores_details(client, auth):
+    h = auth("tan.siewlan")
+    r = client.post("/api/messages/check", headers=h, json={"text": MAS_MSG, "source": "call", "claimed_sender": "Police"}).json()
+    assert r["verdict"] == "likely_scam" and r["scam_type"] == "government_official" and len(r["advice"]) == 3
+    assert all(f["source"] for f in r["flags"])
+    with db_module.SessionLocal() as s:
+        mc = s.get(MessageCheck, r["id"])
+        assert mc.source_channel == "call" and mc.scam_type == "government_official" and mc.rule_pack_version
+    assert client.post("/api/messages/check", headers=h, json={"text": "x", "source": "fax"}).status_code == 422
+    assert client.post("/api/messages/check", headers=h, json={"text": "a" * 5001}).status_code == 422
+
+
+def test_sender_checks(client, auth):
+    h = auth("ryan.lim")
+    r = client.post("/api/messages/check", headers=h, json={
+        "text": "Your parcel is held. Pay the fee in the app.", "source": "sms", "sender": "+63 917 555 0142",
+        "claimed_sender": "Singapore Post"}).json()
+    keys = {f["key"] for f in r["flags"]}
+    assert {"foreign_sender", "sender_name_mismatch"} <= keys
+
+
+def test_feedback_label_and_training_export(client, auth):
+    h = auth("ryan.lim")
+    m = client.post("/api/messages/check", headers=h, json={"text": MAS_MSG}).json()
+    assert client.post(f"/api/messages/{m['id']}/feedback", headers=h, json={"helpful": True}).json()["user_feedback"] == "helpful"
+    client.post(f"/api/messages/{m['id']}/report", headers=h)
+    staff = auth("staff.anna")
+    assert client.post(f"/api/staff/messages/{m['id']}/label", headers=staff, json={"scam_type": "nonsense"}).status_code == 422
+    r = client.post(f"/api/staff/messages/{m['id']}/label", headers=staff,
+                    json={"scam_type": "government_official", "training_candidate": True})
+    assert r.json()["training_candidate"] is True
+    csv_text = client.get("/api/staff/messages/training-candidates.csv", headers=staff).text
+    assert "government_official" in csv_text and "Inspector" in csv_text
+    assert client.get("/api/staff/messages/training-candidates.csv", headers=h).status_code == 403
+
+
+def test_recent_likely_scam_check_adds_risk(client, auth):
+    h = auth("ryan.lim")
+    before = create(client, h, "SP Group", "40").json()
+    assert "recent_scam_check" not in {r["key"] for r in before["reasons"]}
+    assert client.post("/api/messages/check", headers=h, json={"text": MAS_MSG}).json()["verdict"] == "likely_scam"
+    after = create(client, h, "SP Group", "40").json()
+    assert "recent_scam_check" in {r["key"] for r in after["reasons"]}
 
 
 # --- zero trust: inbound contact is never proof -----------------------------------------------

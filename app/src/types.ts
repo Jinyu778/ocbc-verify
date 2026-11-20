@@ -67,13 +67,24 @@ export interface CallInfo {
 export interface MessageFlag {
   key: string;
   strong: boolean;
+  critical?: boolean;
+  family?: string;
+  scam_type?: string | null;
   explanation: string;
+  source?: string;
   spans: [number, number][];
   phrases: string[];
 }
 export interface CheckResult {
   id: number;
   verdict: "likely_scam" | "be_careful" | "no_signs" | "not_sure";
-  ml_probability: number;
+  /** null when the model is unavailable and the checker ran on rules only */
+  ml_probability: number | null;
+  model_available?: boolean;
   flags: MessageFlag[];
+  scam_type?: string | null;
+  scam_type_label?: string | null;
+  advice?: string[];
+  counter_evidence?: string[];
+  rule_pack_version?: string;
 }

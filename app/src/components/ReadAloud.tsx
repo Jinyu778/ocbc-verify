@@ -55,7 +55,7 @@ export function ReadAloud({ text, className }: { text: string; className?: strin
       <button
         type="button"
         onClick={toggle}
-        className="sb-press inline-flex min-h-touch items-center gap-2 rounded-pill border border-border-strong bg-card px-3.5 text-sm font-semibold text-foreground hover:bg-muted"
+        className="sb-press inline-flex min-h-touch items-center gap-2 rounded-btn border border-border-strong bg-card px-3.5 text-sm font-semibold text-foreground hover:bg-muted"
         aria-pressed={speaking}
       >
         {speaking ? <Square aria-hidden className="h-4 w-4" /> : <Volume2 aria-hidden className="h-4 w-4" />}

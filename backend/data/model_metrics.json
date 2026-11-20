@@ -1,14 +1,174 @@
 {
-  "n_total": 466,
-  "n_train": 349,
-  "n_test": 117,
-  "accuracy": 0.983,
-  "precision_scam": 0.97,
+  "n_total": 1618,
+  "n_train": 1213,
+  "n_test": 405,
+  "accuracy": 0.993,
+  "precision_scam": 0.984,
   "recall_scam": 1.0,
+  "f1_scam": 0.992,
+  "false_positive_rate": 0.014,
+  "confusion_matrix": {
+    "true_legit": 214,
+    "false_scam": 3,
+    "missed_scam": 0,
+    "caught_scam": 188
+  },
   "grouped_by_template": {
-    "n_test": 117,
-    "accuracy": 0.915,
-    "precision_scam": 0.897,
-    "recall_scam": 0.972
-  }
+    "n_test": 407,
+    "accuracy": 0.83,
+    "precision_scam": 0.829,
+    "recall_scam": 0.863,
+    "f1_scam": 0.846,
+    "false_positive_rate": 0.207,
+    "confusion_matrix": {
+      "true_legit": 149,
+      "false_scam": 39,
+      "missed_scam": 30,
+      "caught_scam": 189
+    },
+    "calibration": {
+      "brier": 0.1255,
+      "bins": [
+        {
+          "bin": "0.0-0.2",
+          "n": 134,
+          "mean_predicted": 0.068,
+          "share_scam": 0.09
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 27,
+          "mean_predicted": 0.274,
+          "share_scam": 0.185
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 32,
+          "mean_predicted": 0.491,
+          "share_scam": 0.688
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 24,
+          "mean_predicted": 0.728,
+          "share_scam": 0.833
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 190,
+          "mean_predicted": 0.926,
+          "share_scam": 0.842
+        }
+      ]
+    },
+    "hard_negative_false_positive_rate": 0.248,
+    "n_hard_negatives": 101,
+    "recall_by_scam_type": {
+      "business_email": {
+        "n": 11,
+        "recall": 0.818
+      },
+      "ecommerce": {
+        "n": 16,
+        "recall": 0.438
+      },
+      "fake_friend": {
+        "n": 40,
+        "recall": 0.925
+      },
+      "government_official": {
+        "n": 46,
+        "recall": 0.783
+      },
+      "investment": {
+        "n": 7,
+        "recall": 1.0
+      },
+      "job": {
+        "n": 40,
+        "recall": 0.95
+      },
+      "phishing": {
+        "n": 23,
+        "recall": 1.0
+      },
+      "prize": {
+        "n": 9,
+        "recall": 1.0
+      },
+      "romance": {
+        "n": 9,
+        "recall": 0.556
+      },
+      "tech_support": {
+        "n": 18,
+        "recall": 1.0
+      }
+    },
+    "checker": {
+      "accuracy": 0.843,
+      "precision_scam": 0.819,
+      "recall_scam": 0.909,
+      "f1_scam": 0.861,
+      "false_positive_rate": 0.234,
+      "confusion_matrix": {
+        "true_legit": 144,
+        "false_scam": 44,
+        "missed_scam": 20,
+        "caught_scam": 199
+      },
+      "legit_shown_likely_scam": 0.0,
+      "legit_shown_be_careful": 0.234,
+      "hard_negative_shown_likely_scam": 0.0,
+      "hard_negative_flagged": 0.307,
+      "scam_shown_likely_scam": 0.817,
+      "verdict_split": {
+        "likely_scam": 179,
+        "be_careful": 64,
+        "not_sure": 39,
+        "no_signs": 125
+      }
+    }
+  },
+  "unseen_tactics": {
+    "n": 64,
+    "model_only": {
+      "accuracy": 0.938,
+      "precision_scam": 0.944,
+      "recall_scam": 0.944,
+      "f1_scam": 0.944,
+      "false_positive_rate": 0.071,
+      "confusion_matrix": {
+        "true_legit": 26,
+        "false_scam": 2,
+        "missed_scam": 2,
+        "caught_scam": 34
+      }
+    },
+    "checker": {
+      "accuracy": 0.906,
+      "precision_scam": 0.895,
+      "recall_scam": 0.944,
+      "f1_scam": 0.919,
+      "false_positive_rate": 0.143,
+      "confusion_matrix": {
+        "true_legit": 24,
+        "false_scam": 4,
+        "missed_scam": 2,
+        "caught_scam": 34
+      },
+      "legit_shown_likely_scam": 0.0,
+      "legit_shown_be_careful": 0.143,
+      "hard_negative_shown_likely_scam": 0.0,
+      "hard_negative_flagged": 0.0,
+      "scam_shown_likely_scam": 0.639,
+      "verdict_split": {
+        "likely_scam": 23,
+        "be_careful": 15,
+        "not_sure": 5,
+        "no_signs": 21
+      }
+    }
+  },
+  "rule_pack_version": "2026.11.1"
 }

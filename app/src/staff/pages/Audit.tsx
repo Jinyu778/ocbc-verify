@@ -17,7 +17,7 @@ export function Audit() {
       <h1>Audit trail</h1>
       <p className="text-muted-foreground">Every staff action with its note (last 72 hours).</p>
       {q.isLoading ? <Skeleton className="h-32" /> : (
-        <div className="overflow-x-auto rounded-card border border-border bg-card shadow-card">
+        <div className="overflow-x-auto rounded-card border border-border bg-card">
           <table className="w-full min-w-[640px] text-sm">
             <thead className="bg-muted text-left">
               <tr>{["Time", "Staff", "Case", "Action", "Note"].map((h) => <th key={h} scope="col" className="px-3 py-2">{h}</th>)}</tr>

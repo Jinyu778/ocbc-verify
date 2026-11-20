@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from ..config import get_settings
 from ..db import get_db
 from ..evidence import log_event
-from ..models import Account, Payee, Transfer, User, utcnow
+from ..models import Account, MessageCheck, Payee, Transfer, User, utcnow
 from ..realtime import hub
 from ..risk_engine import QUESTION_KEYS, Signals, assess
 from ..security import require_role
@@ -108,6 +108,9 @@ def _score(db: Session, t: Transfer, answers: dict | None):
         history_std=acct.typical_transfer_std,
         answers=answers,
         payee_reported_by_others=payee_report_count(db, t.payee, t.customer_user_id),
+        recent_scam_check=db.scalar(select(MessageCheck.id).where(
+            MessageCheck.user_id == t.customer_user_id, MessageCheck.verdict == "likely_scam",
+            MessageCheck.created_at >= (t.created_at or utcnow()) - timedelta(minutes=60)).limit(1)) is not None,
     )
 
 

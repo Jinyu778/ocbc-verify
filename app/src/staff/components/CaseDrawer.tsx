@@ -7,8 +7,8 @@ import { Timeline } from "./Timeline";
 import { claimCall } from "../lib/claims";
 
 type Action = "approve" | "call" | "escalate" | "genuine";
-const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircle2; variant: "primary" | "navy" | "outline" | "danger"; help: string }[] = [
-  { id: "approve", label: "Approve & release", key: "A", icon: CheckCircle2, variant: "navy", help: "Releases the payment. Money moves now." },
+const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircle2; variant: "primary" | "dark" | "outline" | "danger"; help: string }[] = [
+  { id: "approve", label: "Approve & release", key: "A", icon: CheckCircle2, variant: "dark", help: "Releases the payment. Money moves now." },
   { id: "call", label: "Call customer in-app", key: "C", icon: PhoneCall, variant: "outline", help: "Rings the customer inside the OCBC Verify app with a verified badge." },
   { id: "escalate", label: "Hold & escalate to ASC", key: "E", icon: ShieldAlert, variant: "danger", help: "Holds the payment and creates an Anti-Scam Centre referral." },
   { id: "genuine", label: "Mark as genuine", key: "G", icon: ThumbsUp, variant: "outline", help: "Releases it and records a false positive for the metrics." },
@@ -102,7 +102,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
         aria-modal="true"
         aria-labelledby="case-h"
         onClick={(e) => e.stopPropagation()}
-        className="sb-screen h-full w-full max-w-2xl overflow-y-auto bg-background shadow-card outline-none"
+        className="sb-drawer h-full w-full max-w-2xl overflow-y-auto bg-background shadow-lift outline-none"
       >
         <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-card px-5 py-3">
           <h2 id="case-h" className="flex-1">Case SB-{String(id).padStart(6, "0")}</h2>
@@ -178,7 +178,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
               <div className="grid gap-2 sm:grid-cols-2">
                 {ACTIONS.map((a) => (
                   <Button key={a.id} variant={a.variant} icon={a.icon} disabled={closed} onClick={() => setPending(a.id)} aria-keyshortcuts={a.key} title={a.help}>
-                    {a.label} <kbd className="ml-1 rounded border border-current px-1 text-xs opacity-80">{a.key}</kbd>
+                    {a.label} <kbd className="ml-1 rounded border border-current px-1 text-xs">{a.key}</kbd>
                   </Button>
                 ))}
               </div>
@@ -255,7 +255,7 @@ export function CaseDrawer({ id, onClose }: { id: number; onClose: () => void })
           onChange={(e) => setNote(e.target.value)}
           aria-invalid={!!err || undefined}
           aria-describedby={err ? "note-err" : undefined}
-          className={cx("w-full rounded-btn border-2 bg-card p-2 text-foreground", err ? "border-danger" : "border-border-strong")}
+          className={cx("w-full rounded-field border bg-card p-2 text-foreground", err ? "border-danger" : "border-border-strong")}
         />
         {err && <Banner tone="danger" alert className="mt-2"><span id="note-err">{err}</span></Banner>}
       </Dialog>

@@ -14,6 +14,7 @@ Points
   Unusual amount (z-score >= 3 vs history)    +2
   Each "Yes" to a safety question             +3
   Payee account reported by other customers   +4
+  Customer's own message check in the last 60 minutes was "Likely scam"   +2
 
 Tiers: < 3 none, 3-5 ask, >= 6 pause.
 Override: new payee AND any live signal (call, recent call, chatting, screen share, or a "Yes" to
@@ -47,6 +48,7 @@ REASON_TEXT = {
     "override_new_payee_live": "A new payee while you are on a call or chat is a common scam pattern.",
     "override_new_payee_unusual_large": "A large, unusual payment to someone new is how most scams end. We always pause these.",
     "payee_reported": "This account was reported by other customers.",
+    "recent_scam_check": "You recently checked a message that looked like a scam.",
     "signals_unavailable": "We could not check your phone for calls, so we're asking a few questions.",
 }
 
@@ -122,6 +124,7 @@ def assess(
     history_std: Decimal | None,
     answers: dict | None = None,
     payee_reported_by_others: int = 0,
+    recent_scam_check: bool = False,
 ) -> RiskResult:
     amount = Decimal(amount)
     answers = answers or {}
@@ -153,6 +156,8 @@ def assess(
 
     if payee_reported_by_others > 0:
         add("payee_reported", 4)
+    if recent_scam_check:  # only what the customer chose to check; the app never reads their messages
+        add("recent_scam_check", 2)
 
     for q in QUESTION_KEYS:
         if answers.get(q) is True:

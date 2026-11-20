@@ -30,6 +30,8 @@ export default defineConfig({
     screenshot: "only-on-failure",
     permissions: ["microphone"],
     viewport: { width: 375, height: 812 },
+    // E2E_REDUCED_MOTION=1 runs every flow with prefers-reduced-motion: reduce (all flows must work identically).
+    contextOptions: process.env.E2E_REDUCED_MOTION ? { reducedMotion: "reduce" } : undefined,
     launchOptions: { args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 375, height: 812 } } }],

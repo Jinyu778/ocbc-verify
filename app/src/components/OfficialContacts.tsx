@@ -14,7 +14,7 @@ export function OfficialContacts({ onPick, className }: { onPick?: (target: Call
   return (
     <Card className={cx("space-y-3", className)} aria-labelledby="callback-title">
       <div className="flex items-start gap-3">
-        <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-pill bg-danger-soft text-danger">
+        <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-danger-soft text-danger">
           <PhoneOff className="h-5 w-5" />
         </span>
         <div className="min-w-0">
@@ -28,7 +28,7 @@ export function OfficialContacts({ onPick, className }: { onPick?: (target: Call
             <a
               href={`tel:${c.tel}`}
               onClick={() => onPick?.(c.target)}
-              className="sb-press flex min-h-btn items-center gap-3 rounded-btn border-2 border-border-strong bg-card px-3 py-2 text-foreground no-underline hover:bg-muted"
+              className="sb-press flex min-h-btn items-center gap-3 rounded-btn border border-border-strong bg-card px-3 py-2 text-foreground no-underline hover:bg-muted"
             >
               <Phone aria-hidden className="h-5 w-5 shrink-0 text-secondary" />
               <span className="min-w-0 flex-1">

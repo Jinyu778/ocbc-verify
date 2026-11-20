@@ -118,13 +118,17 @@ def _upgrade_dev_db() -> None:
     from sqlalchemy import inspect, text
 
     insp = inspect(db_module.engine)
-    user_cols = {c["name"] for c in insp.get_columns("users")}
-    transfer_cols = {c["name"] for c in insp.get_columns("transfers")}
+    wanted = {"users": {"family_code_word_hash": "VARCHAR(128)"},
+              "transfers": {"call_ended_at": "TIMESTAMP"},
+              "message_checks": {"source_channel": "VARCHAR(16)", "claimed_sender": "VARCHAR(120)", "scam_type": "VARCHAR(32)",
+                                 "rule_pack_version": "VARCHAR(16)", "user_feedback": "VARCHAR(16)",
+                                 "training_candidate": "BOOLEAN NOT NULL DEFAULT 0"}}
     with db_module.engine.begin() as conn:
-        if "family_code_word_hash" not in user_cols:
-            conn.execute(text("ALTER TABLE users ADD COLUMN family_code_word_hash VARCHAR(128)"))
-        if "call_ended_at" not in transfer_cols:
-            conn.execute(text("ALTER TABLE transfers ADD COLUMN call_ended_at TIMESTAMP"))
+        for table, cols in wanted.items():
+            have = {c["name"] for c in insp.get_columns(table)}
+            for name, ddl in cols.items():
+                if name not in have:
+                    conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}"))
 
 
 def ensure_seeded() -> None:

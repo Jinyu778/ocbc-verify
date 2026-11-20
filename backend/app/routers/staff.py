@@ -4,7 +4,7 @@ from decimal import Decimal
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -202,7 +202,54 @@ def reported_messages(user: User = Depends(staff_only), db: Session = Depends(ge
     rows = db.scalars(select(MessageCheck).where(MessageCheck.reported.is_(True)).order_by(MessageCheck.id.desc())).all()
     return [{"id": m.id, "customer": m.user.display_name, "text_redacted": m.text_redacted, "flags": m.flags_json,
              "ml_probability": m.ml_probability, "verdict": m.verdict, "review_status": m.review_status,
-             "created_at": as_utc(m.created_at)} for m in rows]
+             "source_channel": m.source_channel, "scam_type": m.scam_type, "user_feedback": m.user_feedback,
+             "training_candidate": m.training_candidate, "created_at": as_utc(m.created_at)} for m in rows]
+
+
+class LabelIn(BaseModel):
+    scam_type: str | None = Field(default=None, max_length=32)
+    training_candidate: bool | None = None
+
+
+@router.post("/messages/{msg_id}/label")
+def label_message(msg_id: int, body: LabelIn, user: User = Depends(staff_only), db: Session = Depends(get_db)):
+    """Staff correct the scam type or mark a message as a candidate for the training set.
+    Candidates are only exported for OFFLINE review; the model is never retrained automatically."""
+    from ..classifier import SCAM_TYPES
+
+    m = db.get(MessageCheck, msg_id)
+    if not m or not m.reported:
+        raise HTTPException(404, "Reported message not found.")
+    if body.scam_type is not None:
+        if body.scam_type not in SCAM_TYPES and body.scam_type != "not_scam":
+            raise HTTPException(422, {"field": "scam_type", "message": "Choose a scam type from the list."})
+        m.scam_type = body.scam_type
+    if body.training_candidate is not None:
+        m.training_candidate = body.training_candidate
+    db.add(StaffAction(staff_user_id=user.id, transfer_id=None, action="message_labelled",
+                       note=f"scam_type={m.scam_type}; training_candidate={m.training_candidate}"))
+    log_event(db, None, staff_actor(user.id), "message_labelled",
+              {"message_check_id": m.id, "scam_type": m.scam_type, "training_candidate": m.training_candidate})
+    db.commit()
+    hub.notify({"type": "message.updated", "id": m.id}, staff=True)
+    return {"id": m.id, "scam_type": m.scam_type, "training_candidate": m.training_candidate}
+
+
+@router.get("/messages/training-candidates.csv", response_class=PlainTextResponse)
+def training_candidates(user: User = Depends(staff_only), db: Session = Depends(get_db)):
+    """Redacted text only, for offline review by the team before anything is added to data/messages.csv."""
+    import csv
+    import io
+
+    rows = db.scalars(select(MessageCheck).where(MessageCheck.training_candidate.is_(True)).order_by(MessageCheck.id)).all()
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["text_redacted", "label", "scam_type", "channel", "checker_verdict", "rule_pack_version"])
+    for m in rows:
+        w.writerow([m.text_redacted, "legit" if m.scam_type == "not_scam" else "scam", m.scam_type or "",
+                    m.source_channel or "", m.verdict, m.rule_pack_version or ""])
+    return PlainTextResponse(buf.getvalue(), media_type="text/csv",
+                             headers={"Content-Disposition": 'attachment; filename="training-candidates.csv"'})
 
 
 @router.post("/messages/{msg_id}/review")

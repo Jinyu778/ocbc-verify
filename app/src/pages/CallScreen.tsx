@@ -52,7 +52,7 @@ export function CallScreen() {
 
   return (
     <Screen title={t("call.title")} back={backTo}>
-      <section className="rounded-card bg-primary p-6 text-center text-on-primary shadow-card dark:border dark:border-border">
+      <section className="rounded-card bg-primary p-6 text-center text-on-primary dark:border dark:border-border">
         <p className="inline-flex items-center gap-2 rounded-full bg-tint-on-dark px-3 py-1 font-semibold">
           <BadgeCheck aria-hidden className="h-5 w-5 text-accent" />
           {t("call.verified")}
@@ -101,7 +101,7 @@ export function CallScreen() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder={t("call.typeMessage")}
-              className="min-h-btn flex-1 rounded-btn border-2 border-border-strong bg-card px-3 text-foreground"
+              className="min-h-btn flex-1 rounded-field border border-border-strong bg-card px-3 text-foreground"
             />
             <Button type="submit" icon={Send}>{t("call.send")}</Button>
           </form>

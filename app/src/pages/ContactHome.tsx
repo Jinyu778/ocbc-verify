@@ -108,7 +108,7 @@ function RequestCard({ r }: { r: Req }) {
       <p className="tabular text-sm text-muted-foreground">{t("contact.timeLeft", { time: formatDuration(left) })}</p>
       {err && <Banner tone="danger" alert>{err}</Banner>}
       <div className="flex flex-col gap-3">
-        <Button size="lg" variant="navy" icon={CheckCircle2} block loading={busy === "ok"} disabled={!!busy} onClick={() => decide("ok")}>
+        <Button size="lg" variant="dark" icon={CheckCircle2} block loading={busy === "ok"} disabled={!!busy} onClick={() => decide("ok")}>
           {t("contact.ok")}
         </Button>
         <Button size="lg" icon={Hand} block loading={busy === "stop"} disabled={!!busy} onClick={() => decide("stop")}>

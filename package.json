@@ -13,6 +13,7 @@
     "test:backend": "node scripts/run-backend.mjs test",
     "test:web": "npm run test -w app",
     "test:e2e": "npm run test -w e2e",
-    "reset-data": "node scripts/run-backend.mjs reset"
+    "reset-data": "node scripts/run-backend.mjs reset",
+    "check:contrast": "node scripts/check-contrast.mjs"
   }
 }
