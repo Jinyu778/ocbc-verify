@@ -1,9 +1,11 @@
-﻿from contextlib import asynccontextmanager
+﻿import os
+from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .config import get_settings
 from .models import EvidenceImmutableError
@@ -55,3 +57,17 @@ def health():
 
 for r in (auth, me, transfers, trusted, calls, staff, messages, metrics, public, ws):
     app.include_router(r.router)
+
+# Hosted mode: when the built frontend is present (the Docker image copies it to backend/static), serve it from the
+# same origin as the API so a single public URL works. In local dev there is no such folder and Vite serves the app.
+STATIC_DIR = Path(os.environ.get("STATIC_DIR", Path(__file__).resolve().parent.parent / "static"))
+if (STATIC_DIR / "index.html").is_file():
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def spa(path: str):
+        if path.startswith("api/"):
+            return JSONResponse(status_code=404, content={"detail": "Not found"})
+        f = (STATIC_DIR / path).resolve()
+        if path and f.is_file() and STATIC_DIR.resolve() in f.parents:
+            return FileResponse(f)
+        return FileResponse(STATIC_DIR / "index.html")
