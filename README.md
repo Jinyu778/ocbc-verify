@@ -142,6 +142,16 @@ npm run dev            # or: make dev   → API :8000 + app :5173
 ```
 > Windows PowerShell says "running scripts is disabled"? Use `npm.cmd run dev`, or run once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
+### Option C – GitHub Codespaces (runs in the cloud, nothing to install)
+1. On the GitHub repo page: **Code → Codespaces → Create codespace on main**.
+2. Wait for the first-time setup (about 3–5 minutes: Python and npm packages, model training). The app then starts by itself.
+3. Open the **Ports** tab → port **5173** → globe icon. That link is the app.
+   - The link is **private** (only you, signed in to GitHub). To let friends or judges open it: right-click port 5173 → **Port visibility → Public**.
+   - The codespace stops after about 30 minutes without use. Reopen it from **Code → Codespaces** and the app starts again (data is kept).
+4. Codespaces uses short test timers (`.env` is created by `.devcontainer/setup.sh`). Voice calls between two different networks need a TURN server; the text-chat fallback always works.
+
+Log: `/tmp/ocbc-verify.log` · restart: `bash .devcontainer/start.sh` · reset data: `npm run reset-data`.
+
 ### Configuration (`.env`, copy from `.env.example`)
 | Setting | Default | Testing |
 |---|---|---|

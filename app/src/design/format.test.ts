@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatDuration, formatSGD, secondsLeft } from "./format";
+import { apiBaseFor } from "./api";
 
 describe("formatSGD", () => {
   it("writes numbers in full", () => {
@@ -18,5 +19,23 @@ describe("timers", () => {
     expect(secondsLeft("2025-12-31T23:59:00Z", now)).toBe(0);
     expect(formatDuration(3725)).toBe("1:02:05");
     expect(formatDuration(65)).toBe("1:05");
+  });
+});
+
+describe("apiBaseFor", () => {
+  const loc = (hostname: string, protocol = "http:", port = "5173") => ({ hostname, protocol, origin: `${protocol}//${hostname}${port ? `:${port}` : ""}` });
+  it("uses the configured URL first (Android app on a LAN)", () => {
+    expect(apiBaseFor(loc("localhost"), "http://192.168.1.20:8000")).toBe("http://192.168.1.20:8000");
+  });
+  it("local development: same host, port 8000", () => {
+    expect(apiBaseFor(loc("localhost"))).toBe("http://localhost:8000");
+    expect(apiBaseFor(loc("192.168.1.20"))).toBe("http://192.168.1.20:8000");
+  });
+  it("GitHub Codespaces: calls its own origin (Vite forwards /api to the backend)", () => {
+    const cs = loc("fluffy-space-abc123-5173.app.github.dev", "https:", "");
+    expect(apiBaseFor(cs)).toBe("https://fluffy-space-abc123-5173.app.github.dev");
+  });
+  it("no browser location: localhost", () => {
+    expect(apiBaseFor(undefined)).toBe("http://localhost:8000");
   });
 });
