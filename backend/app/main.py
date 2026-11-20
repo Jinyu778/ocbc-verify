@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="OCBC Verify API",
+    title="Verity API",
     description="Student prototype for OCBC IGNITE 2026, not an official OCBC product.",
     version="1.0.0",
     lifespan=lifespan,

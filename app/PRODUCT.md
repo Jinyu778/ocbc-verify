@@ -24,7 +24,7 @@ Protect customers from AI-powered scams at the moment they would send money them
 
 ## Positioning
 
-OCBC Verify adds friction only at the moment of payment, and only when the context is risky (a live call, a new payee, an unusual amount). It gives the customer safe actions inside the bank app: a verified in-app call, a trusted contact and a family code word. Answers can only raise risk, and nothing is blocked permanently.
+Verity adds friction only at the moment of payment, and only when the context is risky (a live call, a new payee, an unusual amount). It gives the customer safe actions inside the bank app: a verified in-app call, a trusted contact and a family code word. Answers can only raise risk, and nothing is blocked permanently.
 
 ## Operating Context
 
@@ -40,7 +40,7 @@ OCBC Verify adds friction only at the moment of payment, and only when the conte
 
 ## Brand Commitments
 
-- Name: **OCBC Verify**.
+- Name: **Verity** (renamed from "OCBC Verify"). Logo: a navy shield holding amber pause bars, with an orange rim.
 - The label "Student prototype for OCBC IGNITE 2026, not an official OCBC product" must stay visible on every screen.
 - No OCBC logo or trademarked artwork.
 - Plain-language, calm voice: short sentences, no jargon, reading age about 12, money written in full ("S$8,000").

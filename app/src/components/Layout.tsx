@@ -52,14 +52,32 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
 const HEADER_BTN =
   "sb-press inline-flex min-h-touch items-center gap-1.5 rounded-pill border border-tint-on-dark-strong bg-tint-on-dark px-3 text-sm font-semibold text-on-primary hover:bg-tint-on-dark-strong";
 
-/** Wordmark: an authored monogram, not the shield (the shield-check is reserved for "verified"). */
+/**
+ * The Verity logo: a navy shield holding amber pause bars, with an orange rim (plain shapes, so it
+ * scales from 16 px to a slide). It never carries a tick: the green shield-check means "verified" only.
+ * Same artwork as public/shield.svg (the browser-tab icon).
+ */
+export function VerityLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" aria-hidden focusable="false" className={className}>
+      <path
+        d="M32 3.5 L55 11.5 V30 C55 45.5 45.5 55.5 32 61 C18.5 55.5 9 45.5 9 30 V11.5 Z"
+        style={{ fill: "var(--primary)", stroke: "var(--accent)" }}
+        strokeWidth={3}
+        strokeLinejoin="round"
+      />
+      <rect x="23" y="20" width="7" height="22" rx="2" style={{ fill: "var(--warning-strong)" }} />
+      <rect x="34" y="20" width="7" height="22" rx="2" style={{ fill: "var(--warning-strong)" }} />
+    </svg>
+  );
+}
+
+/** Logo + name, as shown in the app header, the login screen and the staff console. */
 export function BrandMark({ className }: { className?: string }) {
   const { t } = useTranslation();
   return (
     <span className={cx("flex min-w-0 items-center gap-2", className)}>
-      <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-accent font-display text-xl font-extrabold leading-none text-on-accent shadow-card">
-        V
-      </span>
+      <VerityLogo className="h-9 w-9 shrink-0" />
       <span className="whitespace-nowrap font-display text-base font-extrabold tracking-[-0.02em] sm:text-lg">{t("common.appName")}</span>
     </span>
   );

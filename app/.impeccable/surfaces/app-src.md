@@ -5,7 +5,7 @@ primary_target: "app/src"
 related_targets: []
 ---
 
-# Surface brief: OCBC Verify app (customer, trusted contact, staff)
+# Surface brief: Verity app (customer, trusted contact, staff)
 
 Scope: the whole app's visual layer (app/src). Mode: Operate. Built code-first. The redesign changes styles, fonts, markup needed for styling, and motion only. Logic, API calls, routes and test-relevant labels are fixed.
 

@@ -1,4 +1,4 @@
-"""OCBC Verify risk engine.
+"""Verity risk engine.
 
 Pure function: no I/O, no clock, no database. The server always calls this to decide the
 tier; the client never does.

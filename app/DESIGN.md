@@ -1,5 +1,5 @@
 ---
-name: OCBC Verify
+name: Verity
 description: A navy-shelled payment safety app where every risky moment resolves on a visible verdict stage.
 colors:
   primary: "#0a1f44"
@@ -218,13 +218,13 @@ components:
     padding: "10px 20px 10px 12px"
 ---
 
-# Design System: OCBC Verify
+# Design System: Verity
 
 ## Overview
 
 **Creative North Star: "The Verdict Stage"**
 
-OCBC Verify is a deep-navy shell on a cool off-white ground, and its judgement is staged. Whenever a payment, a call or a message is risky, the app answers on a large rounded stage: a scanning ring and a big "Checking…", then a full-strength colour field sweeps in from the left, a round seal stamps down and a display-weight verdict rises. The verdict can be read from the back of a room on a projector, and also by a 68-year-old customer who is being coached over the phone.
+Verity is a deep-navy shell on a cool off-white ground, and its judgement is staged. Whenever a payment, a call or a message is risky, the app answers on a large rounded stage: a scanning ring and a big "Checking…", then a full-strength colour field sweeps in from the left, a round seal stamps down and a display-weight verdict rises. The verdict can be read from the back of a room on a projector, and also by a 68-year-old customer who is being coached over the phone.
 
 The rest of the system stays quiet so the stage carries the weight. Surfaces are white cards with soft, navy-tinted depth. Colour is rationed by meaning, and every hue does one job: orange is the only action colour, green means verified, red means scam or risk, amber means caution, and navy is the shell. Actions are pills, panels have 20px corners, and the type pairs Bricolage Grotesque for verdicts, headings and money with Figtree for everything people read.
 
@@ -250,7 +250,7 @@ A cool navy-and-paper palette with four saturated signal colours, each held to a
 - **Navy Mist** (on-primary-muted): secondary text on navy, such as the stage subtitle, the balance label and the disclaimer.
 
 ### Secondary
-- **Signal Orange** (accent): action and brand only. Primary buttons, the active bottom-nav pill, the "V" monogram, the checker's scanning arc, text selection and the check-message icon. Text on it is always navy (on-accent).
+- **Signal Orange** (accent): action and brand only. Primary buttons, the active bottom-nav pill, the logo's rim, the checker's scanning arc, text selection and the check-message icon. Text on it is always navy (on-accent).
 - **Warm Orange** (accent-hover): hover state of orange buttons.
 - **Burnt Orange Ink** (accent-ink): orange as a text or control colour on light surfaces (the browser's accent-color for checkboxes and radios).
 - **Link Blue** (secondary): links, info icons, progress and the text caret.
@@ -323,7 +323,7 @@ Touch targets are at least 44px everywhere. Primary actions and inputs are 52px 
 The system is mostly flat and tonal: the cool ground, white cards and the navy shell create most of the separation. Two soft, layered shadows add lift, both tinted from the navy in light mode and deepened to black in dark mode. There are no hard or offset shadows and no glows.
 
 ### Shadow Vocabulary
-- **Card** (`box-shadow: 0 1px 2px rgb(10 31 68 / 0.06), 0 8px 24px -8px rgb(10 31 68 / 0.16)`): cards, list groups, stat tiles, the header, orange buttons, verdict seals and the monogram.
+- **Card** (`box-shadow: 0 1px 2px rgb(10 31 68 / 0.06), 0 8px 24px -8px rgb(10 31 68 / 0.16)`): cards, list groups, stat tiles, the header, orange buttons, verdict seals and the logo.
 - **Lift** (`box-shadow: 0 2px 4px rgb(10 31 68 / 0.08), 0 18px 40px -12px rgb(10 31 68 / 0.28)`): verdict stages, dialogs and toasts, which are the things that float above the flow.
 - In dark mode the same two roles use `0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5)` and `0 2px 4px rgb(0 0 0 / 0.45), 0 18px 40px -12px rgb(0 0 0 / 0.6)`.
 
@@ -409,7 +409,7 @@ The system's defining component: a 20px-rounded section with a lift shadow and 2
 ### Don't:
 - **Don't** use orange for anything other than action and brand: no orange warnings, and no orange text on light surfaces except accent-ink.
 - **Don't** put white text on the green or amber strong fields.
-- **Don't** use the shield-check seal as the brand or for anything but a verified state. The brand is the "V" monogram and the pause uses a hand.
+- **Don't** use the green shield-check seal as the brand or for anything but a verified state. The brand is the Verity logo (navy shield, amber pause bars, orange rim), which never carries a tick, and the pause screen uses a hand.
 - **Don't** write raw hex in components; every colour comes through a token variable.
 - **Don't** add shadow levels beyond card and lift, or hard offset shadows.
 - **Don't** animate with `transition: all` or background-position shimmer. Animate only transform and opacity.

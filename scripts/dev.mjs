@@ -1,4 +1,4 @@
-// Starts the API (:8000) and the OCBC Verify app (:5173) together.
+// Starts the API (:8000) and the Verity app (:5173) together.
 import { spawn } from "node:child_process";
 
 const win = process.platform === "win32";

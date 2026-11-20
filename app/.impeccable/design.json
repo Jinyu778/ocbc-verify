@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-11-14T15:18:16.327Z",
-  "title": "Design System: OCBC Verify",
+  "title": "Design System: Verity",
   "extensions": {
     "colorMeta": {
       "primary": {
@@ -744,7 +744,7 @@
   ],
   "narrative": {
     "northStar": "The Verdict Stage",
-    "overview": "OCBC Verify is a deep-navy shell on a cool off-white ground, and its judgement is staged. Whenever a payment, a call or a message is risky, the app answers on a large rounded stage: a scanning ring and a big \"Checking…\", then a full-strength colour field sweeps in from the left, a round seal stamps down and a display-weight verdict rises. The verdict can be read from the back of a room on a projector, and also by a 68-year-old customer who is being coached over the phone.\n\nThe rest of the system stays quiet so the stage carries the weight. Surfaces are white cards with soft, navy-tinted depth. Colour is rationed by meaning, and every hue does one job: orange is the only action colour, green means verified, red means scam or risk, amber means caution, and navy is the shell. Actions are pills, panels have 20px corners, and the type pairs Bricolage Grotesque for verdicts, headings and money with Figtree for everything people read.\n\nDensity follows the person. Customer screens are one calm column with 52px actions and generous gaps, and they grow further in Easy Mode (20px base text, 60px buttons, 1.5rem gaps). The staff console runs the same tokens tighter: a navy rail, a stat strip and a sortable table.",
+    "overview": "Verity is a deep-navy shell on a cool off-white ground, and its judgement is staged. Whenever a payment, a call or a message is risky, the app answers on a large rounded stage: a scanning ring and a big \"Checking…\", then a full-strength colour field sweeps in from the left, a round seal stamps down and a display-weight verdict rises. The verdict can be read from the back of a room on a projector, and also by a 68-year-old customer who is being coached over the phone.\n\nThe rest of the system stays quiet so the stage carries the weight. Surfaces are white cards with soft, navy-tinted depth. Colour is rationed by meaning, and every hue does one job: orange is the only action colour, green means verified, red means scam or risk, amber means caution, and navy is the shell. Actions are pills, panels have 20px corners, and the type pairs Bricolage Grotesque for verdicts, headings and money with Figtree for everything people read.\n\nDensity follows the person. Customer screens are one calm column with 52px actions and generous gaps, and they grow further in Easy Mode (20px base text, 60px buttons, 1.5rem gaps). The staff console runs the same tokens tighter: a navy rail, a stat strip and a sortable table.",
     "keyCharacteristics": [
       "Deep blue-navy shell: header, hero bands, the paused stage, the staff rail and the disclaimer strip.",
       "Full-bleed verdict fields in strong green, red and amber, each with its own AA text colour.",
@@ -815,7 +815,7 @@
     "donts": [
       "**Don't** use orange for anything other than action and brand: no orange warnings, and no orange text on light surfaces except accent-ink.",
       "**Don't** put white text on the green or amber strong fields.",
-      "**Don't** use the shield-check seal as the brand or for anything but a verified state. The brand is the \"V\" monogram and the pause uses a hand.",
+      "**Don't** use the green shield-check seal as the brand or for anything but a verified state. The brand is the Verity logo (navy shield, amber pause bars, orange rim), which never carries a tick, and the pause screen uses a hand.",
       "**Don't** write raw hex in components; every colour comes through a token variable.",
       "**Don't** add shadow levels beyond card and lift, or hard offset shadows.",
       "**Don't** animate with `transition: all` or background-position shimmer. Animate only transform and opacity.",

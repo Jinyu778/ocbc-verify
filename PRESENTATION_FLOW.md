@@ -1,11 +1,11 @@
-# OCBC Verify – 70-second live presentation
+# Verity – 70-second live presentation
 
 Real app, real accounts, no shortcuts. Order: **Scenario 3 → 1 → 5**.
 
 ## Who holds what
 | Person | Device | Signed in as |
 |---|---|---|
-| Presenter A | Android phone with the OCBC Verify app (or a phone browser) | `tan.siewlan`, then `ryan.lim` (second tab) |
+| Presenter A | Android phone with the Verity app (or a phone browser) | `tan.siewlan`, then `ryan.lim` (second tab) |
 | Presenter B | Laptop on the projector, 1440 px | `staff.anna` |
 | Presenter C | Second phone | makes the "scam" call; also signed in as `mrs.lim` in a browser |
 

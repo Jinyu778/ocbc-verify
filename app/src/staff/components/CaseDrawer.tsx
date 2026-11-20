@@ -9,7 +9,7 @@ import { claimCall } from "../lib/claims";
 type Action = "approve" | "call" | "escalate" | "genuine";
 const ACTIONS: { id: Action; label: string; key: string; icon: typeof CheckCircle2; variant: "primary" | "navy" | "outline" | "danger"; help: string }[] = [
   { id: "approve", label: "Approve & release", key: "A", icon: CheckCircle2, variant: "navy", help: "Releases the payment. Money moves now." },
-  { id: "call", label: "Call customer in-app", key: "C", icon: PhoneCall, variant: "outline", help: "Rings the customer inside the OCBC Verify app with a verified badge." },
+  { id: "call", label: "Call customer in-app", key: "C", icon: PhoneCall, variant: "outline", help: "Rings the customer inside the Verity app with a verified badge." },
   { id: "escalate", label: "Hold & escalate to ASC", key: "E", icon: ShieldAlert, variant: "danger", help: "Holds the payment and creates an Anti-Scam Centre referral." },
   { id: "genuine", label: "Mark as genuine", key: "G", icon: ThumbsUp, variant: "outline", help: "Releases it and records a false positive for the metrics." },
 ];

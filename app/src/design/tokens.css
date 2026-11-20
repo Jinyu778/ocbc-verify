@@ -1,5 +1,5 @@
-/* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables. */
-/* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables.
+/* Verity design tokens. Components never use raw hex; Tailwind reads these variables. */
+/* Verity design tokens. Components never use raw hex; Tailwind reads these variables.
    Colour roles have ONE meaning each:
      orange (accent)        = action and brand only
      green  (success)       = verified / safe

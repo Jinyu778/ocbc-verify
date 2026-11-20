@@ -1,10 +1,10 @@
-# OCBC Verify
+# Verity
 
 > **Student prototype for OCBC IGNITE 2026, not an official OCBC product.**
 > OCBC IGNITE Innovation Challenge 2026, Problem Statement 3: *Digital Trust – Protecting Customers from AI-Powered Scams.*
 > "How might OCBC create a useful moment of friction when acting too quickly could cause customer harm?"
 
-OCBC Verify is **one real, working app** with all six features inside it. After login, each account sees its own experience:
+Verity is **one real, working app** with all six features inside it. After login, each account sees its own experience:
 
 | Role | Area | Layout |
 |---|---|---|
@@ -76,7 +76,7 @@ npm run reset-data          # or: make reset-data   or: cd backend && python -m 
 
 ```mermaid
 flowchart LR
-  subgraph APP["OCBC Verify app – one React app (browser + Android/Capacitor)"]
+  subgraph APP["Verity app – one React app (browser + Android/Capacitor)"]
     C["/customer<br/>Home · Pay · Check · Settings"]
     T["/contact<br/>trusted-contact requests"]
     S["/staff<br/>fraud console · Impact"]
@@ -252,4 +252,4 @@ Interactive reference: **http://localhost:8000/docs**. Groups: `/api/auth`, `/ap
 - Login rate limiting and the WebSocket hub are in-memory, so they work for a single server process only.
 - Not security-audited. Don't reuse the JWT secret or test passwords anywhere real.
 
-No OCBC logo is used. **OCBC Verify** is a student prototype for OCBC IGNITE 2026, not an official OCBC product. All people, accounts and money in it are synthetic.
+No OCBC logo is used. **Verity** is a student prototype for OCBC IGNITE 2026, not an official OCBC product. All people, accounts and money in it are synthetic.

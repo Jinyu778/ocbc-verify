@@ -213,8 +213,8 @@ describe("Judge fixes – pause screen", () => {
     expect(screen.getByText(/We always pause these/)).toBeInTheDocument();
   });
 
-  it("uses the OCBC Verify name and the new disclaimer", () => {
-    expect(i18n.t("common.appName")).toBe("OCBC Verify");
+  it("uses the Verity name and the new disclaimer", () => {
+    expect(i18n.t("common.appName")).toBe("Verity");
     expect(i18n.t("common.disclaimer")).toBe("Student prototype for OCBC IGNITE 2026, not an official OCBC product");
     renderPause(base);
     expect(screen.getByRole("button", { name: "Call OCBC in-app" })).toBeInTheDocument();

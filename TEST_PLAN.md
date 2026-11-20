@@ -1,4 +1,4 @@
-# OCBC Verify – Test plan
+# Verity – Test plan
 
 > Student prototype for OCBC IGNITE 2026, not an official OCBC product.
 
@@ -37,12 +37,12 @@ To read Mdm Tan's screens in English, use the language menu at the top. The choi
 ---
 
 ## 1. Fake MAS officer (real phone call)
-**Devices:** an Android phone with the OCBC Verify app (see README → Android build), logged in as `tan.siewlan`; a second phone; a laptop logged in as `staff.anna`.
+**Devices:** an Android phone with the Verity app (see README → Android build), logged in as `tan.siewlan`; a second phone; a laptop logged in as `staff.anna`.
 
 | # | Step | Expected result |
 |---|---|---|
 | 1 | Phone: Settings → Call detection → **Allow**. Accept the Android permission. | Status shows "On (Android)". The explanation says we only check whether you're on a call. |
-| 2 | Call the OCBC Verify phone from the second phone and **stay on the line**. | – |
+| 2 | Call the Verity phone from the second phone and **stay on the line**. | – |
 | 3 | Pay → "MAS Safety Account – Lim K." (NEW chip) → amount `8000` → Review. | Red banner: "You're on a call. Scammers often stay on the line…". No live-call question appears, because the phone detected the call. |
 | 4 | Answer **No** to all 4 safety questions. | "Let's pause this payment" with reasons: new payee, on a call, large payment, much larger than usual. Nothing sent. |
 | 5 | Tap **Call OCBC in-app**. | "Calling OCBC…". The laptop console rings: "Verification call: Mdm Tan Siew Lan". |
