@@ -4,6 +4,7 @@ WORKDIR /repo
 COPY package.json package-lock.json ./
 COPY app/package.json app/
 COPY e2e/package.json e2e/
+COPY android-plugin android-plugin
 RUN npm ci -w app
 COPY app app
 COPY scripts scripts
