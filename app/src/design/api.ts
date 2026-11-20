@@ -23,12 +23,15 @@ const env = (import.meta as unknown as { env?: Record<string, string | undefined
  *  - VITE_API_URL if set (e.g. the Android app pointing at a laptop on the LAN).
  *  - GitHub Codespaces (*.app.github.dev): each port has its own address, so the app calls its own
  *    origin and the Vite dev server forwards /api (and the WebSocket) to the backend.
+ *  - Hosted (Render etc.): the page is on a standard port (80/443, so location.port is empty) and the API shares
+ *    its origin, so the app calls its own origin.
  *  - Otherwise the same host on port 8000 (local development).
  */
-export function apiBaseFor(loc: { protocol: string; hostname: string; origin: string } | undefined, configured?: string): string {
+export function apiBaseFor(loc: { protocol: string; hostname: string; origin: string; port?: string } | undefined, configured?: string): string {
   if (configured) return configured;
   if (!loc) return "http://localhost:8000";
   if (loc.hostname.endsWith(".app.github.dev")) return loc.origin;
+  if (loc.port === "" && loc.hostname !== "localhost" && loc.hostname !== "127.0.0.1") return loc.origin;
   return `${loc.protocol}//${loc.hostname}:8000`;
 }
 export const API_BASE: string = apiBaseFor(typeof location !== "undefined" ? location : undefined, env.VITE_API_URL);

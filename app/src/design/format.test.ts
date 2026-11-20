@@ -23,7 +23,7 @@ describe("timers", () => {
 });
 
 describe("apiBaseFor", () => {
-  const loc = (hostname: string, protocol = "http:", port = "5173") => ({ hostname, protocol, origin: `${protocol}//${hostname}${port ? `:${port}` : ""}` });
+  const loc = (hostname: string, protocol = "http:", port = "5173") => ({ hostname, protocol, port, origin: `${protocol}//${hostname}${port ? `:${port}` : ""}` });
   it("uses the configured URL first (Android app on a LAN)", () => {
     expect(apiBaseFor(loc("localhost"), "http://192.168.1.20:8000")).toBe("http://192.168.1.20:8000");
   });
@@ -34,6 +34,10 @@ describe("apiBaseFor", () => {
   it("GitHub Codespaces: calls its own origin (Vite forwards /api to the backend)", () => {
     const cs = loc("fluffy-space-abc123-5173.app.github.dev", "https:", "");
     expect(apiBaseFor(cs)).toBe("https://fluffy-space-abc123-5173.app.github.dev");
+  });
+  it("hosted on a standard port (Render): calls its own origin", () => {
+    expect(apiBaseFor(loc("ocbc-verify.onrender.com", "https:", ""))).toBe("https://ocbc-verify.onrender.com");
+    expect(apiBaseFor(loc("localhost", "http:", ""))).toBe("http://localhost:8000");
   });
   it("no browser location: localhost", () => {
     expect(apiBaseFor(undefined)).toBe("http://localhost:8000");
