@@ -5,7 +5,6 @@
   },
   "common": {
     "appName": "OCBC Verify",
-    "disclaimer": "OCBC IGNITE 2026 学生原型，并非华侨银行官方产品",
     "back": "返回",
     "next": "下一步",
     "cancel": "取消",
@@ -25,7 +24,8 @@
     "errorGeneric": "出了点问题，请再试一次。",
     "offlineTitle": "我们现在无法连接 OCBC",
     "offlineBody": "请检查您的网络连接，然后再试一次。",
-    "liveOff": "实时更新已暂停 – 正在重新连接"
+    "liveOff": "实时更新已暂停 – 正在重新连接",
+    "newPayeeTag": "新收款人"
   },
   "nav": {
     "main": "主菜单",
@@ -50,7 +50,9 @@
     "showPassword": "显示密码",
     "hidePassword": "隐藏密码",
     "submit": "登录",
-    "required": "请输入用户名和密码。"
+    "required": "请输入用户名和密码。",
+    "heroTitle": "付款前，先停一停。",
+    "heroBody": "只有在付款看起来有风险时我们才会介入。日常付款依然即时完成。"
   },
   "home": {
     "greeting": "您好，{{name}}",
@@ -69,7 +71,9 @@
     "savedOpen": "打开",
     "offlineDraft": "未发送 – 无法连接 OCBC 时已保存在本手机",
     "offlineDraftRetry": "现在检查",
-    "offlineDraftRemove": "删除"
+    "offlineDraftRemove": "删除",
+    "checkMessageDesc": "粘贴信息，我们会指出其中的警告信号。",
+    "payAgain": "再次付款"
   },
   "status": {
     "draft": "草稿",
@@ -102,7 +106,13 @@
     "failBody": "所以我们没有发送。您的钱是安全的。您可以再试一次、先保存在手机上，或取消。",
     "failSave": "稍后再付",
     "failCancel": "取消付款",
-    "failSaved": "已保存在本手机。没有发送任何款项。"
+    "failSaved": "已保存在本手机。没有发送任何款项。",
+    "groupKnown": "您以前付过款的人和账单机构",
+    "groupNew": "新收款人 – 请仔细核对",
+    "groupNewHint": "骗子常常叫您付款到新账户。我们会问您几个简单的问题。",
+    "search": "搜索收款人",
+    "searchNone": "没有符合“{{q}}”的收款人。请检查拼写，或添加新收款人。",
+    "amountPrefix": "新加坡元"
   },
   "reasons": {
     "title": "我们为什么要检查",
@@ -287,7 +297,24 @@
       "move_chat": "叫您转到 Telegram / WhatsApp",
       "paynow_first": "“先付款，不见面”",
       "family_new_number": "家人换了新号码",
-      "preorder_scam": "先付款的预购，不见面"
+      "preorder_scam": "先付款的预购，不见面",
+      "accusation": "指控您犯罪",
+      "handover_cash": "要求交出现金或贵重物品",
+      "transferred_call": "电话被“转接”到警察",
+      "account_problem": "说您的账户有问题",
+      "delivery_fee": "包裹费用或新地址",
+      "money_request": "急着要钱",
+      "scarcity": "“只剩几个”",
+      "loan_offer": "即时贷款",
+      "change_bank_details": "银行资料“已更改”",
+      "prize_win": "没参加却中奖",
+      "romance_money": "网上伴侣要钱",
+      "short_link": "短链接",
+      "lookalike_link": "链接对不上",
+      "bank_sms_link": "带链接的银行或邮政短信",
+      "foreign_sender": "外国发送号码",
+      "sender_name_mismatch": "发送者名字不对",
+      "email_domain_mismatch": "电邮地址对不上"
     },
     "explain": {
       "urgency": "骗子会催促您，让您没时间思考或确认。",
@@ -310,7 +337,127 @@
     "attachBody": "这条信息和您正在做的付款有关吗？加上它，OCBC 职员审核该付款时就能看到。",
     "attachPick": "哪一笔付款？",
     "attachButton": "把信息加到这笔付款",
-    "attached": "已添加。OCBC 职员会在您付给 {{payee}} 的款项中看到这条信息。"
+    "attached": "已添加。OCBC 职员会在您付给 {{payee}} 的款项中看到这条信息。",
+    "sourceLabel": "这条信息从哪里来？",
+    "sources": {
+      "sms": "短信",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram",
+      "email": "电邮",
+      "call": "电话",
+      "social": "社交媒体",
+      "other": "其他"
+    },
+    "sourceHint": "如果是电话，请输入对方说的话。",
+    "moreDetails": "添加发送者资料（可选）",
+    "claimedLabel": "对方说自己是谁？",
+    "senderLabel": "发送者号码或地址",
+    "senderHint": "请自己输入。我们从不读取您的信息、邮箱或联系人。",
+    "errLong": "信息太长了。最多粘贴 5,000 个字符。",
+    "count": "{{n}} / 5,000 个字符",
+    "typeIs": "这看起来像{{type}}。",
+    "typeUnknown": "我们无法判断这是哪一种诈骗。",
+    "sourceName": "来源：{{name}}",
+    "normalTitle": "看起来正常的地方",
+    "normal": {
+      "no_link": "没有链接。",
+      "no_payment": "没有要求付款或转账。",
+      "protective_advice": "它提醒您不要分享验证码或密码，真正的银行也会这样做。",
+      "no_pressure": "没有催促您，也没有要求保密。",
+      "official_domain": "链接是官方网站地址。我们仍然没有打开它。"
+    },
+    "cantTellTitle": "我们无法判断的地方",
+    "cantSender": "我们看不到真正的发送者是谁。名字和号码都可以伪造。",
+    "cantLink": "我们没有打开任何链接，所以看不到它会去哪里。",
+    "cantSafe": "“没有明显迹象”不代表安全。",
+    "doNowTitle": "现在该怎么做",
+    "doNowDefault": [
+      "在核实之前，不要回复、点击链接或转账。",
+      "用官方网站或应用上的号码联系该机构。",
+      "如有疑问，请拨打 ScamShield 热线 1799。"
+    ],
+    "share": "分享提醒",
+    "shareCopied": "提醒已复制。请粘贴到家人的聊天里。",
+    "shareFailed": "无法复制提醒。请自己选择下面的文字并复制。",
+    "shareText": "小心：我收到一条看起来像{{type}}的信息。不要回复、点击链接或转账。如有疑问，请拨打 ScamShield 1799。",
+    "shareTextGeneric": "小心：我收到一条看起来像诈骗的信息。不要回复、点击链接或转账。如有疑问，请拨打 ScamShield 1799。",
+    "helpfulQ": "这对您有帮助吗？",
+    "helpfulYes": "有",
+    "helpfulNo": "没有",
+    "helpfulThanks": "谢谢。OCBC 职员会用这些意见改进检查工具。",
+    "rulesOnly": "检查工具目前只用警示规则运作，所以结果没那么确定。",
+    "s_investment": "投资群邀请",
+    "s_police": "冒充警察的链接",
+    "types": {
+      "government_official": "冒充政府官员诈骗",
+      "fake_friend": "冒充亲友诈骗",
+      "phishing": "网络钓鱼诈骗",
+      "ecommerce": "网购或门票诈骗",
+      "job": "求职诈骗",
+      "investment": "投资诈骗",
+      "loan": "贷款诈骗",
+      "romance": "网恋诈骗",
+      "business_email": "商业电邮诈骗",
+      "prize": "中奖诈骗",
+      "tech_support": "技术支援或远程控制诈骗"
+    },
+    "advice": {
+      "government_official": [
+        "挂断电话。政府官员绝不会在电话里要求您转账或提供银行登录资料。",
+        "不要把现金、黄金或贵重物品交给自称警察或政府部门的人。",
+        "拨打 ScamShield 热线 1799 核实。"
+      ],
+      "fake_friend": [
+        "不要付款。用您原有的号码打给这个人。",
+        "问一个只有本人才知道的问题，或使用家庭暗号。",
+        "如果另一个人自称警察或金融管理局，请挂断并拨打 1799。"
+      ],
+      "phishing": [
+        "不要点击信息里的链接或拨打里面的号码。",
+        "打开官方应用，或自己输入官方网站地址。",
+        "OCBC 和新加坡其他银行绝不会索取您的验证码、密码。"
+      ],
+      "ecommerce": [
+        "不要先付款，也不要在平台以外付款。",
+        "使用平台自带的付款保障，或见面取货时再付款。",
+        "如果卖家不肯见面，就别买了。"
+      ],
+      "job": [
+        "真正的雇主绝不会向您收费才让您工作或领取佣金。",
+        "不要付款，也不要分享 Singpass 或银行资料。",
+        "回复之前，先在公司的官方网站核实。"
+      ],
+      "investment": [
+        "高额又保证的回报是警告信号。",
+        "不要加入陌生人邀请的群组或应用。",
+        "转账前先查看金融管理局的投资者警示名单。"
+      ],
+      "loan": [
+        "真正的贷款机构绝不会在放款前收费。",
+        "持牌放贷人不准用陌生信息打广告。",
+        "在放贷人注册处核实该放贷人。"
+      ],
+      "romance": [
+        "绝不要把钱汇给没见过面的人。",
+        "海关、医院或旅行急事是骗子常用的借口。",
+        "付款前先和家人商量，或拨打 1799。"
+      ],
+      "business_email": [
+        "更改银行资料前，先用您已知的号码打给对方核实。",
+        "看到“新账户号码”加上“紧急”，就要停下来。",
+        "请同事一起核实这个要求。"
+      ],
+      "prize": [
+        "真正的奖品绝不需要您付费或分享验证码。",
+        "不要点击链接。到公司的官方网站核实。",
+        "如有疑问，请拨打 ScamShield 1799。"
+      ],
+      "tech_support": [
+        "挂断电话。银行、电信公司和软件公司不会打电话来修您的手机。",
+        "绝不要因为别人叫您，就从链接安装应用或分享屏幕。",
+        "只从 Google Play 或 Apple App Store 安装应用。"
+      ]
+    }
   },
   "settings": {
     "title": "设置",

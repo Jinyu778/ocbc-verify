@@ -1,0 +1,387 @@
+# OCBC Verify – scam-pattern rule pack (versioned, every pattern cites a source).
+# Loaded by app/classifier.py. Edit here, run `pytest`, and regenerate docs/SCAM_PATTERNS.md with
+#   python -m app.docs_gen
+#
+# Field guide
+#   id            stable key; also the i18n key check.flags.<id>
+#   family        signal family (see FAMILIES). The verdict needs 2 different families, or one critical rule.
+#   scam_type     which playbook the pattern belongs to (null = cross-cutting)
+#   critical      true = high precision on its own (can reach "Likely scam" alone)
+#   weight        contribution to the scam-type score (1-3)
+#   pattern       regex, case-insensitive, run on the normalised text
+#   requires      extra regexes that must ALL match somewhere in the message
+#   unless_before regex; the match is ignored when this appears in the 70 characters before it
+#                 (so "never share your OTP" is advice, not a red flag)
+#   channel       only apply when the customer chose this source (sms, whatsapp, ...)
+#   confidence    verified   = stated on an official / primary page
+#                 reported   = from reliable media or a search summary; confirm on the primary page
+#                 unverified = added by the team; confirm before relying on it
+#   Pages below were located 20 Nov 2026 through web search; the team must open each source_url and
+#   confirm the wording before the final submission.
+
+version: "2026.11.1"
+last_reviewed: "2026-11-20"
+
+families:
+  authority: Claims to be an official (police, MAS, court, bank, government)
+  threat: Threat, accusation or consequence
+  urgency: Pressure to act right now
+  secrecy: Told to keep it secret or stay on the line
+  money: Money request (safe account, pay first, fee, unusual method)
+  credential: Asks for OTP, PIN, password, Singpass or card details
+  action: Asks you to click, install, call or move to another chat
+  reward: Too-good-to-be-true offer or prize
+  mismatch: Sender, link or channel does not add up
+  familiarity: Pretends to be someone you know
+  emotion: Emotional hook
+
+scam_types:
+  government_official:
+    label: Government-official impersonation scam
+    advice:
+      - Hang up. Government officials never ask you to transfer money or share bank login details over a call.
+      - Do not hand over cash, gold or valuables to anyone who says they are from the police or a ministry.
+      - Call the ScamShield Helpline on 1799 to check.
+    source: ScamShield, Government Officials Impersonation Scams
+    source_url: https://scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/government-officials-impersonation-scams/
+  fake_friend:
+    label: Fake friend or family call or message
+    advice:
+      - Do not pay. Call the person on the number you already have for them.
+      - Ask a question only the real person could answer, or use your family code word.
+      - If a second caller says they are the Police or MAS, hang up and call 1799.
+    source: SPF advisory, Resurgence of Fake Friend Call Scams, 24 Apr 2026
+    source_url: https://www.police.gov.sg/media-hub/news/2026/04/20260424_police_advisory_resurgence_of_fake_friend_call_scams
+  phishing:
+    label: Phishing scam
+    advice:
+      - Do not click the link or call the number in the message.
+      - Open the official app or type the official website yourself.
+      - OCBC and other Singapore banks never ask for your OTP, PIN or password.
+    source: GovTech TechNews, How to tell if it is a scam, 30 Jul 2024
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+  ecommerce:
+    label: Online shopping or ticket scam
+    advice:
+      - Do not pay first or pay outside the platform.
+      - Use the platform's own payment protection, or meet and pay on collection.
+      - If the seller refuses a meetup, walk away.
+    source: ScamShield; SPF Annual Scam and Cybercrime Brief 2025
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+  job:
+    label: Job scam
+    advice:
+      - Real employers never charge you to start work or to "unlock" earnings.
+      - Do not pay, and do not share your Singpass or bank details.
+      - Check the company on the official website before replying.
+    source: ScamShield; SPF Annual Scam and Cybercrime Brief 2025
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+  investment:
+    label: Investment scam
+    advice:
+      - Returns that are high and guaranteed are a warning sign.
+      - Do not join a group chat or app a stranger invites you to.
+      - Check the MAS Investor Alert List before sending money.
+    source: ScamShield; MoneySense
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+  loan:
+    label: Loan scam
+    advice:
+      - A real lender never asks for a fee before paying out the loan.
+      - Licensed moneylenders are not allowed to advertise by unsolicited message.
+      - Check the lender on the Registry of Moneylenders.
+    source: ScamShield, scam types
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+  business_email:
+    label: Business email scam
+    advice:
+      - Call the sender on a number you already know before changing any bank details.
+      - Treat "new account number" plus "urgent" as a stop sign.
+    source: SPF Mid-Year Scam and Cybercrime Brief 2026 (BEC among top losses)
+    source_url: https://www.police.gov.sg/-/media/SPF/Media-Room/Statistics/Mid-Year-Scam-and-Cybercrime-Brief-2026/Mid-Year-Scam-and-Cybercrime-Brief-2026.pdf
+  romance:
+    label: Internet love scam
+    advice:
+      - Never send money to someone you have not met in person.
+      - Customs, hospital or travel emergencies are the usual reasons scammers give.
+      - Talk to family or call 1799 before you pay.
+    source: ScamShield, scam types (internet love scams)
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+  tech_support:
+    label: Tech support or remote-access scam
+    advice:
+      - Hang up. Banks, telcos and software companies do not call you to fix your phone.
+      - Never install an app from a link, or share your screen, because someone asked you to.
+      - Only install apps from Google Play or the Apple App Store.
+    source: ScamShield (tech support scams); GovTech TechNews 30 Jul 2024
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+  prize:
+    label: Prize or lucky-draw scam
+    advice:
+      - A real prize never needs you to pay a fee or share your OTP.
+      - Do not click the link. Check on the company's official website.
+    source: ScamShield
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: unverified
+
+patterns:
+  # ------------------------------------------------------------------ government officials
+  - id: safe_account
+    family: money
+    scam_type: government_official
+    critical: true
+    weight: 3
+    pattern: 'safe(ty)?[\s-]*account|protected account|holding account|government safety|verification account|安全账户|安全帐户|akaun selamat'
+    explanation: No real bank, MAS or police officer will ever ask you to move money to a "safe account".
+    source: ScamShield; SPF advisory 24 Apr 2026
+    source_url: https://scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/government-officials-impersonation-scams/
+    source_date: "2026-04-24"
+    confidence: verified
+  - id: authority
+    family: authority
+    scam_type: government_official
+    weight: 2
+    pattern: '\b(MAS|monetary authority|police|spf|court|ministry|minlaw|ICA|MOM|IRAS|customs|immigration|inspector|officer|detective|prosecutor)\b|警察|法院|金融管理局|移民局|polis|mahkamah|pegawai'
+    explanation: Scammers pretend to be from MAS, the police, a ministry or the courts to scare you.
+    source: SPF advisories on government-official impersonation, Feb-Aug 2026
+    source_url: https://www.police.gov.sg/media-hub/news/2026/08/20260814_police_advisory_on_government_officials_impersonation_scams_involving_impersonation
+    source_date: "2026-08-14"
+    confidence: verified
+  - id: accusation
+    family: threat
+    scam_type: government_official
+    weight: 2
+    pattern: 'money laundering|laundering|warrant (of arrest|for)|arrest(ed)?\b|under investigation|criminal case|frozen account|account (will be |has been )?frozen|identity (was |has been )?(used|stolen|misused)|illegal activit|洗钱|逮捕令|涉嫌|冻结|pengubahan wang|waran tangkap'
+    explanation: Being accused of a crime and told to act is how impersonation scammers frighten people.
+    source: SPF advisory 20 Feb 2026 (fake warrant of arrest)
+    source_url: https://police.gov.sg/media-hub/news/2026/02/20260220_police_advisory_on_government_officials_impersonation_scams
+    source_date: "2026-02-20"
+    confidence: verified
+  - id: handover_cash
+    family: money
+    scam_type: government_official
+    critical: true
+    weight: 3
+    unless_before: '\b(never|not|will not|won''t|don''t|do not)\b.{0,40}$'
+    pattern: '(hand ?over|pass|give|surrender|collect|bring).{0,40}(cash|gold|jewell?ery|luxury watch|valuables|money)|(gold bars?|jewell?ery|luxury watch|valuables).{0,40}(collect|courier|officer|investigation)|courier (will|to) (collect|pick)|交出.{0,10}(现金|黄金|珠宝)|serahkan.{0,20}(wang tunai|emas)'
+    explanation: Police and officials never collect cash, gold or valuables from you.
+    source: SPF advisories 20 Feb 2026 and 4 May 2026
+    source_url: https://police.gov.sg/media-hub/news/2026/02/20260220_police_advisory_on_government_officials_impersonation_scams
+    source_date: "2026-02-20"
+    confidence: verified
+  - id: transferred_call
+    family: authority
+    scam_type: government_official
+    weight: 2
+    pattern: '(transfer|connect|put|pass)(ing|red)? (you|your call) (to|through to) .{0,30}(police|MAS|officer|inspector|ministry|bank)|i will transfer you|转接.{0,6}(警|金融)'
+    explanation: A call that is "transferred" to the police or MAS is a known impersonation script.
+    source: SPF advisory 19 Jul 2026 (calls from numbers starting with 3)
+    source_url: https://www.police.gov.sg/media-hub/news/2026/07/20260719_police_advisory_on_government_officials_impersonation_scams_involving_telephone_numbers
+    source_date: "2026-07-19"
+    confidence: verified
+  - id: secrecy
+    family: secrecy
+    weight: 2
+    critical: false
+    pattern: '(do ?n[o'']t|don''t|never) (tell|inform|share this with)|keep (it |this )?(a )?(secret|confidential)|confidential(ity)?|\bNDA\b|stay on the (line|call)|do not hang up|保密|不要告诉|别告诉|rahsia|jangan beritahu|jangan letak'
+    explanation: Being told to keep a payment secret, or to stay on the line, is a big warning sign.
+    source: ScamShield; SPF advisories (secrecy and staying on the line)
+    source_url: https://scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/government-officials-impersonation-scams/
+    confidence: reported
+  # ------------------------------------------------------------------ credentials, apps, links
+  - id: credentials
+    family: credential
+    scam_type: phishing
+    weight: 3
+    pattern: '\b(OTP|PIN|password|passcode|6-digit code|one-time (password|pin|code)|login details|singpass|CVV|card number|(verification |security |sms )?code (we|i) (just )?sent)\b|验证码|密码|kod OTP|kata laluan'
+    unless_before: '(never|do not|don''t|will not|won''t|not) (to )?(share|give|tell|disclose|reveal|ask|send)|jangan (kongsi|berikan)|切勿|不要(透露|分享)'
+    only_after: '(send|share|give|provide|enter|reply|confirm|tell|read out|submit|key in|need|require|verify|update|log ?in|your login|发送|提供|告诉|输入|berikan|kongsi|masukkan)'
+    explanation: Never share your OTP, PIN, password or Singpass details. A real bank will never ask for them.
+    source: GovTech TechNews 30 Jul 2024 (red flag 7, requests for sensitive information)
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+    source_date: "2024-07-30"
+    confidence: verified
+  - id: install_app
+    family: action
+    scam_type: tech_support
+    critical: true
+    weight: 3
+    pattern: 'install (the |this |our )?(app|application)|download (the |this |our )?(app|application)|\.apk\b|remote access|anydesk|teamviewer|screen ?shar'
+    explanation: Installing an app from a message can let scammers control your phone. Only use Google Play or the App Store.
+    source: GovTech TechNews 30 Jul 2024; ScamShield (tech support scams)
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+    source_date: "2024-07-30"
+    confidence: verified
+  - id: link
+    family: action
+    weight: 1
+    pattern: 'https?://\S+|www\.\S+|\b[\w-]+\.(info|top|xyz|cc|online|click|shop|work|win|vip|icu|live)\b'
+    explanation: Links in unexpected messages can lead to fake websites that steal your details. We did not open this link.
+    source: ScamShield; GovTech TechNews 30 Jul 2024
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+    confidence: verified
+  - id: account_problem
+    family: threat
+    scam_type: phishing
+    weight: 2
+    pattern: 'account (has been |is |will be |was )?(locked|suspended|compromised|restricted|deactivated|terminated|on hold)|unusual (login|activity|sign-?in)|suspicious (login|activity|transaction)|verify (your )?(account|identity|now)|账户.{0,4}(冻结|异常)|akaun.{0,12}(digantung|dikunci)'
+    explanation: '"Your account is locked, verify now" is the standard opening of a phishing message.'
+    source: SPF advisories on bank phishing (Oct 2022, Dec 2023); GovTech 2024
+    source_url: https://www.police.gov.sg/media-hub/news/2023/20231229_police_advisory_on_phishing_smses_involving_impersonation_of_banks
+    source_date: "2023-12-29"
+    confidence: verified
+  - id: delivery_fee
+    family: money
+    scam_type: phishing
+    weight: 2
+    pattern: '(parcel|package|delivery|shipment|singpost|dhl|ninja ?van|j&t|redelivery).{0,80}(fee|unpaid|pay|reschedule|failed|held|customs|address)|bayaran penghantaran'
+    explanation: A parcel that needs a small fee or a new address is a common phishing set-up.
+    source: GovTech TechNews 30 Jul 2024 (delivery delay example)
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+    source_date: "2024-07-30"
+    confidence: verified
+  # ------------------------------------------------------------------ fake friend / family
+  - id: family_new_number
+    family: familiarity
+    scam_type: fake_friend
+    critical: true
+    weight: 3
+    pattern: 'new number|changed (my )?number|my phone (broke|is broken|died|fell)|lost my phone|guess who|who am i|do you remember me|换了新号码|新号码|nombor baru|in trouble|bail money|can''t talk now|cannot talk now'
+    explanation: Someone you "know" with a new number who asks for money. Call their old number first.
+    source: SPF advisory 24 Apr 2026, Resurgence of Fake Friend Call Scams
+    source_url: https://www.police.gov.sg/media-hub/news/2026/04/20260424_police_advisory_resurgence_of_fake_friend_call_scams
+    source_date: "2026-04-24"
+    confidence: verified
+  - id: money_request
+    family: money
+    scam_type: fake_friend
+    weight: 2
+    unless_before: '(never|not|won''t|绝不|不会|jangan)[^.!?。]{0,40}$'
+    pattern: '(transfer|send|pay|lend|loan me|borrow|help me (to )?(pay|transfer))\b.{0,40}(\$|s\$|sgd|\d{3,}|paynow|account|bank)|(\$|s\$)\s?\d[\d,]*.{0,40}\b(urgent|today|now|asap)\b|paynow (to|me)\b|借.{0,6}钱|转账'
+    requires:
+      - '\b(urgent|asap|now|today|quick|immediately|help|trouble|emergency|rush)\b|紧急|马上|segera'
+    explanation: A message that asks for money and rushes you gives you no time to check.
+    source: SPF advisory 24 Apr 2026
+    source_url: https://www.police.gov.sg/media-hub/news/2026/04/20260424_police_advisory_resurgence_of_fake_friend_call_scams
+    source_date: "2026-04-24"
+    confidence: reported
+  # ------------------------------------------------------------------ e-commerce
+  - id: paynow_first
+    family: money
+    scam_type: ecommerce
+    critical: true
+    weight: 3
+    pattern: 'pay ?now (first|deposit)|transfer first|pay first|full payment (first|upfront)|no meet ?-?ups?|\bno COD\b|cannot meet|先.{0,4}付款|不见面|tiada jumpa|PayNow dahulu'
+    explanation: '"Pay first, no meetup" is how most online shopping and ticket scams work.'
+    source: 'ScamShield; SPF ASCB 2025 (e-commerce scams, items: tickets, electronics, rentals)'
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  - id: preorder_scam
+    family: money
+    scam_type: ecommerce
+    critical: true
+    weight: 3
+    pattern: '\bpre-?\s?orders?\b|预购|预订|pra-?tempah'
+    requires:
+      - 'pay ?now|transfer|deposit|先.{0,4}付款|bayar'
+      - 'no meet ?-?ups?|cannot meet|can''t meet|不见面|tiada jumpa'
+    explanation: A "pre-order" you must pay for first, with no meetup, is a common collectibles scam (for example Pokémon cards).
+    source: Team rule (unverified); matches the e-commerce pattern in SPF ASCB 2025
+    confidence: unverified
+  - id: scarcity
+    family: urgency
+    scam_type: ecommerce
+    weight: 1
+    pattern: 'limited (time|stock|slots?|offer)|last (few )?(slots?|tickets?|units?)|only \d+ (left|slots?)|while stocks? last|sold out soon|限量|名额有限|stok terhad'
+    explanation: '"Only a few left" pressure stops you from checking the seller.'
+    source: ScamShield; UOB financial literacy article on e-commerce scams (2025)
+    confidence: reported
+  # ------------------------------------------------------------------ job
+  - id: earn_per_day
+    family: reward
+    scam_type: job
+    critical: true
+    weight: 3
+    pattern: 'earn \$?\d[\d,]*\s*(per|a|/)\s*(day|week|hour)|\$\d[\d,]*\s*(per|/)\s*(day|hour)|\$\d+\s?-\s?\$?\d+ (daily|per day)|每天赚|日赚|sehari|part[- ]?time (job|task|work).{0,60}(earn|\$|commission|daily)'
+    explanation: Offers to "earn $X a day" for easy tasks, likes or reviews are almost always scams.
+    source: ScamShield job-scam guidance; SPF ASCB 2025 (WhatsApp and Telegram are the main job-scam channels)
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  - id: upfront_fee
+    family: money
+    weight: 3
+    critical: false
+    pattern: 'deposit|upfront|registration fee|training fee|activation fee|processing fee|admin fee|insurance fee|release fee|top ?up .{0,20}(unlock|commission)|押金|保证金|bayar deposit'
+    unless_before: '\b(no|zero|without|never|not)\s+(\w+\s+){0,2}$'
+    explanation: Real jobs, loans and prizes never ask you to pay a fee first.
+    source: ScamShield job and loan scam guidance
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  - id: move_chat
+    family: action
+    weight: 1
+    pattern: 'telegram|whatsapp (us|me)|wa\.me|t\.me/|add me on|move to (telegram|whatsapp|signal)|加我|tambah saya'
+    explanation: Scammers move you to Telegram or WhatsApp, where they are harder to trace.
+    source: SPF ASCB 2024-2025 (job scam contact channels)
+    source_url: https://www.scamshield.gov.sg/resources/scams-and-cybercrime-briefs/
+    confidence: reported
+  # ------------------------------------------------------------------ investment, crypto, gold
+  - id: gift_crypto_gold
+    family: money
+    scam_type: investment
+    weight: 2
+    critical: false
+    pattern: 'gift ?cards?|bitcoin|crypto|\bUSDT\b|gold bars?|investment (slot|group|platform)|guaranteed (profit|returns?|\d+%)|risk[- ]free|insider tip|double your (money|investment)|保证.{0,4}(收益|回报|盈利)|稳赚|pelaburan terjamin'
+    explanation: Gift cards, crypto, gold, "risk-free" or "guaranteed" returns are classic scam payment and bait.
+    source: ScamShield; MoneySense, How to spot an investment scam; SPF mid-year 2026 (crypto-related losses)
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  # ------------------------------------------------------------------ loans, BEC, prizes, romance
+  - id: loan_offer
+    family: reward
+    scam_type: loan
+    weight: 2
+    pattern: '(instant|fast|guaranteed|pre-?approved|easy) (loan|approval|credit)|loan (approved|offer|available).{0,60}(fee|insurance|deposit|admin)|贷款.{0,10}(秒批|无抵押)|pinjaman (segera|mudah)'
+    explanation: '"Instant loan, pay a fee first" is how fake lenders work. Licensed moneylenders cannot advertise by message.'
+    source: ScamShield, loan scams
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  - id: change_bank_details
+    family: mismatch
+    scam_type: business_email
+    critical: true
+    weight: 3
+    pattern: '(new|changed|updated|different) (bank )?(account|bank details|payment details|account number)|change of (bank|account)|bank details have changed|please (update|use) (our |the )?new account'
+    requires:
+      - 'invoice|payment|supplier|vendor|transfer|pay|urgent|boss|director|CEO|ceo'
+    explanation: A sudden change of bank account for a payment is the core of business email scams. Call a number you already know.
+    source: SPF Mid-Year Scam and Cybercrime Brief 2026 (business email compromise)
+    source_url: https://www.police.gov.sg/-/media/SPF/Media-Room/Statistics/Mid-Year-Scam-and-Cybercrime-Brief-2026/Mid-Year-Scam-and-Cybercrime-Brief-2026.pdf
+    source_date: "2026-08-26"
+    confidence: reported
+  - id: prize_win
+    family: reward
+    scam_type: prize
+    weight: 2
+    pattern: 'you (have |\x27ve )?(won|been selected)|congratulations.{0,40}(won|prize|winner|reward)|claim (your|the) (prize|reward|gift|voucher)|lucky draw|恭喜.{0,10}(中奖|获得)|tahniah.{0,20}(menang|hadiah)'
+    explanation: A prize you never entered for, or one that needs a fee, is a scam.
+    source: ScamShield (team addition, confirm wording)
+    confidence: unverified
+  - id: romance_money
+    family: emotion
+    scam_type: romance
+    weight: 2
+    pattern: '(my love|darling|sweetheart|dear).{0,160}(send|transfer|help).{0,40}(money|\$|customs|hospital|ticket|fee)|stuck at (customs|the airport)|parcel .{0,30}customs.{0,40}(pay|fee)'
+    explanation: Someone you only know online asking for money for an emergency or customs fee is a romance scam.
+    source: ScamShield scam types, internet love scams
+    source_url: https://www.scamshield.gov.sg/i-want-protection-from-scams/learn-to-recognise-scams/
+    confidence: reported
+  # ------------------------------------------------------------------ pressure (cross-cutting)
+  - id: urgency
+    family: urgency
+    weight: 1
+    pattern: '\burgent(ly)?\b|immediately|right now|within (2|12|24|48) hours|today only|last chance|final notice|act now|quickly|asap|马上|立即|急需|限时|segera|dengan kadar segera'
+    explanation: Scammers rush you so you do not have time to think or check.
+    source: GovTech TechNews 30 Jul 2024; ScamShield
+    source_url: https://www.tech.gov.sg/technews/how-to-tell-if-its-a-scam-the-red-flags-in-scam-messages-you-need-to-spot/
+    confidence: verified

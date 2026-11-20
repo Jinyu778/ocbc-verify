@@ -5,7 +5,6 @@
   },
   "common": {
     "appName": "OCBC Verify",
-    "disclaimer": "Prototaip pelajar untuk OCBC IGNITE 2026, bukan produk rasmi OCBC",
     "back": "Kembali",
     "next": "Seterusnya",
     "cancel": "Batal",
@@ -25,7 +24,8 @@
     "errorGeneric": "Ada masalah. Sila cuba lagi.",
     "offlineTitle": "Kami tidak dapat menghubungi OCBC sekarang",
     "offlineBody": "Sila semak sambungan internet anda, kemudian cuba lagi.",
-    "liveOff": "Kemas kini langsung dijeda – menyambung semula"
+    "liveOff": "Kemas kini langsung dijeda – menyambung semula",
+    "newPayeeTag": "Penerima baru"
   },
   "nav": {
     "main": "Utama",
@@ -50,7 +50,9 @@
     "showPassword": "Tunjuk kata laluan",
     "hidePassword": "Sembunyi kata laluan",
     "submit": "Log masuk",
-    "required": "Sila masukkan nama pengguna dan kata laluan."
+    "required": "Sila masukkan nama pengguna dan kata laluan.",
+    "heroTitle": "Berhenti sejenak sebelum membayar.",
+    "heroBody": "Kami hanya campur tangan apabila bayaran kelihatan berisiko. Bayaran harian kekal segera."
   },
   "home": {
     "greeting": "Helo, {{name}}",
@@ -69,7 +71,9 @@
     "savedOpen": "Buka",
     "offlineDraft": "Belum dihantar – disimpan pada telefon ini semasa OCBC tidak dapat dihubungi",
     "offlineDraftRetry": "Semak sekarang",
-    "offlineDraftRemove": "Buang"
+    "offlineDraftRemove": "Buang",
+    "checkMessageDesc": "Tampal mesej dan kami akan tunjukkan tanda amarannya.",
+    "payAgain": "Bayar lagi"
   },
   "status": {
     "draft": "Draf",
@@ -102,7 +106,13 @@
     "failBody": "Jadi kami TIDAK menghantarnya. Wang anda selamat. Anda boleh cuba lagi, simpan pada telefon ini untuk kemudian, atau batalkan.",
     "failSave": "Simpan untuk kemudian",
     "failCancel": "Batalkan bayaran",
-    "failSaved": "Disimpan pada telefon ini. Tiada apa-apa dihantar."
+    "failSaved": "Disimpan pada telefon ini. Tiada apa-apa dihantar.",
+    "groupKnown": "Orang dan pengebil yang pernah anda bayar",
+    "groupNew": "Penerima baru – semak dengan teliti",
+    "groupNewHint": "Penipu sering meminta anda membayar ke akaun baru. Kami akan tanya beberapa soalan ringkas.",
+    "search": "Cari penerima",
+    "searchNone": "Tiada penerima sepadan dengan \"{{q}}\". Semak ejaan, atau tambah penerima baru.",
+    "amountPrefix": "Dolar Singapura"
   },
   "reasons": {
     "title": "Mengapa kami menyemak",
@@ -287,7 +297,24 @@
       "move_chat": "Pindahkan anda ke Telegram / WhatsApp",
       "paynow_first": "'Bayar dulu, tiada jumpa'",
       "family_new_number": "Ahli keluarga dengan nombor baru",
-      "preorder_scam": "Prapesanan bayar dahulu, tiada jumpa"
+      "preorder_scam": "Prapesanan bayar dahulu, tiada jumpa",
+      "accusation": "Menuduh anda melakukan jenayah",
+      "handover_cash": "Meminta anda serahkan wang tunai atau barang berharga",
+      "transferred_call": "Panggilan 'dipindahkan' kepada polis",
+      "account_problem": "Kata akaun anda bermasalah",
+      "delivery_fee": "Yuran bungkusan atau alamat baru",
+      "money_request": "Meminta wang dengan segera",
+      "scarcity": "'Tinggal sedikit sahaja'",
+      "loan_offer": "Tawaran pinjaman segera",
+      "change_bank_details": "Butiran bank 'telah berubah'",
+      "prize_win": "Hadiah yang anda tidak sertai",
+      "romance_money": "Pasangan dalam talian meminta wang",
+      "short_link": "Pautan dipendekkan",
+      "lookalike_link": "Pautan tidak sepadan",
+      "bank_sms_link": "SMS bank atau SingPost dengan pautan",
+      "foreign_sender": "Nombor pengirim luar negara",
+      "sender_name_mismatch": "Nama pengirim kelihatan salah",
+      "email_domain_mismatch": "Alamat e-mel tidak sepadan"
     },
     "explain": {
       "urgency": "Penipu mendesak anda supaya anda tiada masa untuk berfikir atau menyemak.",
@@ -310,7 +337,127 @@
     "attachBody": "Adakah mesej ini berkaitan bayaran yang anda buat? Tambahkannya supaya kakitangan OCBC dapat melihatnya semasa menyemak bayaran itu.",
     "attachPick": "Bayaran yang mana?",
     "attachButton": "Tambah mesej pada bayaran ini",
-    "attached": "Ditambah. Kakitangan OCBC akan melihat mesej ini bersama bayaran anda kepada {{payee}}."
+    "attached": "Ditambah. Kakitangan OCBC akan melihat mesej ini bersama bayaran anda kepada {{payee}}.",
+    "sourceLabel": "Dari mana mesej ini datang?",
+    "sources": {
+      "sms": "SMS",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram",
+      "email": "E-mel",
+      "call": "Panggilan telefon",
+      "social": "Media sosial",
+      "other": "Lain-lain"
+    },
+    "sourceHint": "Untuk panggilan telefon, taip apa yang pemanggil katakan.",
+    "moreDetails": "Tambah butiran pengirim (pilihan)",
+    "claimedLabel": "Ia kata ia daripada siapa?",
+    "senderLabel": "Nombor atau alamat pengirim",
+    "senderHint": "Taip sendiri. Kami tidak pernah membaca mesej, peti masuk atau kenalan anda.",
+    "errLong": "Mesej ini terlalu panjang. Tampal sehingga 5,000 aksara.",
+    "count": "{{n}} daripada 5,000 aksara",
+    "typeIs": "Ini kelihatan seperti {{type}}.",
+    "typeUnknown": "Kami tidak dapat pastikan jenis penipuan ini.",
+    "sourceName": "Sumber: {{name}}",
+    "normalTitle": "Perkara yang kelihatan biasa",
+    "normal": {
+      "no_link": "Tiada pautan.",
+      "no_payment": "Ia tidak meminta wang atau bayaran.",
+      "protective_advice": "Ia mengingatkan anda supaya tidak berkongsi kod atau kata laluan, seperti yang dibuat oleh bank sebenar.",
+      "no_pressure": "Ia tidak menggesa anda atau meminta anda merahsiakannya.",
+      "official_domain": "Pautan itu alamat laman web rasmi. Kami tetap tidak membukanya."
+    },
+    "cantTellTitle": "Perkara yang kami tidak dapat pastikan",
+    "cantSender": "Kami tidak dapat melihat siapa sebenarnya yang menghantar ini. Nama dan nombor boleh dipalsukan.",
+    "cantLink": "Kami tidak membuka sebarang pautan, jadi kami tidak tahu ke mana ia pergi.",
+    "cantSafe": "\"Tiada tanda jelas\" tidak bermakna ia selamat.",
+    "doNowTitle": "Apa yang perlu dibuat sekarang",
+    "doNowDefault": [
+      "Jangan balas, klik pautan atau hantar wang sehingga anda menyemak.",
+      "Hubungi organisasi itu menggunakan nombor dari laman web atau aplikasi rasminya.",
+      "Jika tidak pasti, hubungi Talian Bantuan ScamShield di 1799."
+    ],
+    "share": "Kongsi amaran",
+    "shareCopied": "Amaran disalin. Tampalkannya dalam sembang dengan keluarga anda.",
+    "shareFailed": "Kami tidak dapat menyalin amaran. Pilih teks di bawah dan salin sendiri.",
+    "shareText": "Berhati-hati: saya terima mesej yang kelihatan seperti {{type}}. Jangan balas, klik pautan atau hantar wang. Jika tidak pasti, hubungi ScamShield di 1799.",
+    "shareTextGeneric": "Berhati-hati: saya terima mesej yang kelihatan seperti penipuan. Jangan balas, klik pautan atau hantar wang. Jika tidak pasti, hubungi ScamShield di 1799.",
+    "helpfulQ": "Adakah ini membantu?",
+    "helpfulYes": "Ya",
+    "helpfulNo": "Tidak",
+    "helpfulThanks": "Terima kasih. Kakitangan OCBC menggunakan ini untuk menambah baik penyemak.",
+    "rulesOnly": "Penyemak kami kini hanya menggunakan peraturan tanda amaran, jadi keputusannya kurang pasti.",
+    "s_investment": "Jemputan kumpulan pelaburan",
+    "s_police": "Pautan polis palsu",
+    "types": {
+      "government_official": "penipuan menyamar pegawai kerajaan",
+      "fake_friend": "penipuan menyamar kawan atau keluarga",
+      "phishing": "penipuan pancingan data",
+      "ecommerce": "penipuan beli-belah atau tiket dalam talian",
+      "job": "penipuan pekerjaan",
+      "investment": "penipuan pelaburan",
+      "loan": "penipuan pinjaman",
+      "romance": "penipuan cinta dalam talian",
+      "business_email": "penipuan e-mel perniagaan",
+      "prize": "penipuan hadiah atau cabutan bertuah",
+      "tech_support": "penipuan sokongan teknikal atau akses jauh"
+    },
+    "advice": {
+      "government_official": [
+        "Letakkan telefon. Pegawai kerajaan tidak pernah meminta anda memindahkan wang atau memberi butiran log masuk bank melalui telefon.",
+        "Jangan serahkan wang tunai, emas atau barang berharga kepada sesiapa yang mengaku daripada polis atau kementerian.",
+        "Hubungi Talian Bantuan ScamShield di 1799 untuk menyemak."
+      ],
+      "fake_friend": [
+        "Jangan bayar. Telefon orang itu di nombor yang anda sudah ada.",
+        "Tanya sesuatu yang hanya orang sebenar tahu, atau gunakan kata kod keluarga anda.",
+        "Jika pemanggil kedua mengaku polis atau MAS, letakkan telefon dan hubungi 1799."
+      ],
+      "phishing": [
+        "Jangan klik pautan atau telefon nombor dalam mesej itu.",
+        "Buka aplikasi rasmi, atau taip sendiri alamat laman web rasmi.",
+        "OCBC dan bank lain di Singapura tidak pernah meminta OTP, PIN atau kata laluan anda."
+      ],
+      "ecommerce": [
+        "Jangan bayar dahulu atau bayar di luar platform.",
+        "Gunakan perlindungan bayaran platform itu, atau jumpa dan bayar semasa mengambil barang.",
+        "Jika penjual enggan berjumpa, jangan teruskan."
+      ],
+      "job": [
+        "Majikan sebenar tidak pernah mengenakan bayaran untuk mula bekerja atau membuka pendapatan.",
+        "Jangan bayar, dan jangan kongsi butiran Singpass atau bank anda.",
+        "Semak syarikat itu di laman web rasminya sebelum membalas."
+      ],
+      "investment": [
+        "Pulangan tinggi yang dijamin ialah tanda amaran.",
+        "Jangan sertai kumpulan sembang atau aplikasi yang dijemput oleh orang asing.",
+        "Semak Senarai Amaran Pelabur MAS sebelum menghantar wang."
+      ],
+      "loan": [
+        "Pemberi pinjaman sebenar tidak pernah meminta bayaran sebelum memberi pinjaman.",
+        "Pemberi pinjaman wang berlesen tidak dibenarkan mengiklan melalui mesej yang tidak diminta.",
+        "Semak pemberi pinjaman itu di Pejabat Pendaftar Pemberi Pinjaman Wang."
+      ],
+      "romance": [
+        "Jangan sekali-kali hantar wang kepada orang yang belum pernah anda jumpa.",
+        "Kecemasan kastam, hospital atau perjalanan ialah cerita biasa penipu.",
+        "Berbincang dengan keluarga atau hubungi 1799 sebelum membayar."
+      ],
+      "business_email": [
+        "Telefon pengirim di nombor yang anda sudah tahu sebelum menukar butiran bank.",
+        "Anggap \"nombor akaun baru\" dan \"segera\" sebagai sebab untuk berhenti.",
+        "Minta rakan sekerja menyemak permintaan itu bersama anda."
+      ],
+      "prize": [
+        "Hadiah sebenar tidak memerlukan anda membayar yuran atau berkongsi OTP.",
+        "Jangan klik pautan. Semak di laman web rasmi syarikat itu.",
+        "Jika tidak pasti, hubungi ScamShield di 1799."
+      ],
+      "tech_support": [
+        "Letakkan telefon. Bank, syarikat telekom dan syarikat perisian tidak menelefon untuk membaiki telefon anda.",
+        "Jangan sekali-kali pasang aplikasi dari pautan, atau kongsi skrin, kerana seseorang menyuruh anda.",
+        "Pasang aplikasi hanya dari Google Play atau Apple App Store."
+      ]
+    }
   },
   "settings": {
     "title": "Tetapan",

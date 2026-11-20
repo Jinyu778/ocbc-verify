@@ -54,7 +54,7 @@ npm run reset-data          # or: make reset-data   or: cd backend && python -m 
 | **3. Official in-app verification** | A real browser-to-browser **WebRTC voice call** with signalling over the app WebSocket, showing *Verified OCBC Fraud Team* and the officer's name. If voice fails it falls back to text chat, and that's logged. **Verify a call** says whether OCBC is genuinely calling you right now, based on an HMAC-signed call session. |
 | **4. Staff triage console** | Live queue sorted by risk then time. The case drawer shows the score breakdown, amount vs usual, signals and their source, answers, call history and an append-only evidence timeline. Actions (each needs a note): Approve, Call customer in-app, Hold & escalate to ASC (printable referral + JSON, contact details masked), Mark as genuine. Keyboard: A / C / E / G / Esc. |
 | **5. Trusted contact co-sign** | The contact sees only the name, the amount band, whether the payee is new, and the reasons. **The trusted contact can pause a payment for staff review, but can never block it permanently:** **OK** lets the payment be sent; **Pause for OCBC review** holds it until OCBC staff review it with the customer, who can still cancel or call OCBC meanwhile. Changing or removing a contact waits `CONTACT_CHANGE_COOLING_MINUTES` (24 h by default). If there's no reply within `TRUSTED_CONTACT_TIMEOUT_MINUTES`, the customer can still save the payment for later or call OCBC. |
-| **6. "Is this real?" message checker** | Rule layer (13 plain-language red flags, highlighted inline, tap to explain) plus an ML layer (TF-IDF + logistic regression). *"Not sure – check through an official channel"* appears when confidence is 0.4–0.6. Report → staff *Reported messages*. **Add this message to my payment** attaches it (redacted) to a payment case, so staff see it in the case and its evidence timeline. Includes youth patterns such as a **Pokémon card pre-order** (pre-order + pay first + no meetup). Only redacted text is stored. |
+| **6. "Is this real?" message checker** | Paste a message, pick where it came from (SMS, WhatsApp, Telegram, email, phone call, social, other) and optionally type the sender. Four layers: (0) normalisation that undoes obfuscation (`s a f e`, zero-width characters, full-width text, `hxxp`, `[.]`); (1) link and sender checks (shorteners, bare IPs, look-alike domains, a bank or SingPost SMS with a link, a foreign number claiming to be a local organisation); (2) a **researched, versioned rule pack** of 25 Singapore scam patterns across 11 scam types, each citing its source ([docs/SCAM_PATTERNS.md](docs/SCAM_PATTERNS.md)); (3) a calibrated TF-IDF + logistic-regression model that can raise caution but never says "Likely scam" on its own. Protective wording ("never share your OTP") is not flagged. The result shows the verdict, the likely scam type, highlighted phrases with sources, "things that look normal", "what we can't tell", type-specific next steps, Report, Share a warning and "Was this helpful?". A "Likely scam" check in the last 60 minutes adds +2 to the customer's next payment. Staff can label reported messages and export training candidates to CSV for offline review (never auto-retrained). Only redacted text is stored. |
 | **Family code word** | The customer, or their trusted contact, sets a secret family word (Settings). When a paused payment has a live call, or an attached "family emergency / new number" message, the pause screen says **"Ask the caller for your family code word."** This counters AI voice cloning. Stored only as a bcrypt hash; never returned by the API, logged, or shown in the console. |
 | **Payee intelligence** | If other customers' cases on the same account number were escalated to the ASC, or had a scam message attached, the payment gets +4 risk and the pause screen and console show **"This account was reported by other customers."** The seeded scam payees share one account number across customers, as mule accounts do. |
 | **Impact panel** | `/staff/impact`: payments checked, % zero friction, % paused, % cancelled after pause, false positives, money protected, extra seconds on genuine payments, trusted-contact response time, message verdicts, model metrics. |
@@ -165,19 +165,17 @@ The app reads these values from `GET /api/config` and shows them as they are. Th
 
 First-time e2e setup: `npx playwright install chromium` (in `e2e/`). The e2e server uses `SAVE_FOR_LATER_OPTIONS_MINUTES=1,3,5` and `TRUSTED_CONTACT_TIMEOUT_MINUTES=1`, so timer tests really wait about 1 minute.
 
-### Message classifier: a placeholder, honestly measured
-**Scam recall on unseen message types: 0.972** (whole message templates held out, n = 117; accuracy 0.915, scam precision 0.897).
+### Message checker: honestly measured
+Full details: [docs/MODEL_CARD.md](docs/MODEL_CARD.md). Data: 1618 synthetic messages (11 scam types, about 54% legitimate, 500+ hard negatives such as real-style OTP notices that say "never share", in English, Singlish, 中文, Bahasa Melayu and machine-assisted Tamil) plus 64 hand-written "unseen tactics" messages that are never used for training.
 
-This model is a **placeholder trained on synthetic data**: 466 template-generated messages (256 scam / 210 legitimate), mostly English with some 中文 and Bahasa Melayu. A production model would be trained on **real scam report data** (for example reports to OCBC and ScamShield), with consent and proper review, and its real-world accuracy is unknown until then. The rule layer works independently of the model and explains every flag in plain words.
+What customers see (rules + model). "Flagged" means *Likely scam* or *Be careful*:
 
-| Split | Accuracy | Scam precision | Scam recall |
+| Test set | Scams flagged | Genuine shown *Likely scam* | Genuine shown *Be careful* |
 |---|---|---|---|
-| **Whole templates held out** (the model never saw that sentence shape) – the honest number | **0.915** | **0.897** | **0.972** |
-| Random 25 % hold-out (n = 117) – optimistic, because similar sentences appear in training | 0.983 | 0.970 | 1.000 |
+| Whole template families held out (n = 407) | **0.909** | **0.0** | 0.122 |
+| Hand-written unseen tactics (n = 64) | **0.917** | **0.0** | 0.0 |
 
-*(The earlier figure of 0.969 was measured before the Pokémon pre-order samples were added; this table is the current, re-run result.)*
-
----
+The model alone, on held-out template families, has scam recall 0.863 and a false-positive rate of 0.207; that is why it never decides alone. The data is synthetic and template-generated, so real-world accuracy is unknown until it is tested on real, consented scam reports (for example to ScamShield). One known miss is kept on purpose (see the model card).
 
 ## Android build (call detection)
 > Not built on the development machine (no Android SDK/Java there). The plugin code is complete but untested on a device.
@@ -240,4 +238,4 @@ Interactive reference: **http://localhost:8000/docs**. Groups: `/api/auth`, `/ap
 - Login rate limiting and the WebSocket hub are in-memory, so they work for a single server process only.
 - Not security-audited. Don't reuse the JWT secret or test passwords anywhere real.
 
-No OCBC logo is used. **OCBC Verify** is a student prototype for OCBC IGNITE 2026, not an official OCBC product. All people, accounts and money in it are synthetic.
+The header shows the official OCBC logo only if the team places it at `app/public/brand/ocbc-logo.svg` (with OCBC's permission); otherwise a plain authored mark is shown. **OCBC Verify** is a student prototype for OCBC IGNITE 2026, not an official OCBC product. All people, accounts and money in it are synthetic.

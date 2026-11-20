@@ -1,0 +1,23 @@
+# Allow-list for link checks. TEAM TODO: open each organisation's own site and confirm every entry
+# before shipping. Nothing here is fetched or opened by the app; it is only compared as text.
+# A link that does not match the organisation it claims to be from is "link does not match",
+# never "this is a scam" by itself.
+last_reviewed: "2026-11-20"
+shorteners: [bit.ly, tinyurl.com, t.ly, s.id, rb.gy, cutt.ly, is.gd, ow.ly, shorturl.at, tiny.cc, goo.gl, lnkd.in, wa.me]
+organisations:
+  - name: OCBC
+    keywords: [ocbc]
+    domains: [ocbc.com, ocbc.com.sg]
+  - name: DBS
+    keywords: [dbs, posb]
+    domains: [dbs.com, dbs.com.sg, posb.com.sg]
+  - name: UOB
+    keywords: [uob]
+    domains: [uob.com.sg]
+  - name: SingPost
+    keywords: [singpost, singaporepost]
+    domains: [singpost.com]
+  - name: Singapore Government
+    keywords: [police, mas, gov, singpass, iras, cpf, ica, mom, scdf, lta, hdb, minlaw, mlaw, scamshield]
+    domains: [gov.sg]          # any *.gov.sg
+    suffix_match: true

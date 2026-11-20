@@ -77,5 +77,7 @@ test("13 – Pokémon card pre-order sample is a likely scam with the pre-order 
   await page.getByRole("button", { name: "Pokémon card pre-order" }).click();
   await page.getByRole("button", { name: "Check message" }).click();
   await expect(page.getByText("Likely scam", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Pay-first pre-order, no meetup", exact: true })).toBeVisible();
+  // Each flag is listed with its explanation and source (no longer a toggle button).
+  await expect(page.locator("#flag-preorder_scam").getByText("Pay-first pre-order, no meetup", { exact: true })).toBeVisible();
+  await expect(page.getByText("This looks like an online shopping or ticket scam.")).toBeVisible();
 });

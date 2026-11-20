@@ -14,7 +14,16 @@ interface Metrics {
   message_checks: number;
   message_verdicts: Record<string, number>;
   messages_reported: number;
-  model: { accuracy: number; precision_scam: number; recall_scam: number; n_test: number; grouped_by_template?: { accuracy: number; recall_scam: number } } | null;
+  model: {
+    accuracy: number; precision_scam: number; recall_scam: number; n_test: number;
+    grouped_by_template?: { accuracy: number; recall_scam: number; checker?: CheckerScores };
+    unseen_tactics?: { n: number; checker: CheckerScores };
+  } | null;
+}
+interface CheckerScores {
+  recall_scam: number;
+  legit_shown_likely_scam: number;
+  legit_shown_be_careful: number;
 }
 const VERDICTS: [string, string][] = [["likely_scam", "Likely scam"], ["be_careful", "Be careful"], ["not_sure", "Not sure"], ["no_signs", "No obvious signs"]];
 
@@ -35,19 +44,19 @@ export function Impact() {
   const total = Math.max(1, m.message_checks);
   return (
     <div className="space-y-5">
-      <h1>Impact</h1>
+      <h1 className="text-2xl">Impact</h1>
       <p className="text-muted-foreground">Live numbers from this database (synthetic test data only).</p>
-      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <dl className="grid gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
         {tiles.map(([label, value, sub]) => (
-          <li key={label} className="rounded-card border border-border bg-card p-4 shadow-card">
-            <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="tabular mt-1 text-2xl font-bold">{value}</p>
-            {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
-          </li>
+          <div key={label} className="bg-card px-4 py-3">
+            <dt className="text-xs font-medium text-muted-foreground">{label}</dt>
+            <dd className="tabular mt-0.5 font-display text-lg font-semibold">{value}</dd>
+            {sub && <dd className="text-xs text-muted-foreground">{sub}</dd>}
+          </div>
         ))}
-      </ul>
-      <section className="rounded-card border border-border bg-card p-4 shadow-card">
-        <h2>Message checks: {m.message_checks} run, {m.messages_reported} reported</h2>
+      </dl>
+      <section className="rounded-card border border-border bg-card p-4">
+        <h2 className="text-lg">Message checks: {m.message_checks} run, {m.messages_reported} reported</h2>
         <dl className="mt-3 space-y-2">
           {VERDICTS.map(([k, label]) => {
             const n = m.message_verdicts[k] ?? 0;
@@ -55,7 +64,7 @@ export function Impact() {
               <div key={k} className="grid grid-cols-[9rem_1fr_3rem] items-center gap-2 text-sm">
                 <dt>{label}</dt>
                 <dd className="h-4 overflow-hidden rounded bg-muted" aria-hidden>
-                  <div className="h-full bg-secondary" style={{ width: `${(n / total) * 100}%` }} />
+                  <div className="h-full bg-foreground" style={{ width: `${(n / total) * 100}%` }} />
                 </dd>
                 <dd className="tabular text-right font-semibold">{n}</dd>
               </div>
@@ -64,12 +73,19 @@ export function Impact() {
         </dl>
       </section>
       {m.model && (
-        <section className="rounded-card border border-border bg-card p-4 text-sm shadow-card">
-          <h2>Message classifier (held-out test set, n={m.model.n_test})</h2>
-          <p className="mt-1">Accuracy {m.model.accuracy} · Scam precision {m.model.precision_scam} · Scam recall {m.model.recall_scam}</p>
-          {m.model.grouped_by_template && (
-            <p className="text-muted-foreground">Harder split (unseen message templates): accuracy {m.model.grouped_by_template.accuracy} · recall {m.model.grouped_by_template.recall_scam}</p>
+        <section className="rounded-card border border-border bg-card p-4 text-sm">
+          <h2 className="text-lg">Message checker (synthetic test sets; see docs/MODEL_CARD.md)</h2>
+          {m.model.grouped_by_template?.checker && (
+            <p className="mt-1">
+              Unseen message templates: scams flagged {m.model.grouped_by_template.checker.recall_scam} · genuine shown "Likely scam" {m.model.grouped_by_template.checker.legit_shown_likely_scam} · genuine shown "Be careful" {m.model.grouped_by_template.checker.legit_shown_be_careful}
+            </p>
           )}
+          {m.model.unseen_tactics && (
+            <p className="mt-1">
+              Hand-written unseen tactics (n={m.model.unseen_tactics.n}): scams flagged {m.model.unseen_tactics.checker.recall_scam} · genuine shown "Likely scam" {m.model.unseen_tactics.checker.legit_shown_likely_scam}
+            </p>
+          )}
+          <p className="mt-1 text-muted-foreground">Model alone, random split (optimistic): accuracy {m.model.accuracy} · scam precision {m.model.precision_scam} · scam recall {m.model.recall_scam}</p>
         </section>
       )}
     </div>

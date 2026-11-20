@@ -114,13 +114,20 @@ def reset_database() -> None:
 
 
 def _upgrade_dev_db() -> None:
-    """Dev databases made by create_all (not Alembic) get the one column added in migration 0002."""
+    """Dev databases made by create_all (not Alembic) get the columns added in migrations 0002 and 0003."""
     from sqlalchemy import inspect, text
 
-    cols = {c["name"] for c in inspect(db_module.engine).get_columns("users")}
-    if "family_code_word_hash" not in cols:
-        with db_module.engine.begin() as conn:
-            conn.execute(text("ALTER TABLE users ADD COLUMN family_code_word_hash VARCHAR(128)"))
+    insp = inspect(db_module.engine)
+    wanted = {"users": {"family_code_word_hash": "VARCHAR(128)"},
+              "message_checks": {"source_channel": "VARCHAR(16)", "claimed_sender": "VARCHAR(120)", "scam_type": "VARCHAR(32)",
+                                 "rule_pack_version": "VARCHAR(16)", "user_feedback": "VARCHAR(16)",
+                                 "training_candidate": "BOOLEAN NOT NULL DEFAULT 0"}}
+    with db_module.engine.begin() as conn:
+        for table, cols in wanted.items():
+            have = {c["name"] for c in insp.get_columns(table)}
+            for name, ddl in cols.items():
+                if name not in have:
+                    conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}"))
 
 
 def ensure_seeded() -> None:

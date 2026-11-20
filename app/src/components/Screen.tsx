@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigationType } from "react-router-dom";
 import { AlertTriangle, MessageCircleWarning, MonitorUp, PhoneCall } from "lucide-react";
 import { Banner } from "@/design";
 import { useSignals } from "../signals";
@@ -20,15 +21,19 @@ export function Screen({
   actions?: ReactNode;
 }) {
   const h = useRef<HTMLHeadingElement>(null);
+  // Back (browser back, nav(-1)) slides in from the left; everything else rises.
+  const navType = useNavigationType();
+  const { key } = useLocation();
+  const goingBack = navType === "POP" && key !== "default"; // "default" = the first page load
   useEffect(() => {
     h.current?.focus();
   }, []);
   return (
-    <div className="sb-screen mx-auto w-full max-w-xl space-y-gap px-4 py-5">
+    <div data-nav={goingBack ? "back" : "forward"} className="sb-screen mx-auto w-full max-w-[40rem] space-y-gap px-4 py-5">
       {onBack ? <BackButton onClick={onBack} /> : back && <BackButton to={back === true ? undefined : back} />}
       {title && (
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 ref={h} tabIndex={-1} className="outline-none">
+          <h1 ref={h} tabIndex={-1} className="text-[1.75rem] outline-none sm:text-3xl">
             {title}
           </h1>
           {actions}

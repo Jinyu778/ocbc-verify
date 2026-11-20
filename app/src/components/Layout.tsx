@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PhoneIncoming, ArrowLeft, Home, LifeBuoy, MessageSquareWarning, Phone, PhoneCall, Send, Settings as Cog, ShieldCheck } from "lucide-react";
-import { Button, Dialog, Disclaimer, LANGUAGES, cx, useLive, type LangCode } from "@/design";
+import { Button, Dialog, LANGUAGES, cx, useLive, type LangCode } from "@/design";
 import { usePrefs } from "../state/prefs";
 import { savePrefsToServer, useSession } from "../state/session";
 import { startSafeBankCall } from "../lib/calls";
@@ -17,12 +17,11 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-btn focus:bg-card focus:p-3">
         Skip to content
       </a>
-      <Disclaimer text={t("common.disclaimer")} className="border-b border-tint-on-dark" />
-      <header className="sticky top-0 z-30 bg-primary text-on-primary shadow-card">
-        <div className="mx-auto flex max-w-xl flex-wrap items-center gap-2 px-4 py-2.5">
+      <header className="sticky top-0 z-30 border-b border-border bg-card text-foreground">
+        <div className="mx-auto flex max-w-[40rem] flex-wrap items-center gap-1.5 px-4 py-2.5">
           <BrandMark />
           <span className="flex-1" />
-          <LanguageSelect onDark />
+          <LanguageSelect />
           <button type="button" onClick={() => setHelp(true)} className={HEADER_BTN}>
             <LifeBuoy aria-hidden className="h-4 w-4" />
             {t("common.help")}
@@ -50,17 +49,31 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
 }
 
 const HEADER_BTN =
-  "sb-press inline-flex min-h-touch items-center gap-1.5 rounded-pill border border-tint-on-dark-strong bg-tint-on-dark px-3 text-sm font-semibold text-on-primary hover:bg-tint-on-dark-strong";
+  "sb-press inline-flex min-h-touch items-center gap-1.5 rounded-btn px-3 text-sm font-semibold text-foreground hover:bg-muted";
 
 /** Wordmark: an authored monogram, not the shield (the shield-check is reserved for "verified"). */
-export function BrandMark({ className }: { className?: string }) {
+/**
+ * Brand mark. Uses the official OCBC logo file at app/public/brand/ocbc-logo.svg when it is present
+ * (supplied by the team; it is never drawn or approximated in code). Until then it falls back to a
+ * plain authored mark so the header never shows a broken image.
+ */
+const LOGO_SRC = "/brand/ocbc-logo.svg";
+export function BrandMark({ className, onDark = false }: { className?: string; onDark?: boolean }) {
   const { t } = useTranslation();
+  const [logoMissing, setLogoMissing] = useState(false);
   return (
-    <span className={cx("flex min-w-0 items-center gap-2", className)}>
-      <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-accent font-display text-xl font-extrabold leading-none text-on-accent shadow-card">
-        V
-      </span>
-      <span className="whitespace-nowrap font-display text-base font-extrabold tracking-[-0.02em] sm:text-lg">{t("common.appName")}</span>
+    <span className={cx("flex min-w-0 items-center gap-2.5", className)}>
+      {logoMissing ? (
+        <svg aria-hidden viewBox="0 0 32 32" className="h-8 w-8 shrink-0">
+          <rect width="32" height="32" rx="9" fill={onDark ? "#ffffff" : "var(--accent)"} />
+          <path d="M9 16.5l4.5 4.5L23 11" fill="none" stroke={onDark ? "var(--accent)" : "#ffffff"} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <span aria-hidden className={cx("inline-flex h-9 shrink-0 items-center", onDark && "rounded-[8px] bg-white px-1.5")}>
+          <img src={LOGO_SRC} alt="" className="h-7 w-auto" onError={() => setLogoMissing(true)} />
+        </span>
+      )}
+      <span className="whitespace-nowrap font-display text-base font-bold tracking-[-0.02em] sm:text-lg">{t("common.appName")}</span>
     </span>
   );
 }
@@ -83,9 +96,9 @@ export function LanguageSelect({ id = "lang-header", showLabel = false, onDark =
           if (user) savePrefsToServer({ preferred_language: l });
         }}
         className={cx(
-          "min-h-touch rounded-field border-2 px-2.5 font-medium",
-          onDark ? "max-w-[6rem] border-tint-on-dark-strong bg-primary-2 text-on-primary sm:max-w-[9.5rem]" : "border-border-strong bg-card text-foreground",
-          showLabel && "min-h-btn w-full",
+          "min-h-touch rounded-field border px-2.5 text-sm font-medium",
+          onDark ? "max-w-[6rem] border-tint-on-dark-strong bg-transparent text-on-primary sm:max-w-[9.5rem] [&>option]:text-foreground" : "max-w-[5.75rem] border-border bg-card text-foreground hover:border-border-strong sm:max-w-[9.5rem]",
+          showLabel && "min-h-btn w-full max-w-none text-base",
         )}
       >
         {LANGUAGES.map((l) => (
@@ -98,17 +111,31 @@ export function LanguageSelect({ id = "lang-header", showLabel = false, onDark =
   );
 }
 
+/** Bottom nav: the one frosted surface in the app; a red bar slides to the active tab. */
 function BottomNav() {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
   const items = [
     { to: "/customer", icon: Home, label: t("nav.home"), end: true },
     { to: "/customer/pay", icon: Send, label: t("nav.pay") },
     { to: "/customer/check", icon: MessageSquareWarning, label: t("nav.checkShort"), aria: t("nav.check") },
     { to: "/customer/settings", icon: Cog, label: t("nav.settings") },
   ];
+  const active = items.findIndex((i) => (i.end ? pathname === i.to : pathname.startsWith(i.to)));
   return (
-    <nav aria-label={t("nav.main")} className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto grid max-w-xl grid-cols-4 gap-1 px-1">
+    <nav aria-label={t("nav.main")} className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-nav-glass pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+      <ul className="relative mx-auto grid max-w-[40rem] grid-cols-4 gap-1 px-1">
+        {active >= 0 && (
+          <li aria-hidden className="pointer-events-none absolute inset-x-1 top-0">
+            {/* one column wide, so translateX(100%) moves exactly one tab (+ the 0.25 rem gap) */}
+            <span
+              className="block h-[3px] transition-transform duration-base ease-out motion-reduce:transition-none"
+              style={{ width: "calc((100% - 0.75rem) / 4)", transform: `translateX(calc(${active} * (100% + 0.25rem)))` }}
+            >
+              <span className="mx-auto block h-full w-10 rounded-b-full bg-accent" />
+            </span>
+          </li>
+        )}
         {items.map(({ to, icon: Icon, label, end, aria }) => (
           <li key={to}>
             <NavLink
@@ -124,10 +151,10 @@ function BottomNav() {
             >
               {({ isActive }) => (
                 <>
-                  <span aria-hidden className={cx("grid h-8 w-14 place-items-center rounded-pill transition-[transform,background-color] duration-fast ease-out", isActive ? "bg-accent text-on-accent" : "bg-transparent")}>
-                    <Icon className={cx("h-[22px] w-[22px]", isActive && "stroke-[2.4]")} />
+                  <span aria-hidden className={cx("grid h-8 w-14 place-items-center transition-colors duration-fast", isActive ? "text-accent-ink" : "")}>
+                    <Icon className={cx("h-[22px] w-[22px]", isActive && "stroke-[2.25]")} />
                   </span>
-                  <span className={isActive ? "font-bold" : ""}>{label}</span>
+                  <span className={isActive ? "font-semibold" : ""}>{label}</span>
                 </>
               )}
             </NavLink>
@@ -165,7 +192,7 @@ function HelpSheet({ open, onClose, customer }: { open: boolean; onClose: () => 
             {t("help.callInApp")}
           </Button>
         )}
-        <a href="tel:1799" className="sb-press inline-flex min-h-btn items-center justify-center gap-2 rounded-pill border-2 border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
+        <a href="tel:1799" className="sb-press inline-flex min-h-btn items-center justify-center gap-2 rounded-btn border border-border-strong bg-card px-4 font-semibold text-foreground no-underline hover:bg-muted">
           <Phone aria-hidden className="h-5 w-5" />
           {t("help.helpline")}
         </a>

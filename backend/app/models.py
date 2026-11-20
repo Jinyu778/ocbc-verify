@@ -187,7 +187,13 @@ class MessageCheck(Base):
     verdict: Mapped[str] = mapped_column(String(16))  # likely_scam | be_careful | no_signs | not_sure
     reported: Mapped[bool] = mapped_column(Boolean, default=False)
     review_status: Mapped[str] = mapped_column(String(12), default="none")  # none | pending | reviewed | escalated
-    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
+    source_channel: Mapped[str | None] = mapped_column(String(16), nullable=True)  # sms | whatsapp | ... as the customer chose
+    claimed_sender: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    scam_type: Mapped[str | None] = mapped_column(String(32), nullable=True)  # checker's guess; staff may correct it
+    rule_pack_version: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    user_feedback: Mapped[str | None] = mapped_column(String(16), nullable=True)  # helpful | not_helpful
+    training_candidate: Mapped[bool] = mapped_column(Boolean, default=False)  # exported for OFFLINE review only
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow, index=True)
 
     user: Mapped[User] = relationship()
 

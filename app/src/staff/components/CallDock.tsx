@@ -19,7 +19,7 @@ export function CallDock() {
     <div className="fixed bottom-4 left-4 z-40 w-[min(24rem,calc(100vw-2rem))] space-y-3 md:left-64">
       {mine && isClaimed(mine.id) ? <LiveCall call={mine} /> : null}
       {mine && !isClaimed(mine.id) ? (
-        <section aria-label="Call in another window" className="rounded-card border border-border bg-card p-4 shadow-card">
+        <section aria-label="Call in another window" className="rounded-card border border-border bg-card p-4">
           <p className="font-semibold">Your call with {mine.customer.display_name} is open in another window.</p>
           <Button className="mt-2" size="sm" variant="outline" onClick={() => claimCall(mine.id)}>Take over the call here</Button>
         </section>
@@ -33,7 +33,7 @@ function Ringing({ call }: { call: CallInfo }) {
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   return (
-    <section aria-label="Incoming call" className="sb-fade-up rounded-card border-2 border-accent bg-card p-4 shadow-card" role="alert">
+    <section aria-label="Incoming call" className="sb-fade-up rounded-card border border-accent bg-card p-4 shadow-lift" role="alert">
       <p className="flex items-center gap-2 font-bold">
         <PhoneIncoming aria-hidden className="h-5 w-5 text-accent" /> Verification call: {call.customer.display_name}
       </p>
@@ -72,7 +72,7 @@ function LiveCall({ call }: { call: CallInfo }) {
     if (engine.sendChat(text)) setText("");
   };
   return (
-    <section aria-label="Live call" className="sb-fade-up rounded-card border border-border bg-card shadow-card">
+    <section aria-label="Live call" className="sb-fade-up rounded-card border border-border bg-card">
       <div className="rounded-t-card bg-primary p-4 text-on-primary">
         <p className="flex items-center gap-2 text-sm"><BadgeCheck aria-hidden className="h-4 w-4 text-accent" /> Verified OCBC Fraud Team (you)</p>
         <p className="text-lg font-bold">{call.customer.display_name}</p>
@@ -95,7 +95,7 @@ function LiveCall({ call }: { call: CallInfo }) {
             </ol>
             <form onSubmit={submit} className="flex gap-2">
               <label htmlFor="staff-chat" className="sr-only">Message to customer</label>
-              <input id="staff-chat" value={text} onChange={(e) => setText(e.target.value)} className="min-h-touch flex-1 rounded-btn border-2 border-border-strong bg-card px-2 text-foreground" />
+              <input id="staff-chat" value={text} onChange={(e) => setText(e.target.value)} className="min-h-touch flex-1 rounded-field border border-border-strong bg-card px-2 text-foreground" />
               <Button type="submit" size="sm" icon={Send}>Send</Button>
             </form>
           </>

@@ -17,7 +17,7 @@ const cx = (...c: (string | false | 0 | null | undefined)[]) => c.filter(Boolean
 export { cx };
 
 // ---------------------------------------------------------------------------------- Button
-type Variant = "primary" | "navy" | "outline" | "ghost" | "danger";
+type Variant = "primary" | "dark" | "outline" | "ghost" | "danger";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   icon?: LucideIcon;
@@ -25,12 +25,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   block?: boolean;
   size?: "md" | "lg" | "sm";
 }
+/* One button shape (14 px radius). Solid red is for the single primary action on a screen. */
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent hover:bg-accent-hover shadow-card",
-  navy: "bg-navy-fill text-on-primary hover:bg-primary-2 dark:border dark:border-tint-on-dark-strong dark:hover:bg-primary-2",
-  outline: "bg-card text-foreground border-2 border-border-strong hover:border-foreground hover:bg-muted",
+  primary: "sb-lift bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-pressed",
+  dark: "sb-lift bg-dark-fill text-card hover:opacity-90",
+  outline: "bg-card text-foreground border border-border-strong hover:border-foreground hover:bg-muted",
   ghost: "bg-transparent text-foreground hover:bg-muted",
-  danger: "bg-danger-strong text-on-danger-strong hover:opacity-90",
+  danger: "sb-lift bg-danger-strong text-on-danger-strong hover:opacity-90",
 };
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = "primary", icon: Icon, loading, block, size = "md", className, children, disabled, ...rest },
@@ -42,17 +43,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cx(
-        "sb-press inline-flex items-center justify-center gap-2 rounded-pill font-semibold tracking-[-0.005em]",
+        "sb-press relative inline-flex items-center justify-center gap-2 rounded-btn font-semibold",
         "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 select-none",
-        size === "lg" ? "min-h-btn px-6 text-lg" : size === "sm" ? "min-h-touch px-4 text-sm" : "min-h-btn px-5 text-base",
+        size === "lg" ? "min-h-btn px-6 text-lg" : size === "sm" ? "min-h-touch px-4 text-sm" : "min-h-btn px-5 text-lg",
         variants[variant],
         block && "w-full",
         className,
       )}
       {...rest}
     >
-      {loading ? <Loader2 aria-hidden className="h-5 w-5 animate-spin" /> : Icon ? <Icon aria-hidden className="h-5 w-5 shrink-0" /> : null}
-      <span>{children}</span>
+      {loading && (
+        <span aria-hidden className="absolute inset-0 grid place-items-center">
+          <Loader2 className="h-5 w-5 animate-spin" />
+        </span>
+      )}
+      {Icon && <Icon aria-hidden className={cx("h-5 w-5 shrink-0 sb-btn-label", loading && "opacity-0")} />}
+      <span className="sb-btn-label">{children}</span>
     </button>
   );
 });
@@ -60,7 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 // ---------------------------------------------------------------------------------- Card
 export function Card({ className, children, as: As = "section", ...rest }: { className?: string; children: ReactNode; as?: "section" | "div" | "article" } & Record<string, unknown>) {
   return (
-    <As className={cx("rounded-card border border-border bg-card p-5 shadow-card sm:p-6", className)} {...rest}>
+    <As className={cx("rounded-card border border-border bg-card p-5 sm:p-6", className)} {...rest}>
       {children}
     </As>
   );
@@ -69,14 +75,14 @@ export function Card({ className, children, as: As = "section", ...rest }: { cla
 // ---------------------------------------------------------------------------------- RiskChip
 export type Tier = "none" | "ask" | "pause";
 const tierStyle: Record<Tier, { icon: LucideIcon; cls: string }> = {
-  pause: { icon: ShieldAlert, cls: "text-danger border-danger bg-danger-soft" },
-  ask: { icon: AlertTriangle, cls: "text-warning border-warning bg-warning-soft" },
-  none: { icon: ShieldCheck, cls: "text-success border-success bg-success-soft" },
+  pause: { icon: ShieldAlert, cls: "text-danger bg-danger-soft" },
+  ask: { icon: AlertTriangle, cls: "text-warning bg-warning-soft" },
+  none: { icon: ShieldCheck, cls: "text-success bg-success-soft" },
 };
 export function RiskChip({ tier, label, className }: { tier: Tier; label: string; className?: string }) {
   const { icon: Icon, cls } = tierStyle[tier];
   return (
-    <span className={cx("inline-flex items-center gap-1.5 whitespace-nowrap rounded-pill border px-2.5 py-1 text-sm font-bold", cls, className)}>
+    <span className={cx("inline-flex items-center gap-1.5 whitespace-nowrap rounded-[8px] px-2 py-1 text-sm font-semibold", cls, className)}>
       <Icon aria-hidden className="h-4 w-4" />
       {label}
     </span>
@@ -86,10 +92,10 @@ export function RiskChip({ tier, label, className }: { tier: Tier; label: string
 // ---------------------------------------------------------------------------------- Banner
 type Tone = "danger" | "warning" | "info" | "success";
 const toneStyle: Record<Tone, { icon: LucideIcon; cls: string }> = {
-  danger: { icon: ShieldAlert, cls: "border-danger bg-danger-soft text-foreground [&_.sb-ic]:text-danger" },
-  warning: { icon: AlertTriangle, cls: "border-warning bg-warning-soft text-foreground [&_.sb-ic]:text-warning" },
-  info: { icon: Info, cls: "border-border bg-info-soft text-foreground [&_.sb-ic]:text-secondary" },
-  success: { icon: CheckCircle2, cls: "border-success bg-success-soft text-foreground [&_.sb-ic]:text-success" },
+  danger: { icon: ShieldAlert, cls: "bg-danger-soft text-foreground [&_.sb-ic]:text-danger" },
+  warning: { icon: AlertTriangle, cls: "bg-warning-soft text-foreground [&_.sb-ic]:text-warning" },
+  info: { icon: Info, cls: "bg-info-soft text-foreground [&_.sb-ic]:text-foreground" },
+  success: { icon: CheckCircle2, cls: "bg-success-soft text-foreground [&_.sb-ic]:text-success" },
 };
 export function Banner({
   tone = "info",
@@ -111,13 +117,13 @@ export function Banner({
   const { icon: DefIcon, cls } = toneStyle[tone];
   const Icon = icon ?? DefIcon;
   return (
-    <div role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-card border p-4", cls, className)}>
-      <span aria-hidden className="sb-ic grid h-9 w-9 shrink-0 place-items-center rounded-pill bg-card">
+    <div role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-card p-4", cls, className)}>
+      <span aria-hidden className="sb-ic shrink-0 pt-0.5">
         <Icon className="h-5 w-5" />
       </span>
       <div className="min-w-0 flex-1">
-        {title && <p className="pt-1.5 font-bold">{title}</p>}
-        {children && <div className={title ? "mt-1" : "pt-1.5"}>{children}</div>}
+        {title && <p className="font-semibold">{title}</p>}
+        {children && <div className={title ? "mt-1" : ""}>{children}</div>}
         {action && <div className="mt-2">{action}</div>}
       </div>
     </div>
@@ -158,8 +164,8 @@ export const Field = forwardRef<
         aria-invalid={error ? true : undefined}
         aria-describedby={cx(helper && helpId, error && errId) || undefined}
         className={cx(
-          "block min-h-btn w-full rounded-field border-2 bg-card px-4 text-foreground placeholder:text-muted-foreground transition-[border-color] duration-fast hover:border-foreground",
-          error ? "border-danger" : "border-border-strong",
+          "block min-h-btn w-full rounded-field border bg-card px-4 text-foreground placeholder:text-muted-foreground transition-[border-color,box-shadow] duration-fast hover:border-foreground focus-visible:border-foreground",
+          error ? "border-danger ring-1 ring-danger" : "border-border-strong",
           inputClassName,
         )}
         {...rest}
@@ -233,10 +239,10 @@ export function Dialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={cx("sb-fade-up max-h-[90vh] w-full max-w-md overflow-auto rounded-card bg-card p-6 text-foreground shadow-lift", sheet && "rounded-b-card")}
+        className={cx("sb-fade-up max-h-[90vh] w-full max-w-md overflow-auto rounded-tile bg-card p-6 text-foreground shadow-lift", sheet && "rounded-b-tile")}
       >
         <div className="mb-3 flex items-start justify-between gap-3">
-          <h2 id={titleId} className="text-xl font-bold leading-tight">
+          <h2 id={titleId} className="text-xl leading-tight">
             {title}
           </h2>
           <button type="button" onClick={onClose} aria-label={closeLabel} className="-m-2 inline-flex min-h-touch min-w-touch items-center justify-center rounded-btn hover:bg-muted">
@@ -277,7 +283,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {items.map((i) => {
           const { icon: Icon } = toneStyle[i.tone];
           return (
-            <div key={i.id} className="sb-fade-up pointer-events-auto flex max-w-md items-center gap-3 rounded-pill bg-primary py-2.5 pl-3 pr-5 text-on-primary shadow-lift dark:bg-card dark:text-foreground">
+            <div key={i.id} className="sb-fade-up pointer-events-auto flex max-w-md items-center gap-3 rounded-card bg-primary py-2.5 pl-3 pr-5 text-on-primary shadow-lift dark:border dark:border-border dark:bg-card dark:text-foreground">
               <span aria-hidden className={cx("grid h-7 w-7 shrink-0 place-items-center rounded-pill", TOAST_DOT[i.tone])}>
                 <Icon className="h-4 w-4" />
               </span>
@@ -290,11 +296,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 export const useToast = () => useContext(ToastCtx);
-
-// ---------------------------------------------------------------------------------- Disclaimer
-export function Disclaimer({ text = "Student prototype for OCBC IGNITE 2026, not an official OCBC product", className }: { text?: string; className?: string }) {
-  return <p className={cx("bg-primary px-4 py-1.5 text-center text-xs font-medium tracking-[0.01em] text-on-primary-muted", className)}>{text}</p>;
-}
 
 // ---------------------------------------------------------------------------------- SuccessTick
 export function SuccessTick({ className }: { className?: string }) {

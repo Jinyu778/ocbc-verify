@@ -34,7 +34,8 @@ async function scrollThrough(page: Page) {
 /** Two frames of the verdict stage while it plays: ~0.4 s (Checking…) and ~1.1 s (resolving). */
 async function stageFrames(page: Page, name: string, width: number) {
   if (REDUCED) return;
-  await page.waitForSelector("[data-stage-running]", { timeout: 5000 });
+  // The verdict card no longer plays a "Checking…" sequence; skip the frames if nothing is running.
+  if (!(await page.waitForSelector("[data-stage-running]", { timeout: 1000 }).catch(() => null))) return;
   await page.waitForTimeout(400);
   await page.screenshot({ path: `${DIR}/${width}-${name}-anim-0.4s.png` });
   await page.waitForTimeout(700);
@@ -130,5 +131,44 @@ for (const width of [375, 1440] as const) {
     }
     await staff.context().close();
     expect(consoleErrors, "browser console errors on the verified and scam paths").toEqual([]);
+  });
+}
+
+// Readability pass: the screens the main tour does not reach, plus Easy Mode in 中文 (Mdm Tan's own settings)
+// and the trusted-contact view.
+for (const width of [375, 1440] as const) {
+  test(`readability tour @${width}`, async ({ page, browser }) => {
+    test.setTimeout(120_000);
+    resetData();
+    await page.setViewportSize({ width, height: width === 375 ? 812 : 900 });
+    if (process.env.TOUR_DARK) await page.emulateMedia({ colorScheme: "dark" });
+    const shot = async (p: Page, name: string, fullPage = false) => {
+      await p.waitForTimeout(450);
+      const style = fullPage ? await p.addStyleTag({ content: STATIC_CHROME }) : null;
+      await p.screenshot({ path: `${DIR}/${width}-${name}.png`, fullPage });
+      await style?.evaluate((el) => el.remove());
+    };
+
+    await login(page, "ryan.lim");
+    await page.goto("/customer/pay");
+    await expect(page.getByRole("heading", { name: "New payees – check these carefully" })).toBeVisible();
+    await shot(page, "30-payees", true);
+    await page.getByRole("button", { name: /SP Group/ }).first().click();
+    await shot(page, "31-amount-empty");
+    await page.getByLabel("Amount (S$)").fill("1250.50");
+    await shot(page, "32-amount-filled");
+    await page.goto("/customer/settings");
+    await shot(page, "33-settings", true);
+
+    // Mdm Tan: Easy Mode on and Chinese, from her seeded preferences
+    const tan = await openAs(browser, "tan.siewlan", { width, height: width === 375 ? 812 : 900 });
+    await shot(tan, "40-easy-zh-home", true);
+    await tan.goto("/customer/pay");
+    await shot(tan, "41-easy-zh-payees", true);
+    await tan.context().close();
+
+    const contact = await openAs(browser, "daniel.tan", { width, height: width === 375 ? 812 : 900 });
+    await shot(contact, "50-contact-home", true);
+    await contact.context().close();
   });
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import {
   VerdictStage,
-  useStaggerIn,
+
   ApiError,
   Banner,
   Button,
@@ -138,14 +138,14 @@ function PaymentSummary({ tr }: { tr: Transfer }) {
     <Card className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
       <div className="min-w-0">
         <p className="text-sm font-semibold text-muted-foreground">{t("review.to")}</p>
-        <p className="mt-0.5 flex flex-wrap items-center gap-2 text-lg font-bold">
+        <p className="mt-0.5 flex flex-wrap items-center gap-2 text-lg font-semibold leading-snug">
           <span>{tr.payee.name}</span>
           {tr.payee.is_new && <NewChip />}
         </p>
       </div>
       <div className="border-t border-dashed border-border pt-3 sm:border-0 sm:pt-0 sm:text-right">
         <p className="text-sm font-semibold text-muted-foreground">{t("review.amount")}</p>
-        <p className="tabular font-display text-[min(2.25rem,11vw)] font-extrabold leading-none">{formatSGD(tr.amount)}</p>
+        <p className="tabular font-display text-[min(2rem,10vw)] font-bold leading-none tracking-[-0.02em]">{formatSGD(tr.amount)}</p>
       </div>
     </Card>
   );
@@ -172,23 +172,21 @@ const REASON_ICON: Record<string, LucideIcon> = {
 
 export function ReasonsList({ reasons }: { reasons: Reason[] }) {
   const { t } = useTranslation();
-  const ref = useRef<HTMLUListElement>(null);
-  useStaggerIn(ref, "[data-reason]", [reasons.length]);
   if (!reasons.length) return null;
   return (
-    <ul ref={ref} className="space-y-3">
+    <ul className="space-y-3">
       {reasons.map((r) => (
         <li key={r.key} data-reason className="flex items-start gap-3">
           {(() => {
             const Icon = REASON_ICON[r.key] ?? CircleAlert;
             const strong = r.points >= 3 || r.key.startsWith("override") || r.key === "payee_reported";
             return (
-              <span aria-hidden className={strong ? "grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-danger-soft text-danger" : "grid h-8 w-8 shrink-0 place-items-center rounded-pill bg-warning-soft text-warning"}>
-                <Icon className="h-4 w-4" strokeWidth={2.4} />
+              <span aria-hidden className={strong ? "grid h-8 w-8 shrink-0 place-items-center rounded-[8px] bg-danger-soft text-danger" : "grid h-8 w-8 shrink-0 place-items-center rounded-[8px] bg-warning-soft text-warning"}>
+                <Icon className="h-4 w-4" strokeWidth={2.25} />
               </span>
             );
           })()}
-          <span className="pt-1">{t(`reasons.${r.key}`, { defaultValue: r.text })}</span>
+          <span className="pt-0.5 text-lg">{t(`reasons.${r.key}`, { defaultValue: r.text })}</span>
         </li>
       ))}
     </ul>
@@ -241,12 +239,12 @@ function Questions({ tr }: { tr: Transfer }) {
       </p>
       <div className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
         <div
-          className="h-full origin-left bg-secondary transition-transform duration-base ease-out"
+          className="h-full origin-left bg-foreground transition-transform duration-base ease-out"
           style={{ transform: `scaleX(${(i + 1) / QUESTIONS.length})` }}
         />
       </div>
-      <Card key={key} className="sb-fade-up space-y-4">
-        <h2 className="text-2xl font-bold sm:text-3xl" id={`q-${key}`}>{qText}</h2>
+      <Card key={key} className="sb-step space-y-4">
+        <h2 className="text-2xl sm:text-3xl" id={`q-${key}`}>{qText}</h2>
         <ReadAloud text={qText} />
         <div className="grid grid-cols-2 gap-3" role="group" aria-labelledby={`q-${key}`}>
           <Button size="lg" variant="outline" block onClick={() => answer(true)} disabled={!!busy} className="min-h-[4.5rem] font-display text-2xl">
@@ -313,6 +311,22 @@ function Review({ tr }: { tr: Transfer }) {
 }
 
 // ----------------------------------------------------------------------------- pause
+/** A small ring that empties smoothly as the "Continue anyway" wait runs down. Decorative; the text says the seconds. */
+function CountdownRing({ left, total }: { left: number; total: number }) {
+  const r = 8;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg aria-hidden viewBox="0 0 20 20" className="h-5 w-5 -rotate-90">
+      <circle cx="10" cy="10" r={r} fill="none" stroke="var(--border)" strokeWidth="2.5" />
+      <circle
+        cx="10" cy="10" r={r} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+        strokeDasharray={c} strokeDashoffset={c * (1 - Math.max(0, Math.min(1, left / Math.max(1, total))))}
+        className="transition-[stroke-dashoffset] duration-500 ease-linear motion-reduce:transition-none"
+      />
+    </svg>
+  );
+}
+
 function Pause({ tr }: { tr: Transfer }) {
   const { t } = useTranslation();
   const nav = useNavigate();
@@ -324,6 +338,7 @@ function Pause({ tr }: { tr: Transfer }) {
   const qc = useQueryClient();
   const hasContact = !!tr.trusted_contact_name;
   const wait = secondsLeft(tr.continue_anyway_at, now);
+  const { config } = useSession();
 
   const [callError, setCallError] = useState<string | null>(null);
   const callSafeBank = async () => {
@@ -341,7 +356,7 @@ function Pause({ tr }: { tr: Transfer }) {
   };
 
   return (
-    <div className="sb-screen mx-auto w-full max-w-xl space-y-gap px-4 py-5">
+    <div className="sb-screen mx-auto w-full max-w-[40rem] space-y-gap px-4 py-5">
       <VerdictStage
         tone="paused"
         icon={Hand}
@@ -352,14 +367,13 @@ function Pause({ tr }: { tr: Transfer }) {
           !!(tr.signals.on_call || tr.signals.recent_call || tr.signals.chatting) ? (
             <>
               {!!(tr.signals.on_call || tr.signals.recent_call) && (
-                <span className="inline-flex items-center gap-2 rounded-pill bg-danger-strong px-3 py-1 text-sm font-bold text-on-danger-strong">
-                  <span aria-hidden className="sb-live-dot h-2 w-2 rounded-pill bg-current" />
+                <span className="inline-flex items-center gap-2 rounded-[8px] bg-danger-soft px-2.5 py-1 text-sm font-semibold text-danger">
                   <PhoneCall aria-hidden className="h-4 w-4" />
                   {t("pause.chipCall")}
                 </span>
               )}
               {!!tr.signals.chatting && (
-                <span className="inline-flex items-center gap-2 rounded-pill bg-danger-strong px-3 py-1 text-sm font-bold text-on-danger-strong">
+                <span className="inline-flex items-center gap-2 rounded-[8px] bg-danger-soft px-2.5 py-1 text-sm font-semibold text-danger">
                   <MessageCircleWarning aria-hidden className="h-4 w-4" />
                   {t("pause.chipChat")}
                 </span>
@@ -368,20 +382,21 @@ function Pause({ tr }: { tr: Transfer }) {
           ) : undefined
         }
       >
-        <p className="text-lg font-medium text-on-primary-muted">{t("pause.subtitle")}</p>
+        <p className="font-display text-2xl font-semibold leading-snug">{t("pause.subtitle")}</p>
       </VerdictStage>
       <PaymentSummary tr={tr} />
       {(error || callError) && <Banner tone="warning" alert>{error ?? callError}</Banner>}
-      <h2 data-after-stage className="text-lg">{t("pause.whatNext")}</h2>
-      <div data-after-stage className="flex flex-col gap-3">
-        <Button size="lg" icon={X} block loading={busy === "cancel"} onClick={() => run("cancel", "cancel")}>
+      <h2 className="text-lg">{t("pause.whatNext")}</h2>
+      {/* One solid-red primary: the verified in-app call is the safest next step. The rest are equal. */}
+      <div className="flex flex-col gap-3">
+        <Button size="lg" icon={PhoneCall} block loading={calling} onClick={callSafeBank}>
+          {t("pause.call")}
+        </Button>
+        <Button size="lg" variant="outline" icon={X} block loading={busy === "cancel"} onClick={() => run("cancel", "cancel")}>
           {t("pause.cancel")}
         </Button>
         <Button size="lg" variant="outline" icon={Clock} block onClick={() => setSaving(true)}>
           {t("pause.save")}
-        </Button>
-        <Button size="lg" variant="outline" icon={PhoneCall} block loading={calling} onClick={callSafeBank}>
-          {t("pause.call")}
         </Button>
         <Button size="lg" variant="outline" icon={Users} block loading={busy === "trusted"} disabled={!hasContact} onClick={() => run("trusted", "ask-trusted")}>
           {hasContact ? t("pause.trusted") : t("pause.trustedNone")}
@@ -403,13 +418,14 @@ function Pause({ tr }: { tr: Transfer }) {
         <ReasonsList reasons={tr.reasons} />
         <ReadAloud text={`${t("pause.title")}. ${t("pause.subtitle")} ${t("pause.because")} ${reasonsText(t, tr.reasons)}`} />
       </Card>
-      <div data-after-stage className="pt-2 text-center">
+      <div className="pt-2 text-center">
         {wait > 0 ? (
-          <p className="text-sm text-muted-foreground" aria-live="off">
+          <p className="inline-flex items-center gap-2 text-sm text-muted-foreground" aria-live="off">
+            <CountdownRing left={wait} total={config?.continue_anyway_seconds ?? 30} />
             {t("pause.continueIn", { s: wait })}
           </p>
         ) : (
-          <button type="button" onClick={() => setSheet(true)} className="min-h-touch px-2 text-sm font-semibold text-secondary underline">
+          <button type="button" onClick={() => setSheet(true)} className="sb-fade-up min-h-touch px-2 text-sm font-semibold text-secondary underline">
             {t("pause.continue")}
           </button>
         )}

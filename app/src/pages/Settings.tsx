@@ -140,7 +140,7 @@ function TrustedContacts() {
           <Field label={t("settings.contactUsername")} value={username} onChange={(e) => setUsername(e.target.value)} autoCapitalize="none" error={err} />
           <div>
             <label htmlFor="rel" className="mb-1 block font-semibold">{t("settings.relationship")}</label>
-            <select id="rel" value={rel} onChange={(e) => setRel(e.target.value)} className="min-h-btn w-full rounded-btn border-2 border-border-strong bg-card px-3 text-foreground">
+            <select id="rel" value={rel} onChange={(e) => setRel(e.target.value)} className="min-h-btn w-full rounded-field border border-border-strong bg-card px-3 text-foreground">
               {["parent", "child", "sibling", "spouse", "friend", "other"].map((r) => (
                 <option key={r} value={r}>{t(`settings.relationships.${r}`)}</option>
               ))}

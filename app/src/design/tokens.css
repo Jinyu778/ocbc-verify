@@ -1,13 +1,16 @@
-/* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables. */
 /* OCBC Verify design tokens. Components never use raw hex; Tailwind reads these variables.
+   World: a Singapore retail bank in OCBC-style red. White and light-grey surfaces, charcoal ink,
+   ONE confident red for action, a deep wine red for the single hero surface. Hex values are
+   approximations of OCBC's public identity (OCBC does not publish them); no OCBC logo or Geomanist.
    Colour roles have ONE meaning each:
-     orange (accent)        = action and brand only
-     green  (success)       = verified / safe
-     red    (danger)        = scam / risk
-     amber  (warning)       = caution
-     navy   (primary)       = the shell and stages
-   "-strong" tokens are full-strength verdict fields; "on-*" is the text colour that passes AA on them. */
-@import "@fontsource-variable/bricolage-grotesque/wght.css";
+     red (accent / action)  = the one primary action on a screen, active nav, key links
+     wine (brand-deep)      = the hero surface (balance card, login panel) only
+     charcoal (primary)     = shells and stages: verdict stage, staff rail, toasts
+     risk red / amber / green = High risk / Check first / Looks safe, always with icon + word,
+                              tinted surfaces, kept visibly different from the action red
+   "-strong" tokens are full-strength verdict fields; "on-*" is the text colour that passes AA on them.
+   Every text/background pair is checked by scripts/check-contrast.mjs. */
+@import "@fontsource-variable/sora/wght.css";
 @import "@fontsource-variable/figtree/wght.css";
 @import "@fontsource/noto-sans-sc/400.css";
 @import "@fontsource/noto-sans-sc/500.css";
@@ -19,61 +22,73 @@
 @import "@fontsource/noto-sans-tamil/700.css";
 
 :root {
-  /* shell */
-  --primary: #0a1f44;            /* deep blue-navy */
-  --primary-2: #13306b;          /* lifted navy for layered stages */
+  /* brand */
+  --brand-red: #ed1c24;          /* large graphics only: 4.4:1 on white, never text or white-text buttons */
+  --brand-deep: #721c24;         /* hero surface; white text 11:1 */
+  --on-brand-deep-muted: #fdf0f1;
+  --ink-950: #0f0a0b;
+  --hero-gradient: linear-gradient(135deg, #721c24 0%, #b3121a 55%, #d0121a 100%);
+  --hero-glow: radial-gradient(60% 70% at 50% 0%, rgb(237 28 36 / 0.22), transparent 70%);
+  /* shells and stages: warm charcoal */
+  --primary: #1c1617;
+  --primary-2: #2d2425;
   --on-primary: #ffffff;
-  --on-primary-muted: #c9d5ee;   /* 9.6:1 on --primary */
-  --secondary: #1d3f91;          /* navy-blue for links, info, progress (8.7:1 on white) */
+  --on-primary-muted: #d9cfd0;
+  /* links and quiet emphasis */
+  --secondary: #b3121a;          /* link red, underlined: 7.0:1 on white */
   --on-secondary: #ffffff;
-  /* action (orange) */
-  --accent: #ff6b1a;             /* vivid fill; navy text 5.7:1 */
-  --accent-hover: #ff8640;
-  --on-accent: #0a1f44;
-  --accent-ink: #c2410c;         /* orange as text or icon on light surfaces (5.2:1) */
+  /* action */
+  --accent: #d0121a;             /* primary buttons, white text 5.6:1 */
+  --accent-hover: #b30f16;
+  --accent-pressed: #9c0d13;
+  --on-accent: #ffffff;
+  --accent-ink: #b3121a;         /* red as text or icon on light surfaces */
   /* surfaces */
-  --background: #f2f5fb;
+  --background: #f4f4f4;
   --card: #ffffff;
-  --foreground: #0a1f44;
-  --muted: #e8edf6;
-  --muted-foreground: #46526b;   /* 7.3:1 on --background */
-  --border: #d5ddea;
-  --border-strong: #75839c;      /* 3.7:1 on white (UI boundary) */
-  /* semantic inks (text and icons on light), soft fills, strong fields */
-  --danger: #c81e1e;             /* 6.0:1 on white */
-  --danger-soft: #fdeceb;
-  --danger-strong: #e11d2e;      /* white text 4.7:1 (display sizes) */
+  --foreground: #111111;         /* primary text: 18.9:1 on white */
+  --muted: #ededed;
+  --muted-foreground: #444444;   /* secondary text: 9.7:1 on white, 8.9:1 on --background */
+  --border: #d4d4d4;
+  --border-strong: #8a8a8a;      /* inputs and outlined buttons: 3.4:1 on white */
+  /* risk: inks (text, icons), tinted surfaces, strong verdict fields */
+  --danger: #8a1018;             /* High risk text 8.5:1 on its tint */
+  --danger-soft: #fdecec;
+  --danger-strong: #8a1018;
   --on-danger-strong: #ffffff;
-  --warning: #9a5200;            /* 5.6:1 on white */
-  --warning-soft: #fff3d9;
-  --warning-strong: #ffb020;     /* navy text 8.4:1 */
-  --on-warning-strong: #0a1f44;
-  --success: #047a48;            /* 5.5:1 on white */
-  --success-soft: #e2f8ec;
-  --success-strong: #17c06b;     /* navy text 7.0:1 */
-  --on-success-strong: #0a1f44;
-  --info-soft: #e8eefb;
-  --ring: #1d4ed8;
-  --navy-fill: #0a1f44;          /* filled navy buttons */
-  --scrim: rgb(5 14 34 / 0.55);
+  --warning: #7a4a00;            /* Check first */
+  --warning-soft: #fff4e0;
+  --warning-strong: #ffd28a;
+  --on-warning-strong: #1a1a1a;
+  --success: #0b6b3a;            /* Looks safe / verified */
+  --success-soft: #e8f5ec;
+  --success-strong: #0b6b3a;
+  --on-success-strong: #ffffff;
+  --info-soft: #f0f0f0;
+  --ring: #1a1a1a;
+  --dark-fill: #1a1a1a;          /* the secondary filled button */
+  --scrim: rgb(15 10 11 / 0.55);
   --tint-on-dark: rgb(255 255 255 / 0.12);
-  --tint-on-dark-strong: rgb(255 255 255 / 0.2);
+  --tint-on-dark-strong: rgb(255 255 255 / 0.22);
+  --nav-glass: rgb(255 255 255 / 0.82);
 
-  /* depth: offset + soft blur, tinted from the navy */
-  --shadow: 0 1px 2px rgb(10 31 68 / 0.06), 0 8px 24px -8px rgb(10 31 68 / 0.16);
-  --shadow-lift: 0 2px 4px rgb(10 31 68 / 0.08), 0 18px 40px -12px rgb(10 31 68 / 0.28);
+  /* depth: offset + soft blur, neutral. Floating things only. */
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 8px -2px rgb(0 0 0 / 0.06);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08), 0 16px 32px -12px rgb(0 0 0 / 0.18);
+  --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.08), 0 8px 20px -6px rgb(0 0 0 / 0.18);
 
   /* type */
   --font-sans: "Figtree Variable", "Noto Sans SC", "Noto Sans Tamil", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque Variable", "Noto Sans SC", "Noto Sans Tamil", "Figtree Variable", system-ui, sans-serif;
+  --font-display: "Sora Variable", "Figtree Variable", "Noto Sans SC", "Noto Sans Tamil", system-ui, sans-serif;
 
-  /* motion */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --dur-press: 140ms;
-  --dur-fast: 180ms;
-  --dur-base: 260ms;
-  --dur-slow: 420ms;
+  /* motion: transform and opacity only, exponential ease-out */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-press: 120ms;
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 360ms;
+  --dur-page: 300ms;
 
   --text-scale: 1;
   --base-size: 16px;
@@ -83,41 +98,48 @@
 }
 
 :root.dark {
-  --primary: #050f27;
-  --primary-2: #0d2252;
-  --on-primary: #f2f6ff;
-  --on-primary-muted: #b9c6e3;
-  --secondary: #9db8ff;
-  --on-secondary: #0a1f44;
-  --accent: #ff8a3d;
-  --accent-hover: #ffa366;
-  --on-accent: #0a1f44;
-  --accent-ink: #ffa366;
-  --background: #071330;
-  --card: #0f2148;
-  --foreground: #f2f6ff;
-  --muted: #18295a;
-  --muted-foreground: #c3cce0;
-  --border: #2a3b6b;
-  --border-strong: #7384ad;
-  --danger: #ff8a93;
-  --danger-soft: #3a1426;
-  --danger-strong: #e11d2e;      /* same vivid red as light; white text 4.7:1 */
+  --brand-deep: #5e161d;
+  --on-brand-deep-muted: #fdf0f1;
+  --hero-gradient: linear-gradient(135deg, #4a1117 0%, #8a1018 55%, #b3121a 100%);
+  --hero-glow: radial-gradient(60% 70% at 50% 0%, rgb(224 32 39 / 0.25), transparent 70%);
+  --primary: #161112;
+  --primary-2: #251c1d;
+  --on-primary: #f2f2f2;
+  --on-primary-muted: #cfc4c5;
+  --secondary: #ff8a8a;          /* red text and icons on dark: 7.4:1 */
+  --on-secondary: #0e0e0f;
+  --accent: #e02027;             /* white text 4.8:1 */
+  --accent-hover: #c81a20;
+  --accent-pressed: #b3121a;
+  --on-accent: #ffffff;
+  --accent-ink: #ff8a8a;
+  --background: #0e0e0f;
+  --card: #1a1a1c;
+  --foreground: #ffffff;         /* primary text: 17.4:1 on --card */
+  --muted: #26262a;
+  --muted-foreground: #d2d2d6;   /* secondary text: 11.6:1 on --card */
+  --border: #4a4a4f;             /* about 20% white: rows separate clearly from the page */
+  --border-strong: #7a7a7a;
+  --danger: #ffb3b3;
+  --danger-soft: #3a1416;
+  --danger-strong: #8a1018;
   --on-danger-strong: #ffffff;
-  --navy-fill: #1d3f91;          /* filled navy buttons on the dark ground (white text 9.6:1) */
-  --warning: #ffc960;
-  --warning-soft: #3a2c10;
-  --warning-strong: #ffc247;
-  --on-warning-strong: #0a1f44;
-  --success: #4ade80;
-  --success-soft: #0e3324;
-  --success-strong: #2bd983;
-  --on-success-strong: #0a1f44;
-  --info-soft: #14275a;
-  --ring: #9db8ff;
-  --scrim: rgb(0 0 0 / 0.6);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5);
-  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.45), 0 18px 40px -12px rgb(0 0 0 / 0.6);
+  --warning: #ffd28a;
+  --warning-soft: #3a2a0e;
+  --warning-strong: #ffd28a;
+  --on-warning-strong: #1a1a1a;
+  --success: #8fe3ae;
+  --success-soft: #123222;
+  --success-strong: #0b6b3a;
+  --on-success-strong: #ffffff;
+  --info-soft: #242427;
+  --ring: #f2f2f2;
+  --dark-fill: #f2f2f2;
+  --scrim: rgb(0 0 0 / 0.65);
+  --nav-glass: rgb(26 26 28 / 0.82);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.45), 0 16px 32px -12px rgb(0 0 0 / 0.7);
+  --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.5), 0 8px 20px -6px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
 
@@ -126,12 +148,12 @@
   --base-size: 20px;
   --btn-h: 60px;
   --gap: 1.5rem;
-  --muted-foreground: #334160;
-  --border: #c3cee0;
+  --muted-foreground: #333333;
+  --border: #bdbdbd;
 }
 :root.easy.dark {
-  --muted-foreground: #e2e8f5;
-  --border: #3a4d82;
+  --muted-foreground: #e4e4e8;
+  --border: #5a5a60;
 }
 
 html {
@@ -139,24 +161,37 @@ html {
   font-size: calc(100% * var(--text-scale) * (var(--base-size) / 16px));
   -webkit-text-size-adjust: 100%;
 }
+/* Body 17 px (20 px in Easy Mode, where 1 rem = 20 px). UI text uses weights 500, 600 and 700 only. */
 body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 500;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 /* Chinese and Tamil: the Latin faces don't carry these scripts, so Noto leads. */
-:lang(zh) body, :lang(zh) { --font-sans: "Noto Sans SC", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans SC", "Bricolage Grotesque Variable", system-ui, sans-serif; }
-:lang(ta) body, :lang(ta) { --font-sans: "Noto Sans Tamil", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans Tamil", "Bricolage Grotesque Variable", system-ui, sans-serif; line-height: 1.6; }
+:lang(zh) body, :lang(zh) { --font-sans: "Noto Sans SC", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans SC", "Sora Variable", system-ui, sans-serif; }
+:lang(ta) body, :lang(ta) { --font-sans: "Noto Sans Tamil", "Figtree Variable", system-ui, sans-serif; --font-display: "Noto Sans Tamil", "Sora Variable", system-ui, sans-serif; line-height: 1.6; }
 
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
+  font-weight: 600;
   letter-spacing: -0.02em;
+  line-height: 1.25;
   text-wrap: balance;
 }
+h1 { font-weight: 700; line-height: 1.15; }
+p { max-width: 72ch; }
+/* Account numbers and references */
+.sb-ref { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+/* Easy Mode: normal tracking, no display sizes above 32 px (enforced in the components via .sb-display) */
+:root.easy h1, :root.easy h2, :root.easy h3, :root.easy .font-display { letter-spacing: 0; }
+:root.easy .sb-display { font-size: min(var(--display-size, 2rem), 2rem) !important; }
+:root.easy body { font-size: 1rem; }
 :lang(ta) h1, :lang(ta) h2, :lang(ta) h3, :lang(ta) .font-display,
 :lang(zh) h1, :lang(zh) h2, :lang(zh) h3, :lang(zh) .font-display { letter-spacing: 0; }
 
@@ -164,49 +199,83 @@ h1, h2, h3, .font-display {
 
 /* browser surfaces carry the design too */
 ::selection { background: var(--accent); color: var(--on-accent); }
-html { accent-color: var(--accent-ink); caret-color: var(--secondary); scrollbar-color: var(--border-strong) transparent; }
+html { accent-color: var(--accent); caret-color: var(--accent); scrollbar-color: var(--border-strong) transparent; }
+/* focus: 2 px ink ring with a 2 px surface gap, visible on red, white and dark */
 :focus-visible {
-  outline: 3px solid var(--ring);
-  outline-offset: 3px;
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--card);
   border-radius: 10px;
 }
+/* Headings that receive focus from the app (route changes, for screen readers) show no ring. */
+[tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; box-shadow: none; }
 a { text-underline-offset: 0.2em; text-decoration-thickness: 0.08em; }
 
-/* press feedback for anything pressable (transform only, never transition: all) */
-.sb-press { transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease, border-color var(--dur-fast) ease; }
+/* ---------------------------------------------------------------- motion
+   One grammar: exponential ease-out from an already-visible default, transform and opacity only,
+   nothing over 400 ms except counters and countdowns, no loops but the skeleton, and no animation
+   ever delays or blocks an action. Reduced motion and Easy Mode turn everything into a plain fade. */
+
+/* press: every pressable thing scales a touch; hover lift is for real pointers only */
+.sb-press { transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease, border-color var(--dur-fast) ease, box-shadow var(--dur-base) var(--ease-out); }
 .sb-press:active:not(:disabled) { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .sb-lift:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
+  .sb-lift:active:not(:disabled) { transform: scale(0.97); }
+}
+/* loading swaps the label for a spinner in place: the label keeps its width, only its opacity changes */
+.sb-btn-label { transition: opacity var(--dur-fast) ease; }
+[aria-busy="true"] > .sb-btn-label { opacity: 0; }
 
-/* While the verdict stage plays, the ACTIONS that answer it (marked data-after-stage) are held back and
-   not clickable, then fade in. Evidence such as the payment summary stays visible throughout. */
-[data-after-stage] { transition: opacity var(--dur-base) var(--ease-out); }
-body:has([data-stage-running]) [data-after-stage] { opacity: 0; pointer-events: none; }
-
-/* loading placeholder: opacity pulse instead of a background-position shimmer */
+/* loading placeholder: opacity pulse (the only loop in the app) */
 .sb-skeleton { background: var(--muted); border-radius: 12px; animation: sb-pulse 1.2s var(--ease-in-out) infinite alternate; }
 @keyframes sb-pulse { from { opacity: 1; } to { opacity: 0.55; } }
-@keyframes sb-slide-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes sb-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes sb-from-left { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@keyframes sb-from-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 @keyframes sb-fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes sb-scale-in { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: none; } }
 @keyframes sb-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sb-tick { from { stroke-dashoffset: 48; } to { stroke-dashoffset: 0; } }
+@keyframes sb-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes sb-spin { to { transform: rotate(360deg); } }
-@keyframes sb-ping { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(2.2); opacity: 0; } }
-.sb-screen { animation: sb-slide-in var(--dur-base) var(--ease-out); }
-.sb-fade-up { animation: sb-fade-up var(--dur-fast) var(--ease-out); }
-.sb-tick path { stroke-dasharray: 48; animation: sb-tick 320ms var(--ease-out) 120ms both; }
-.sb-live-dot { position: relative; display: inline-flex; }
-.sb-live-dot::after { content: ""; position: absolute; inset: 0; border-radius: 999px; background: currentColor; animation: sb-ping 1.4s var(--ease-out) infinite; }
+@keyframes sb-row-in { from { background-color: var(--warning-soft); } to { background-color: transparent; } }
+@keyframes sb-drawer-in { from { transform: translateX(32px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* Reduced motion: no movement. Screens and entrances become a short fade; loops stop. */
+/* page transitions: forward rises, back slides in from the left, questions move sideways */
+.sb-screen { animation: sb-rise var(--dur-page) var(--ease-out); }
+.sb-screen[data-nav="back"] { animation-name: sb-from-left; }
+.sb-step { animation: sb-from-right 280ms var(--ease-out); }
+.sb-fade-up { animation: sb-fade-up var(--dur-base) var(--ease-out); }
+.sb-scale-in { animation: sb-scale-in var(--dur-base) var(--ease-out); }
+.sb-tick path { stroke-dasharray: 48; animation: sb-tick 360ms var(--ease-out) 80ms both; }
+.sb-draw { stroke-dasharray: 1; animation: sb-draw 360ms var(--ease-out) both; }
+/* first visit of a session: tiles rise with a 40 ms stagger (Home sets --i) */
+.sb-stagger > * { animation: sb-rise var(--dur-page) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 40ms); }
+/* flagged phrases in the checker: 60 ms apart, at most 10 */
+.sb-mark { animation: sb-fade var(--dur-base) var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 9) * 60ms); }
+/* staff: a new queue row fades from a tint; the case drawer slides in */
+.sb-row-new { animation: sb-row-in 1.2s var(--ease-out); }
+.sb-drawer { animation: sb-drawer-in 240ms var(--ease-out); }
+.sb-live-dot { display: inline-flex; }
+
+/* View Transitions where the browser has them: a plain cross-fade between routes */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 180ms; animation-timing-function: var(--ease-out); }
+
+/* Reduced motion and Easy Mode: no movement. Screens and entrances become a short fade; nothing loops but nothing stops working. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-  .sb-screen, .sb-fade-up { animation: sb-fade 160ms ease-out !important; }
-  .sb-skeleton, .sb-live-dot::after { animation: none !important; }
-  .sb-press:active:not(:disabled) { transform: none; }
+  .sb-screen, .sb-step, .sb-fade-up, .sb-scale-in, .sb-stagger > *, .sb-drawer { animation: sb-fade 160ms ease-out both !important; }
+  .sb-skeleton { animation: none !important; }
+  .sb-press:active:not(:disabled), .sb-lift:hover:not(:disabled) { transform: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
 }
+:root.easy .sb-screen, :root.easy .sb-step, :root.easy .sb-fade-up, :root.easy .sb-scale-in, :root.easy .sb-stagger > *, :root.easy .sb-drawer { animation: sb-fade 160ms ease-out both; }
+:root.easy .sb-lift:hover:not(:disabled) { transform: none; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

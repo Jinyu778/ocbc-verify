@@ -41,7 +41,7 @@ OCBC Verify adds friction only at the moment of payment, and only when the conte
 ## Brand Commitments
 
 - Name: **OCBC Verify**.
-- The label "Student prototype for OCBC IGNITE 2026, not an official OCBC product" must stay visible on every screen.
+- The on-screen "Student prototype" strip was removed at the team's request (20 Nov 2026). The README still states that this is a student prototype and not an official OCBC product.
 - No OCBC logo or trademarked artwork.
 - Plain-language, calm voice: short sentences, no jargon, reading age about 12, money written in full ("S$8,000").
 
