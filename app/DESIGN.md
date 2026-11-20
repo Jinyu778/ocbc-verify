@@ -1,4 +1,3 @@
-<!-- Mirror of ../docs/DESIGN.md for design tooling. Edit docs/DESIGN.md, then copy it here. -->
 # OCBC Verify – design system
 
 Source of truth for the look of the app. Tokens live in `app/src/design/tokens.css` (Tailwind reads them through
@@ -8,9 +7,9 @@ and `npm run build -w app` fails if one drops under WCAG AA.
 **Not an OCBC product.** Colours and type are approximations of OCBC's public identity: OCBC says its brand "has
 always been defined by the colour red" and uses Geomanist (ocbc.com/group/about-us/our-brand.page). OCBC publishes
 no hex values, so ours are chosen to feel right and pass contrast. No OCBC logo, sailing-ship mark, wordmark or
-Geomanist files are drawn or bundled in code. The header loads the official OCBC logo from
-`app/public/brand/ocbc-logo.svg` only when the team supplies it (with OCBC's permission), and otherwise shows a plain
-authored mark. The on-screen disclaimer strip was removed at the team's request (20 Nov 2026).
+Geomanist files are drawn or bundled in code. The app icon (header, Login, staff console, favicon
+`app/public/shield.svg`) is the team's own mark: three nested shield chevrons in white on a red tile (white tile with
+red mark on the Login panel). The on-screen disclaimer strip was removed at the team's request (20 Nov 2026).
 
 ## 1. Audit of the previous look (Nov 2026) and why it was replaced
 

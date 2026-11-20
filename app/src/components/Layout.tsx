@@ -51,28 +51,23 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
 const HEADER_BTN =
   "sb-press inline-flex min-h-touch items-center gap-1.5 rounded-btn px-3 text-sm font-semibold text-foreground hover:bg-muted";
 
-/** Wordmark: an authored monogram, not the shield (the shield-check is reserved for "verified"). */
 /**
- * Brand mark. Uses the official OCBC logo file at app/public/brand/ocbc-logo.svg when it is present
- * (supplied by the team; it is never drawn or approximated in code). Until then it falls back to a
- * plain authored mark so the header never shows a broken image.
+ * OCBC Verify app icon: three nested shield chevrons on a red tile (the team's chosen mark; same
+ * geometry as public/shield.svg, the favicon). On the red Login panel the tile turns white.
  */
-const LOGO_SRC = "/brand/ocbc-logo.svg";
 export function BrandMark({ className, onDark = false }: { className?: string; onDark?: boolean }) {
   const { t } = useTranslation();
-  const [logoMissing, setLogoMissing] = useState(false);
+  const ink = onDark ? "var(--accent)" : "#ffffff";
   return (
     <span className={cx("flex min-w-0 items-center gap-2.5", className)}>
-      {logoMissing ? (
-        <svg aria-hidden viewBox="0 0 32 32" className="h-8 w-8 shrink-0">
-          <rect width="32" height="32" rx="9" fill={onDark ? "#ffffff" : "var(--accent)"} />
-          <path d="M9 16.5l4.5 4.5L23 11" fill="none" stroke={onDark ? "var(--accent)" : "#ffffff"} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <span aria-hidden className={cx("inline-flex h-9 shrink-0 items-center", onDark && "rounded-[8px] bg-white px-1.5")}>
-          <img src={LOGO_SRC} alt="" className="h-7 w-auto" onError={() => setLogoMissing(true)} />
-        </span>
-      )}
+      <svg aria-hidden viewBox="340 173 320 320" className="h-9 w-9 shrink-0">
+        <rect x="340" y="173" width="320" height="320" rx="72" fill={onDark ? "#ffffff" : "var(--accent)"} />
+        <g fill="none" stroke={ink} strokeWidth="22" strokeMiterlimit="4">
+          <path d="M500 229H403V335L500 432L597 335V218" />
+          <path d="M450.5 268V313L500 362.5L549.5 313V218" />
+        </g>
+        <path d="M489 218H511V299L500 310L489 299Z" fill={ink} />
+      </svg>
       <span className="whitespace-nowrap font-display text-base font-bold tracking-[-0.02em] sm:text-lg">{t("common.appName")}</span>
     </span>
   );
