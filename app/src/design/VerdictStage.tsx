@@ -5,21 +5,24 @@ import { EASE_OUT, gsap, prefersReducedMotion } from "./motion";
 
 /**
  * The signature moment: a large "Checking…" that resolves into the verdict.
- *   verified = green field + seal   (verify-call genuine, checker "no obvious signs")
+ *   verified = green field + seal   (verify-call genuine: the ONLY thing the app can actually prove)
  *   risk     = red field            (verify-call "not calling", checker "likely scam")
  *   caution  = amber field          (checker "be careful" / "not sure")
  *   paused   = navy stage, amber hand seal (payment pause; calm, never alarming)
+ *   neutral  = lifted navy, white seal (checker "no known signs": not alarming, but never a green tick,
+ *              because a message without known signs is still unverified)
  *
  * The final content is always in the DOM and visible by default. GSAP only animates it in,
  * so a failed script never hides the verdict. Reduced motion: no checking phase, no movement.
  */
-export type VerdictTone = "verified" | "risk" | "caution" | "paused";
+export type VerdictTone = "verified" | "risk" | "caution" | "paused" | "neutral";
 
 const FIELD: Record<VerdictTone, { field: string; seal: string; text: string }> = {
   verified: { field: "bg-success-strong", seal: "bg-primary text-success-strong", text: "text-on-success-strong" },
   risk: { field: "bg-danger-strong", seal: "bg-card text-danger", text: "text-on-danger-strong" },
   caution: { field: "bg-warning-strong", seal: "bg-primary text-warning-strong", text: "text-on-warning-strong" },
   paused: { field: "bg-primary dark:bg-primary-2", seal: "bg-warning-strong text-on-warning-strong", text: "text-on-primary" },
+  neutral: { field: "bg-primary-2", seal: "bg-card text-secondary", text: "text-on-primary" },
 };
 
 export function VerdictStage({

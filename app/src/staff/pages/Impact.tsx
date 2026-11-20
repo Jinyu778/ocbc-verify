@@ -16,7 +16,7 @@ interface Metrics {
   messages_reported: number;
   model: { accuracy: number; precision_scam: number; recall_scam: number; n_test: number; grouped_by_template?: { accuracy: number; recall_scam: number } } | null;
 }
-const VERDICTS: [string, string][] = [["likely_scam", "Likely scam"], ["be_careful", "Be careful"], ["not_sure", "Not sure"], ["no_signs", "No obvious signs"]];
+const VERDICTS: [string, string][] = [["likely_scam", "Likely scam"], ["be_careful", "Be careful"], ["not_sure", "Not sure"], ["no_signs", "No known signs"]];
 
 export function Impact() {
   const q = useQuery({ queryKey: ["metrics"], queryFn: () => api<Metrics>("/api/metrics"), refetchInterval: 10000 });

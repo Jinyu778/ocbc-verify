@@ -15,4 +15,5 @@ def public_config():
         "trusted_contact_timeout_minutes": s.trusted_contact_timeout_minutes,
         "contact_change_cooling_minutes": s.contact_change_cooling_minutes,
         "continue_anyway_seconds": s.continue_anyway_seconds,
+        "hang_up_wait_minutes": s.hang_up_wait_minutes,
     }

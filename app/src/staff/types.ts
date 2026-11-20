@@ -26,6 +26,8 @@ export interface CaseRow {
   customer: { id: number; display_name: string; age: number | null };
   waiting_seconds: number;
   is_new_payee: boolean;
+  /** the customer used "Continue anyway" on a warning: worth a follow-up call */
+  continued_anyway: boolean;
 }
 export interface CallInfo {
   id: number;

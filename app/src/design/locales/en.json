@@ -162,7 +162,13 @@
     "sendAnyway": "Send anyway",
     "reportedBody": "Other OCBC customers reported this account in a scam case. Please don't send money until you have checked.",
     "chipCall": "On a call",
-    "chipChat": "Messaging about this"
+    "chipChat": "Messaging about this",
+    "hangUpTitle": "Hang up first",
+    "hangUpBody": "Scammers keep you on the line so you can't stop and check. Hang up now. \"Continue anyway\" opens {{time}} after the call ends.",
+    "hangUpNative": "Your phone will tell us when the call has ended.",
+    "hungUp": "I've hung up",
+    "continueInTime": "Continue anyway (available in {{time}})",
+    "callEndedWait": "The call has ended. Use this time to call back on a number you already know."
   },
   "save": {
     "title": "Save for later",
@@ -262,8 +268,8 @@
     "likely_scamBody": "This message has strong signs of a scam. Do not reply, click links or send money.",
     "be_careful": "Be careful",
     "be_carefulBody": "Some things in this message are often used by scammers. Check before you act.",
-    "no_signs": "No obvious signs",
-    "no_signsBody": "We didn't find common scam signs. Still, never share your OTP or move money because of a message.",
+    "no_signs": "No known warning signs",
+    "no_signsBody": "We didn't find common scam signs, but that doesn't prove it's real. AI can write perfect messages. If it asks for money, a link, a code or an app, check through an official channel first.",
     "not_sure": "Not sure – check through an official channel",
     "not_sureBody": "We can't tell if this is real. Contact the company using a number from their official website or app, not from this message.",
     "flagsTitle": "What we noticed",
@@ -287,7 +293,8 @@
       "move_chat": "Moves you to Telegram / WhatsApp",
       "paynow_first": "'Pay first, no meetup'",
       "family_new_number": "Family member with a new number",
-      "preorder_scam": "Pay-first pre-order, no meetup"
+      "preorder_scam": "Pay-first pre-order, no meetup",
+      "asks_action": "Asks you to act"
     },
     "explain": {
       "urgency": "Scammers rush you so you don't have time to think or check.",
@@ -303,7 +310,8 @@
       "move_chat": "Scammers move you to Telegram or WhatsApp where they are harder to trace.",
       "paynow_first": "'Pay first, no meetup' is how most online shopping and ticket scams work.",
       "family_new_number": "A 'family member' with a new number asking for money: call their old number first.",
-      "preorder_scam": "A 'pre-order' you must pay for first, with no meetup, is a common collectibles scam (e.g. Pokémon cards)."
+      "preorder_scam": "A 'pre-order' you must pay for first, with no meetup, is a common collectibles scam (e.g. Pokémon cards).",
+      "asks_action": "It asks you to pay, click, log in or share something. A message can't prove who sent it, so check through a number you already know before you act."
     },
     "s_pokemon": "Pokémon card pre-order",
     "attachTitle": "Add this message to my payment",
@@ -452,5 +460,17 @@
     "prompt": "Ask the caller for your family code word.",
     "promptBody": "If they can't say it, hang up. Voices can be faked with AI.",
     "promptNotSet": "You haven't set a family code word yet. You can set one in Settings with your trusted contact."
+  },
+  "callback": {
+    "title": "Hang up. Call back on a number you already know.",
+    "body": "A voice, caller ID, photo or video can be faked with AI. Whoever contacted you, treat them as unverified. These numbers are built into this app. Never use a number the caller or message gave you.",
+    "ocbc_hotline": "OCBC 24-hour hotline",
+    "ocbc_hotlineNote": "Press 8 to report fraud.",
+    "scamshield": "ScamShield Helpline",
+    "scamshieldNote": "Not sure if it's a scam? Free, 24 hours.",
+    "police": "Police Hotline",
+    "policeNote": "Caller says they're the police? Check here. In an emergency, call 999.",
+    "family": "Caller says they're family?",
+    "familyNote": "Call them on the number already saved in your phone, never a new number from the call or message."
   }
 }

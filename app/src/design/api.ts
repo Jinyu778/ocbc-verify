@@ -169,5 +169,6 @@ export interface AppConfig {
   trusted_contact_timeout_minutes: number;
   contact_change_cooling_minutes: number;
   continue_anyway_seconds: number;
+  hang_up_wait_minutes: number;
 }
 export const getConfig = () => api<AppConfig>("/api/config", { auth: false });

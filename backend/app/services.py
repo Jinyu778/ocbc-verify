@@ -10,8 +10,10 @@ from sqlalchemy.orm import Session
 
 from .config import get_settings
 from .evidence import log_event
+from .friction import continue_anyway_at, hang_up_required
 from .models import FINAL_STATUSES, Account, CallSession, EvidenceEvent, MessageCheck, Payee, Transfer, TrustedContact, User, utcnow
 from .realtime import hub
+from .risk_engine import Signals
 
 DONE_STATUSES = FINAL_STATUSES | {"under_staff_review"}
 
@@ -78,6 +80,22 @@ def code_word_prompt(db: Session, t: Transfer) -> bool:
     return any(any(f.get("key") == "family_new_number" for f in (m.flags_json or [])) for m in attached_messages(db, t.id))
 
 
+def needs_hang_up(t: Transfer) -> bool:
+    """A phone call is part of this payment, so the customer must hang up before "Continue anyway"."""
+    return hang_up_required(Signals.from_dict(t.signals_json), t.answers_json)
+
+
+def continue_ready_at(t: Transfer) -> datetime | None:
+    s = get_settings()
+    return continue_anyway_at(
+        pause_shown_at=as_utc(t.pause_shown_at),
+        read_seconds=s.continue_anyway_seconds,
+        hang_up_needed=needs_hang_up(t),
+        call_ended_at=as_utc(t.call_ended_at),
+        hang_up_wait_minutes=s.hang_up_wait_minutes,
+    )
+
+
 def next_step(t: Transfer) -> str:
     if t.status == "checking":
         if t.risk_tier == "none":
@@ -124,7 +142,9 @@ def transfer_out(db: Session, t: Transfer) -> dict:
         "answers": t.answers_json,
         "wait_until": as_utc(t.wait_until),
         "pause_shown_at": pause_at,
-        "continue_anyway_at": pause_at + timedelta(seconds=s.continue_anyway_seconds) if pause_at else None,
+        "continue_anyway_at": continue_ready_at(t),
+        "hang_up_required": needs_hang_up(t),
+        "call_ended_at": as_utc(t.call_ended_at),
         "trusted_requested_at": trusted_at,
         "trusted_timeout_at": trusted_at + timedelta(minutes=s.trusted_contact_timeout_minutes) if trusted_at else None,
         "trusted_decision": t.trusted_decision,

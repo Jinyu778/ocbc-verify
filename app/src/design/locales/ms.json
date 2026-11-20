@@ -162,7 +162,13 @@
     "sendAnyway": "Hantar juga",
     "reportedBody": "Pelanggan OCBC lain telah melaporkan akaun ini dalam kes penipuan. Jangan hantar wang sehingga anda telah menyemak.",
     "chipCall": "Dalam panggilan",
-    "chipChat": "Ada mesej tentang ini"
+    "chipChat": "Ada mesej tentang ini",
+    "hangUpTitle": "Letak telefon dahulu",
+    "hangUpBody": "Penipu akan kekal di talian supaya anda tidak sempat berhenti dan menyemak. Letak telefon sekarang. \"Teruskan juga\" dibuka {{time}} selepas panggilan tamat.",
+    "hangUpNative": "Telefon anda akan memberitahu kami apabila panggilan tamat.",
+    "hungUp": "Saya sudah letak telefon",
+    "continueInTime": "Teruskan juga (tersedia dalam {{time}})",
+    "callEndedWait": "Panggilan telah tamat. Gunakan masa ini untuk menelefon semula nombor yang anda sudah tahu."
   },
   "save": {
     "title": "Simpan untuk kemudian",
@@ -262,8 +268,8 @@
     "likely_scamBody": "Mesej ini mempunyai tanda penipuan yang kuat. Jangan balas, klik pautan atau hantar wang.",
     "be_careful": "Berhati-hati",
     "be_carefulBody": "Beberapa perkara dalam mesej ini selalu digunakan oleh penipu. Semak sebelum bertindak.",
-    "no_signs": "Tiada tanda jelas",
-    "no_signsBody": "Kami tidak menemui tanda penipuan biasa. Namun, jangan sekali-kali kongsi OTP atau pindahkan wang kerana mesej.",
+    "no_signs": "Tiada tanda amaran yang diketahui",
+    "no_signsBody": "Kami tidak menemui tanda penipuan biasa, tetapi itu tidak membuktikan ia benar. AI boleh menulis mesej yang sempurna. Jika ia meminta wang, pautan, kod atau aplikasi, semak melalui saluran rasmi dahulu.",
     "not_sure": "Tidak pasti – semak melalui saluran rasmi",
     "not_sureBody": "Kami tidak dapat pastikan sama ada ini benar. Hubungi syarikat itu menggunakan nombor dari laman web atau aplikasi rasmi mereka, bukan dari mesej ini.",
     "flagsTitle": "Apa yang kami perasan",
@@ -287,7 +293,8 @@
       "move_chat": "Pindahkan anda ke Telegram / WhatsApp",
       "paynow_first": "'Bayar dulu, tiada jumpa'",
       "family_new_number": "Ahli keluarga dengan nombor baru",
-      "preorder_scam": "Prapesanan bayar dahulu, tiada jumpa"
+      "preorder_scam": "Prapesanan bayar dahulu, tiada jumpa",
+      "asks_action": "Meminta anda bertindak"
     },
     "explain": {
       "urgency": "Penipu mendesak anda supaya anda tiada masa untuk berfikir atau menyemak.",
@@ -303,7 +310,8 @@
       "move_chat": "Penipu memindahkan anda ke Telegram atau WhatsApp di mana mereka lebih sukar dikesan.",
       "paynow_first": "'Bayar dulu, tiada jumpa' ialah cara kebanyakan penipuan beli-belah dan tiket.",
       "family_new_number": "'Ahli keluarga' dengan nombor baru meminta wang: telefon nombor lama mereka dahulu.",
-      "preorder_scam": "'Prapesanan' yang perlu dibayar dahulu tanpa jumpa ialah penipuan barang koleksi yang biasa (cth. kad Pokémon)."
+      "preorder_scam": "'Prapesanan' yang perlu dibayar dahulu tanpa jumpa ialah penipuan barang koleksi yang biasa (cth. kad Pokémon).",
+      "asks_action": "Ia meminta anda membayar, klik, log masuk atau berkongsi sesuatu. Mesej tidak dapat membuktikan siapa penghantarnya, jadi semak melalui nombor yang anda sudah tahu sebelum bertindak."
     },
     "s_pokemon": "Prapesanan kad Pokémon",
     "attachTitle": "Tambah mesej ini pada bayaran saya",
@@ -452,5 +460,17 @@
     "prompt": "Minta pemanggil menyebut kata kod keluarga anda.",
     "promptBody": "Jika mereka tidak dapat menyebutnya, letak telefon. Suara boleh ditiru dengan AI.",
     "promptNotSet": "Anda belum menetapkan kata kod keluarga. Anda boleh menetapkannya dalam Tetapan bersama kenalan dipercayai anda."
+  },
+  "callback": {
+    "title": "Letak telefon. Telefon semula nombor yang anda sudah tahu.",
+    "body": "Suara, ID pemanggil, foto atau video boleh dipalsukan dengan AI. Sesiapa pun yang menghubungi anda, anggap mereka belum disahkan. Nombor ini terbina dalam aplikasi ini. Jangan gunakan nombor yang diberi oleh pemanggil atau mesej.",
+    "ocbc_hotline": "Talian 24 jam OCBC",
+    "ocbc_hotlineNote": "Tekan 8 untuk melaporkan penipuan.",
+    "scamshield": "Talian Bantuan ScamShield",
+    "scamshieldNote": "Tidak pasti sama ada ia penipuan? Percuma, 24 jam.",
+    "police": "Talian Polis",
+    "policeNote": "Pemanggil kata mereka polis? Semak di sini. Jika kecemasan, hubungi 999.",
+    "family": "Pemanggil kata mereka keluarga?",
+    "familyNote": "Hubungi mereka di nombor yang sudah disimpan dalam telefon anda, jangan nombor baru daripada panggilan atau mesej."
   }
 }

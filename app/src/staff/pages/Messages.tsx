@@ -13,7 +13,7 @@ interface Reported {
   review_status: "pending" | "reviewed" | "escalated";
   created_at: string;
 }
-const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No obvious signs" };
+const VERDICT: Record<string, string> = { likely_scam: "Likely scam", be_careful: "Be careful", not_sure: "Not sure", no_signs: "No known signs" };
 
 export function Messages() {
   const qc = useQueryClient();

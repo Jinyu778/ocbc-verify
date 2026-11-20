@@ -22,11 +22,11 @@ Password for all: `Test1234!`. All devices on the same Wi-Fi; the app is at `htt
 | Time | Say | Do |
 |---|---|---|
 | 0–10 s | "Everyday payments stay instant." | A (Mdm Tan): Pay → **SP Group** → 45 → Review → **Send S$45** → *Payment sent*. |
-| 10–40 s | "Now a fake MAS officer calls her and says move S$8,000 to a 'safety account'." | C calls A; A answers and stays on the line. A: Pay → **MAS Safety Account – Lim K.** → 8000 → Review. The red call banner shows. **No** ×4 → *Let's pause this payment* → **Call OCBC in-app**. |
-| | "One tap reaches the real bank, with a verified badge." | B: **Answer** → voice connects, *Verified OCBC Fraud Team · Anna Koh*. B opens the case, presses **E**, types "Caller claimed MAS", Confirm. A: End call → *Payment held for your safety*. |
+| 10–40 s | "Now a fake MAS officer calls her and says move S$8,000 to a 'safety account'." | C calls A; A answers and stays on the line. A: Pay → **MAS Safety Account – Lim K.** → 8000 → Review. The red call banner shows. **No** ×4 → *Let's pause this payment*. Point at **Hang up. Call back on a number you already know** and, at the bottom, **Hang up first** (Continue anyway is locked while she is on the call). Then **Call OCBC in-app**. |
+| | "We never trust the caller. A voice can be cloned, so the app only offers numbers built into it, and *Continue anyway* stays locked until she hangs up. One tap reaches the real bank, with a verified badge." | B: **Answer** → voice connects, *Verified OCBC Fraud Team · Anna Koh*. B opens the case, presses **E**, types "Caller claimed MAS", Confirm. A: End call → *Payment held for your safety*. |
 | 40–70 s | "Young people are targeted too. Ryan is being messaged about a 'job deposit'." | A (Ryan tab): Pay → **HR Onboarding – J. Wong** → **Yes – someone is messaging me** → 600 → Review → **No** ×4 → **Ask my trusted contact**. C (Mrs Lim) gets the request live, sees only the amount band and "a NEW payee", and taps **Pause for OCBC review** (it can pause for staff review, never block permanently). A shows *OCBC is reviewing*; B's queue shows *Needs staff review*. |
 
-Close with: "Friction only when the risk is real, never a permanent block, and every step goes into an evidence log." B clicks **Impact**.
+Close with: "We don't try to detect the deepfake, because soon nobody can. We never trust an inbound contact and always verify through a channel you already know. Friction only when the risk is real, never a permanent block, and every step goes into an evidence log." B clicks **Impact**.
 
 **No Android phone?** At the MAS step the browser asks "Are you on a phone call or chatting…?". Tap **Yes – I'm on a call**. Everything else is identical.
 

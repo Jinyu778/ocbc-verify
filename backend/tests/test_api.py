@@ -180,10 +180,12 @@ def test_override_small_amount_new_payee_on_call(client, auth):
 
 
 def test_continue_anyway_requires_30_seconds(client, auth):
+    """No phone call involved (coached-victim override): only the 30-second reading time applies."""
     h = auth("tan.siewlan")
     before = Decimal(balance(client, h))
-    t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
-    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused" and p["hang_up_required"] is False
     r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
     assert r.status_code == 409 and "30 seconds" in r.json()["detail"]
     backdate(t["id"], "pause_shown_at", 29)
@@ -687,3 +689,105 @@ def test_task6_escalated_case_counts_as_report_but_own_reports_do_not(client, au
 def test_task6_unrelated_account_not_reported(client, auth):
     t = create(client, auth("aisha.rahman"), "Hospital – NUH Billing", "50", BROWSER_NO).json()
     assert t["payee_reported"] is False
+
+
+# --- zero trust: inbound contact is never proof -----------------------------------------------
+def test_on_call_pause_needs_hang_up_before_continue_anyway(client, auth):
+    """A scammer can say 'wait 30 seconds and tap Continue'. They can't stay on the line during the wait."""
+    h = auth("tan.siewlan")
+    before = Decimal(balance(client, h))
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["status"] == "paused" and p["hang_up_required"] is True
+    assert p["call_ended_at"] is None and p["continue_anyway_at"] is None  # locked until the call ends
+    backdate(t["id"], "pause_shown_at", 3600)  # reading time long over: still locked while on the call
+    r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
+    assert r.status_code == 409 and "hang up" in r.json()["detail"]
+    # the customer hangs up (browser: they tap "I've hung up")
+    e = client.post(f"/api/transfers/{t['id']}/call-state", headers=h,
+                    json={"on_call": False, "source": "customer_answer"}).json()
+    assert e["call_ended_at"] and e["continue_anyway_at"]
+    r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
+    assert r.status_code == 409 and "10 minutes after the call" in r.json()["detail"]
+    backdate(t["id"], "call_ended_at", 9 * 60)
+    assert client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h).status_code == 409
+    backdate(t["id"], "call_ended_at", 61)
+    r = client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h)
+    assert r.status_code == 200 and r.json()["status"] == "sent"
+    assert Decimal(balance(client, h)) == before - Decimal("8000")
+    ev = events(t["id"])
+    for e_ in ("continue_anyway_rejected_on_call", "call_ended_reported", "continue_anyway_rejected_too_early", "continue_anyway"):
+        assert e_ in ev
+    # staff can see the customer overrode the warning
+    row = next(c for c in client.get("/api/staff/cases", headers=auth("staff.anna")).json() if c["id"] == t["id"])
+    assert row["continued_anyway"] is True
+
+
+def test_new_call_after_hang_up_resets_the_wait(client, auth):
+    """Scammers call back. A new call (reported by the Android plugin) locks Continue anyway again."""
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", {**CALL, "source": "native"}).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    client.post(f"/api/transfers/{t['id']}/call-state", headers=h, json={"on_call": False, "source": "native"})
+    backdate(t["id"], "call_ended_at", 3600)
+    backdate(t["id"], "pause_shown_at", 3600)
+    r = client.post(f"/api/transfers/{t['id']}/call-state", headers=h, json={"on_call": True, "source": "native"}).json()
+    assert r["call_ended_at"] is None and r["continue_anyway_at"] is None
+    assert client.post(f"/api/transfers/{t['id']}/continue-anyway", headers=h).status_code == 409
+    assert "call_resumed" in events(t["id"])
+
+
+def test_recent_call_counts_from_payment_creation(client, auth):
+    h = auth("tan.siewlan")
+    recent = {**CALL, "on_call": False, "recent_call": True}
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", recent).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO).json()
+    assert p["hang_up_required"] is True and p["call_ended_at"] is not None and p["continue_anyway_at"]
+
+
+def test_phone_answer_with_new_payee_pauses_and_needs_hang_up(client, auth):
+    """'Someone on the phone is telling me to pay' + a new payee is never just 'ask'."""
+    h = auth("tan.siewlan")
+    # S$40 to a new payee: 2 points + 3 for the "Yes" = 5, which alone would only be "ask"
+    t = create(client, h, "Hospital – NUH Billing", "40", BROWSER_NO).json()
+    p = client.post(f"/api/transfers/{t['id']}/answers", headers=h, json={**ALL_NO, "q_phone": True}).json()
+    assert p["risk_score"] == 5
+    assert p["status"] == "paused" and p["hang_up_required"] is True
+    assert any(r["key"] == "override_new_payee_live" for r in p["reasons"])
+
+
+def test_call_state_ignored_without_a_phone_call(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", BROWSER_NO).json()
+    client.post(f"/api/transfers/{t['id']}/answers", headers=h, json=ALL_NO)
+    r = client.post(f"/api/transfers/{t['id']}/call-state", headers=h, json={"on_call": False, "source": "customer_answer"}).json()
+    assert r["call_ended_at"] is None and "call_ended_reported" not in events(t["id"])
+
+
+def test_call_state_rejected_when_not_paused(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "SP Group", "45").json()
+    assert client.post(f"/api/transfers/{t['id']}/call-state", headers=h,
+                       json={"on_call": False, "source": "customer_answer"}).status_code == 409
+
+
+def test_official_callback_is_logged(client, auth):
+    h = auth("tan.siewlan")
+    t = create(client, h, "MAS Safety Account – Lim K.", "8000", CALL).json()
+    assert client.post(f"/api/transfers/{t['id']}/call-back", headers=h, json={"target": "scamshield"}).status_code == 200
+    assert client.post(f"/api/transfers/{t['id']}/call-back", headers=h, json={"target": "+65 9999 9999"}).status_code == 422
+    with db_module.SessionLocal() as s:
+        ev = s.scalars(select(EvidenceEvent).where(EvidenceEvent.transfer_id == t["id"],
+                                                   EvidenceEvent.event_type == "official_callback_chosen")).one()
+        assert ev.detail_json == {"target": "scamshield"}
+
+
+def test_other_customer_cannot_report_call_state(client, auth):
+    t = create(client, auth("tan.siewlan"), "MAS Safety Account – Lim K.", "8000", CALL).json()
+    r = client.post(f"/api/transfers/{t['id']}/call-state", headers=auth("ryan.lim"),
+                    json={"on_call": False, "source": "customer_answer"})
+    assert r.status_code == 404
+
+
+def test_public_config_has_hang_up_wait(client):
+    assert client.get("/api/config").json()["hang_up_wait_minutes"] == 10

@@ -66,9 +66,22 @@ RULES: list[Rule] = [
                    _r(r"no meet ?-?ups?|cannot meet|can't meet|不见面|tiada jumpa"))),
     Rule("family_new_number", _r(r"new number|my phone (broke|is broken)|lost my phone|换了新号码|nombor baru|in trouble|bail money"), True,
          "A 'family member' with a new number asking for money: call their old number first."),
+    # Zero trust: not a scam sign by itself, but a message that asks you to ACT can't prove who sent it.
+    # AI writes fluent, typo-free messages, so "no red flags" must never read as "safe" when money or
+    # a login is at stake. This flag keeps such a message out of the calmest verdict (see verdict_for).
+    Rule("asks_action",
+         _r(r"\b(transfer(ring)?|pay ?now|pay (the|a|an|your|me|us|via|by|within|to|for|now|it)|make (a |the )?payment"
+            r"|send (me|us|money|the money|over|your)|lend me|click|tap (the |this |on )?(link|here|below)"
+            r"|log ?in (to|at|here|now|via)|sign in (to|at|here)|verify your|update your|confirm your|reply with"
+            r"|share (your|the) (code|otp|pin|details)|scan (the|this) (qr|code)|top ?up)\b"
+            r"|转账|汇款|付款|点击|登录|pindahkan|bayar|klik|hantar (wang|duit)"), False,
+         "It asks you to pay, click, log in or share something. A message can't prove who sent it, "
+         "so check through a number you already know before you act."),
 ]
 
 STRONG_KEYS = {r.key for r in RULES if r.strong}
+# Flags that describe a REQUEST rather than a scam sign. They never count towards "likely scam".
+ACTION_KEYS = {"asks_action"}
 
 
 def apply_rules(text: str) -> list[dict]:
@@ -154,13 +167,18 @@ def ml_probability(text: str) -> float:
 
 
 def verdict_for(flags: list[dict], p: float) -> str:
-    strong = [f for f in flags if f["strong"]]
-    if (strong and (p >= 0.5 or len(flags) >= 2)) or p >= 0.85:
+    signs = [f for f in flags if f["key"] not in ACTION_KEYS]
+    asks_action = len(signs) < len(flags)
+    strong = [f for f in signs if f["strong"]]
+    if (strong and (p >= 0.5 or len(signs) >= 2)) or p >= 0.85:
         return "likely_scam"
     if not strong and 0.4 <= p <= 0.6:
         return "not_sure"
-    if flags and (strong or p >= 0.3 or len(flags) >= 2) or p > 0.6:
+    if signs and (strong or p >= 0.3 or len(signs) >= 2) or p > 0.6:
         return "be_careful"
+    if asks_action:
+        return "be_careful"  # zero trust: a request to pay, click or share is never "no signs"
+    # "no_signs" means "no KNOWN signs", never "safe". The app says so in the verdict text.
     return "no_signs"
 
 
