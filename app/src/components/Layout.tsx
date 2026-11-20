@@ -13,7 +13,8 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
   const { connected } = useLive();
   const nav = useNavigate();
   return (
-    <div className="flex min-h-screen flex-col">
+    // overflow-x-clip: one over-wide element must never make phones zoom the whole page out.
+    <div className="flex min-h-screen flex-col overflow-x-clip">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-btn focus:bg-card focus:p-3">
         Skip to content
       </a>
@@ -23,8 +24,9 @@ export function Layout({ children, customer }: { children: ReactNode; customer: 
           <span className="flex-1" />
           <LanguageSelect />
           <button type="button" onClick={() => setHelp(true)} className={HEADER_BTN}>
-            <LifeBuoy aria-hidden className="h-4 w-4" />
-            {t("common.help")}
+            <LifeBuoy aria-hidden className="h-5 w-5 min-[430px]:h-4 min-[430px]:w-4" />
+            {/* Phones: icon only so the header stays on one line; the word is still read out. */}
+            <span className="max-[429px]:sr-only">{t("common.help")}</span>
           </button>
           {!customer && (
             <button type="button" onClick={() => nav("/contact/settings")} className={HEADER_BTN}>

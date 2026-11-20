@@ -101,9 +101,9 @@ export function CallScreen() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder={t("call.typeMessage")}
-              className="min-h-btn flex-1 rounded-field border border-border-strong bg-card px-3 text-foreground"
+              className="min-h-btn min-w-0 flex-1 rounded-field border border-border-strong bg-card px-3 text-foreground"
             />
-            <Button type="submit" icon={Send}>{t("call.send")}</Button>
+            <Button type="submit" icon={Send} className="shrink-0">{t("call.send")}</Button>
           </form>
         </Card>
       )}
