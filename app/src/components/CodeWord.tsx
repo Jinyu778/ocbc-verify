@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { CheckCircle2, Eye, EyeOff, KeyRound } from "lucide-react";
-import { ApiError, Banner, Button, Card, Field, Skeleton, api } from "@/design";
+import { ApiError, Banner, Button, Card, Field, SectionTitle, Skeleton, api } from "@/design";
 
 /** Form that sends a code word. The word is never shown back: the server only says whether one is set. */
 function CodeWordForm({ id, isSet, save }: { id: string; isSet: boolean; save: (word: string) => Promise<void> }) {
@@ -53,7 +53,7 @@ function CodeWordForm({ id, isSet, save }: { id: string; isSet: boolean; save: (
         {show ? t("codeWord.hide") : t("codeWord.show")}
       </button>
       {done && <Banner tone="success">{t("codeWord.saved")}</Banner>}
-      <Button type="submit" variant="outline" icon={KeyRound} loading={busy}>
+      <Button type="submit" variant="success" icon={KeyRound} loading={busy}>
         {t("codeWord.save")}
       </Button>
     </form>
@@ -67,7 +67,7 @@ export function CodeWordCard() {
   const q = useQuery({ queryKey: ["code-word"], queryFn: () => api<{ is_set: boolean }>("/api/me/code-word") });
   return (
     <Card className="space-y-3">
-      <h2 className="flex items-center gap-2 text-lg"><KeyRound aria-hidden className="h-5 w-5" />{t("codeWord.title")}</h2>
+      <SectionTitle icon={KeyRound} tone="amber">{t("codeWord.title")}</SectionTitle>
       <p>{t("codeWord.intro")}</p>
       {q.isLoading ? (
         <Skeleton className="h-24" label={t("common.loading")} />
@@ -95,7 +95,7 @@ export function ContactCodeWords() {
   });
   return (
     <Card className="space-y-3">
-      <h2 className="flex items-center gap-2 text-lg"><KeyRound aria-hidden className="h-5 w-5" />{t("codeWord.title")}</h2>
+      <SectionTitle icon={KeyRound} tone="amber">{t("codeWord.title")}</SectionTitle>
       <p>{t("codeWord.introContact")}</p>
       {q.isLoading ? (
         <Skeleton className="h-24" label={t("common.loading")} />

@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChannelIcon } from "../components/ChannelIcon";
 import { useTranslation } from "react-i18next";
 import {
   AlertTriangle, CircleCheck, CircleHelp, Copy, EyeOff, Flag, Paperclip, Phone, PhoneCall, Plus, ShieldAlert, ShieldCheck, ShieldQuestion,
-  ThumbsDown, ThumbsUp, TriangleAlert, type LucideIcon,
+  ListChecks, ThumbsDown, ThumbsUp, TriangleAlert, type LucideIcon,
 } from "lucide-react";
-import { ApiError, Banner, Button, Card, VerdictStage, api, cx, formatSGD, prefersReducedMotion, type VerdictTone } from "@/design";
+import { ApiError, Banner, Button, Card, SectionTitle, VerdictStage, api, cx, formatSGD, prefersReducedMotion, type VerdictTone } from "@/design";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
@@ -159,7 +160,8 @@ export function Check() {
             {SOURCES.map((s) => (
               <label key={s} className="relative">
                 <input type="radio" name="source" value={s} checked={source === s} onChange={() => setSource(s)} className="peer sr-only" />
-                <span className="sb-press inline-flex min-h-touch cursor-pointer items-center rounded-btn border border-border-strong bg-card px-3 text-sm font-medium text-foreground hover:bg-muted peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-card peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring">
+                <span className="sb-press inline-flex min-h-touch cursor-pointer items-center gap-2 rounded-btn border border-border-strong bg-card pl-2.5 pr-3 text-sm font-medium text-foreground hover:bg-muted peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-card peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring">
+                  <ChannelIcon channel={s} />
                   {t(`check.sources.${s}`)}
                 </span>
               </label>
@@ -221,7 +223,7 @@ export function Check() {
 
           {result.flags.length > 0 && (
             <Card className="space-y-3">
-              <h3 className="text-lg">{t("check.flagsTitle")}</h3>
+              <SectionTitle as="h3" icon={TriangleAlert} tone="amber">{t("check.flagsTitle")}</SectionTitle>
               <p className="text-sm text-muted-foreground">{t("check.tapExplain")}</p>
               <p className="whitespace-pre-wrap rounded-btn bg-muted p-3 leading-relaxed">
                 {segs.map((s, i) =>
@@ -261,7 +263,7 @@ export function Check() {
 
           {!!result.counter_evidence?.length && (
             <Card className="space-y-2">
-              <h3 className="text-lg">{t("check.normalTitle")}</h3>
+              <SectionTitle as="h3" icon={CircleCheck} tone="green">{t("check.normalTitle")}</SectionTitle>
               <ul className="space-y-2">
                 {result.counter_evidence.map((k) => (
                   <li key={k} className="flex items-start gap-2">
@@ -274,7 +276,7 @@ export function Check() {
           )}
 
           <Card className="space-y-2">
-            <h3 className="text-lg">{t("check.cantTellTitle")}</h3>
+            <SectionTitle as="h3" icon={CircleHelp} tone="neutral">{t("check.cantTellTitle")}</SectionTitle>
             <ul className="space-y-2">
               <li className="flex items-start gap-2"><CircleHelp aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />{t("check.cantSender")}</li>
               {hasLink && <li className="flex items-start gap-2"><CircleHelp aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />{t("check.cantLink")}</li>}
@@ -283,7 +285,7 @@ export function Check() {
           </Card>
 
           <Card className="space-y-3">
-            <h3 className="text-lg">{t("check.doNowTitle")}</h3>
+            <SectionTitle as="h3" icon={ListChecks}>{t("check.doNowTitle")}</SectionTitle>
             <ol className="list-decimal space-y-1 pl-5 marker:font-semibold">
               {advice.map((a) => <li key={a}>{a}</li>)}
             </ol>
@@ -353,7 +355,7 @@ export function Check() {
                   <Button
                     key={String(yes)}
                     size="sm"
-                    variant="outline"
+                    variant={yes ? "success" : "primary"}
                     icon={yes ? ThumbsUp : ThumbsDown}
                     onClick={() => {
                       setFeedback(true);
@@ -402,7 +404,7 @@ function AttachToPayment({ checkId }: { checkId: number }) {
   };
   return (
     <Card className="space-y-3">
-      <h3 className="flex items-center gap-2 text-lg"><Paperclip aria-hidden className="h-5 w-5" />{t("check.attachTitle")}</h3>
+      <SectionTitle as="h3" icon={Paperclip} tone="neutral">{t("check.attachTitle")}</SectionTitle>
       <p>{t("check.attachBody")}</p>
       {done ? (
         <Banner tone="success">{done}</Banner>

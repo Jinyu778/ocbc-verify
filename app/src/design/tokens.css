@@ -43,6 +43,15 @@
   --accent-pressed: #9c0d13;
   --on-accent: #ffffff;
   --accent-ink: #b3121a;         /* red as text or icon on light surfaces */
+  --accent-soft: #fbe9ea;        /* section icon tiles and soft red buttons only (never a risk surface) */
+  --info-strong: #1a5bb8;        /* the one blue: "change" actions (Settings). White text */
+  --on-info-strong: #ffffff;
+  /* "Where did it come from?" chip icons (icons only, always next to the word) */
+  --ch-sms: #1a5bb8;
+  --ch-email: #b3121a;
+  --ch-call: #0b6b3a;
+  --ch-social: #7a3db8;
+  --ch-other: #444444;
   /* surfaces */
   --background: #f4f4f4;
   --card: #ffffff;
@@ -113,6 +122,14 @@
   --accent-pressed: #b3121a;
   --on-accent: #ffffff;
   --accent-ink: #ff8a8a;
+  --accent-soft: #3d1518;
+  --info-strong: #2563c4;
+  --on-info-strong: #ffffff;
+  --ch-sms: #7fb0ff;
+  --ch-email: #ff8a8a;
+  --ch-call: #8fe3ae;
+  --ch-social: #c9a6ff;
+  --ch-other: #d2d2d6;
   --background: #0e0e0f;
   --card: #1a1a1c;
   --foreground: #ffffff;         /* primary text: 17.4:1 on --card */

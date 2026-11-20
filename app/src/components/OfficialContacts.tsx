@@ -14,7 +14,7 @@ export function OfficialContacts({ onPick, className }: { onPick?: (target: Call
   return (
     <Card className={cx("space-y-3", className)} aria-labelledby="callback-title">
       <div className="flex items-start gap-3">
-        <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-danger-soft text-danger">
+        <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-danger-soft text-danger">
           <PhoneOff className="h-5 w-5" />
         </span>
         <div className="min-w-0">

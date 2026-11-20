@@ -38,6 +38,7 @@ staff console**).
 | `--brand-red` | `#ED1C24` | – | Large graphics only (4.4:1 on white, never text) |
 | `--accent` (action) | `#D0121A` | `#E02027` | The one primary button per screen, active nav, red icons. White text 5.6:1 / 4.8:1 |
 | `--accent-hover` / `--accent-pressed` | `#B30F16` / `#9C0D13` | `#C81A20` / `#B3121A` | Button states |
+| `--accent-soft` | `#FBE9EA` | `#3D1518` | Soft red buttons and red section icon tiles only (never a risk surface). `--accent-ink` on it passes 4.5:1 |
 | `--secondary` (link) | `#B3121A` | `#FF8A8A` | Underlined links, red text |
 | `--brand-deep` | `#721C24` | `#5E161D` | Hero surface base |
 | `--hero-gradient` | `#721C24 → #B3121A → #D0121A` (135°) | `#4A1117 → #8A1018 → #B3121A` | Home balance tile and Login panel only. Text passes against the lightest stop |
@@ -81,6 +82,9 @@ only frosted (blurred) surface.
 |---|---|
 | Button: `primary` (solid red), `dark`, `outline`, `ghost`, `danger` | hover (desktop: 1 px lift + shadow), focus-visible (2 px ink ring, 2 px surface gap), active (scale 0.97), disabled (60% opacity), loading (spinner replaces the label in place, width unchanged) |
 | Field / textarea / select | default, hover (ink border), focus-visible, error (red border + inline message with icon) |
+| Button `soft` | soft red fill + red label, for secondary actions in Settings (add contact, save code word, replay guide). Sign out is the solid red primary |
+| Button `success` (green) / `info` (blue) | green confirms something good: Save code word, I've hung up, "Was this helpful?" Yes. Blue (`--info-strong` `#1A5BB8` / `#2563C4`, the only blue) changes an existing setting: Change trusted contact. Remove trusted contact and helpful: No use the bright red primary |
+| SectionTitle | section heading (Sora 600) with its icon in a 36 px tinted tile, so stacked cards are easy to tell apart. Tones carry meaning: red = an action or the app itself (what to do now, what would you like to do, hang up, pay again, display); green = reassurance (things that look normal, trusted contact); amber = check this (what we noticed, why we paused, new payees, family code word, requests waiting); neutral = information (what we can't tell, recent activity, payees paid before, account). Used on Settings, Check, Pause, Home, Pay and the trusted-contact home. Body text stays ink; no extra fonts |
 | Banner | danger / warning / info / success tints with an icon, `role=alert` for live warnings |
 | RiskChip | High risk / Check first / Looks safe, icon + word |
 | VerdictCard (`VerdictStage`) | verified / risk / caution tints, `paused` = neutral white card. Scales in once from 0.98 |

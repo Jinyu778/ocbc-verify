@@ -17,7 +17,7 @@ const cx = (...c: (string | false | 0 | null | undefined)[]) => c.filter(Boolean
 export { cx };
 
 // ---------------------------------------------------------------------------------- Button
-type Variant = "primary" | "dark" | "outline" | "ghost" | "danger";
+type Variant = "primary" | "dark" | "outline" | "soft" | "ghost" | "danger" | "success" | "info";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   icon?: LucideIcon;
@@ -30,8 +30,14 @@ const variants: Record<Variant, string> = {
   primary: "sb-lift bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-pressed",
   dark: "sb-lift bg-dark-fill text-card hover:opacity-90",
   outline: "bg-card text-foreground border border-border-strong hover:border-foreground hover:bg-muted",
+  /** Soft red: secondary actions that should still read as "do something" (Settings). */
+  soft: "bg-accent-soft text-accent-ink border border-transparent hover:border-accent-ink",
   ghost: "bg-transparent text-foreground hover:bg-muted",
   danger: "sb-lift bg-danger-strong text-on-danger-strong hover:opacity-90",
+  /** Green: confirming something good (save code word, I've hung up, helpful: yes). */
+  success: "sb-lift bg-success-strong text-on-success-strong hover:opacity-90",
+  /** Blue: change an existing setting (change trusted contact). */
+  info: "sb-lift bg-info-strong text-on-info-strong hover:opacity-90",
 };
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = "primary", icon: Icon, loading, block, size = "md", className, children, disabled, ...rest },
@@ -315,4 +321,34 @@ export function useNow(intervalMs = 1000) {
     return () => clearInterval(t);
   }, [intervalMs]);
   return now;
+}
+
+// ---------------------------------------------------------------------------------- SectionTitle
+/**
+ * Card heading with its icon in a small tinted tile. Tones carry meaning, not decoration:
+ * red = the app's own settings, green = people who protect you, amber = something to check, neutral = account.
+ */
+export type SectionTone = "red" | "green" | "amber" | "neutral";
+const SECTION_TONE: Record<SectionTone, string> = {
+  red: "bg-accent-soft text-accent-ink",
+  green: "bg-success-soft text-success",
+  amber: "bg-warning-soft text-warning",
+  neutral: "bg-muted text-foreground",
+};
+export function SectionTitle({
+  icon: Icon,
+  tone = "red",
+  as: Tag = "h2",
+  id,
+  children,
+  className,
+}: { icon: LucideIcon; tone?: SectionTone; as?: "h2" | "h3"; id?: string; children: ReactNode; className?: string }) {
+  return (
+    <Tag id={id} className={cx("flex items-center gap-3 font-display text-lg font-semibold", className)}>
+      <span aria-hidden className={cx("grid h-9 w-9 shrink-0 place-items-center rounded-[10px]", SECTION_TONE[tone])}>
+        <Icon className="h-5 w-5" strokeWidth={2.2} />
+      </span>
+      {children}
+    </Tag>
+  );
 }

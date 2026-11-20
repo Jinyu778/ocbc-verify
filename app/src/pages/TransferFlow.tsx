@@ -26,6 +26,7 @@ import {
   Lock,
   Globe,
   CircleHelp,
+  ListChecks,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -37,6 +38,7 @@ import {
   Card,
   Dialog,
   RiskChip,
+  SectionTitle,
   Skeleton,
   SuccessTick,
   api,
@@ -406,7 +408,7 @@ function Pause({ tr }: { tr: Transfer }) {
       </VerdictStage>
       <PaymentSummary tr={tr} />
       {(error || callError) && <Banner tone="warning" alert>{error ?? callError}</Banner>}
-      <h2 className="text-lg">{t("pause.whatNext")}</h2>
+      <SectionTitle icon={ListChecks}>{t("pause.whatNext")}</SectionTitle>
       {/* One solid-red primary: the verified in-app call is the safest next step. The rest are equal. */}
       <div className="flex flex-col gap-3">
         <Button size="lg" icon={PhoneCall} block loading={calling} onClick={callSafeBank}>
@@ -439,23 +441,20 @@ function Pause({ tr }: { tr: Transfer }) {
         </Banner>
       )}
       <Card className="space-y-3">
-        <h2 className="text-lg">{t("pause.because")}</h2>
+        <SectionTitle icon={CircleAlert} tone="amber">{t("pause.because")}</SectionTitle>
         <ReasonsList reasons={tr.reasons} />
         <ReadAloud text={`${t("pause.title")}. ${t("pause.subtitle")} ${t("pause.because")} ${reasonsText(t, tr.reasons)}`} />
       </Card>
       <div className="pt-2 text-center">
         {mustHangUp ? (
           <Card className="space-y-3 text-left">
-            <h2 className="flex items-start gap-2 text-lg">
-              <PhoneOff aria-hidden className="mt-1 h-5 w-5 shrink-0 text-danger" />
-              {t("pause.hangUpTitle")}
-            </h2>
+            <SectionTitle icon={PhoneOff}>{t("pause.hangUpTitle")}</SectionTitle>
             <p>{t("pause.hangUpBody", { time: formatMinutes(t, hangUpWait) })}</p>
             {device.source === "native" ? (
               <p className="text-sm text-muted-foreground">{t("pause.hangUpNative")}</p>
             ) : (
               <Button
-                variant="outline"
+                variant="success"
                 block
                 icon={PhoneOff}
                 loading={busy === "hangup"}

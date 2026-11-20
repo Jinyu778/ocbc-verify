@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { CheckCircle2, Hand, Phone, UserRound, XCircle } from "lucide-react";
-import { Banner, Button, Card, Skeleton, api, formatDuration, secondsLeft, useNow } from "@/design";
+import { BellRing, CheckCircle2, Hand, History, Phone, UserRound, XCircle } from "lucide-react";
+import { Banner, Button, Card, SectionTitle, Skeleton, api, formatDuration, secondsLeft, useNow } from "@/design";
 import { Screen } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
 
@@ -27,7 +27,7 @@ export function ContactHome() {
     <Screen title={t("contact.title")}>
       <p>{t("contact.intro")}</p>
       <section aria-labelledby="pending-h" className="space-y-3">
-        <h2 id="pending-h">{t("contact.pending")}</h2>
+        <SectionTitle id="pending-h" icon={BellRing} tone="amber" className="text-xl">{t("contact.pending")}</SectionTitle>
         {q.isLoading ? (
           <Skeleton className="h-40" label={t("common.loading")} />
         ) : q.isError ? (
@@ -40,7 +40,7 @@ export function ContactHome() {
       </section>
       {!!q.data?.history.length && (
         <section aria-labelledby="hist-h" className="space-y-2">
-          <h2 id="hist-h">{t("contact.history")}</h2>
+          <SectionTitle id="hist-h" icon={History} tone="neutral" className="text-xl">{t("contact.history")}</SectionTitle>
           <ul className="divide-y divide-border rounded-card border border-border bg-card">
             {q.data.history.map((r) => (
               <li key={r.transfer_id} className="flex items-center gap-3 px-4 py-3">

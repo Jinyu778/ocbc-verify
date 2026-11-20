@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { PhoneOff, ChevronRight, MessageCircleWarning, PhoneCall, RefreshCw, Save, Search, ShieldAlert, ShieldCheck, Sparkles, UserPlus, X } from "lucide-react";
-import { ApiError, Banner, Button, Card, Field, Skeleton, api, cx, formatSGD, useStaggerIn } from "@/design";
+import { PhoneOff, ChevronRight, MessageCircleWarning, PhoneCall, RefreshCw, Save, Search, ShieldAlert, ShieldCheck, Sparkles, UserPlus, Users, X } from "lucide-react";
+import { ApiError, Banner, Button, Card, Field, SectionTitle, Skeleton, api, cx, formatSGD, useStaggerIn } from "@/design";
 import { Screen, SignalBanners } from "../components/Screen";
 import { ReadAloud } from "../components/ReadAloud";
 import { mergeSignals, needsLiveQuestion, signalProvider, useSignals, type LiveAnswer } from "../signals";
@@ -348,7 +348,7 @@ function PayeeGroups({ payees, query, setQuery, onChoose, listRef }: {
       {shown.length === 0 && <p className="text-muted-foreground">{t("pay.searchNone", { q: query.trim() })}</p>}
       {known.length > 0 && (
         <section aria-labelledby="g-known">
-          <h2 id="g-known" className="mb-3 text-xl">{t("pay.groupKnown")}</h2>
+          <SectionTitle id="g-known" icon={Users} tone="neutral" className="mb-3 text-xl">{t("pay.groupKnown")}</SectionTitle>
           <ul className="divide-y divide-border overflow-hidden rounded-card border border-border bg-card">
             {known.map((p) => <PayeeRow key={p.id} payee={p} onChoose={onChoose} />)}
           </ul>
@@ -356,10 +356,7 @@ function PayeeGroups({ payees, query, setQuery, onChoose, listRef }: {
       )}
       {fresh.length > 0 && (
         <section aria-labelledby="g-new" aria-describedby="g-new-hint">
-          <h2 id="g-new" className="flex items-center gap-2 text-xl">
-            <ShieldAlert aria-hidden className="h-5 w-5 shrink-0 text-warning" />
-            {t("pay.groupNew")}
-          </h2>
+          <SectionTitle id="g-new" icon={ShieldAlert} tone="amber" className="text-xl">{t("pay.groupNew")}</SectionTitle>
           <p id="g-new-hint" className="mb-3 mt-1 text-sm text-muted-foreground">{t("pay.groupNewHint")}</p>
           <ul className="divide-y divide-border overflow-hidden rounded-card border border-warning bg-card">
             {fresh.map((p) => <PayeeRow key={p.id} payee={p} onChoose={onChoose} />)}

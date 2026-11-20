@@ -2,8 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { BookOpen, Info, LogOut, PhoneCall, UserPlus, Users } from "lucide-react";
-import { ApiError, Banner, Button, Card, Field, Skeleton, api, cx, formatMinutes } from "@/design";
+import { BookOpen, Info, LogOut, PhoneCall, SlidersHorizontal, UserPlus, UserRound, Users } from "lucide-react";
+import { ApiError, Banner, Button, Card, Field, SectionTitle, Skeleton, api, cx, formatMinutes } from "@/design";
 import { usePrefs, type TextSize, type Theme } from "../state/prefs";
 import { savePrefsToServer, useSession } from "../state/session";
 import { LanguageSelect } from "../components/Layout";
@@ -98,7 +98,7 @@ function TrustedContacts() {
 
   return (
     <Card className="space-y-3">
-      <h2 className="flex items-center gap-2 text-lg"><Users aria-hidden className="h-5 w-5" />{t("settings.trustedContact")}</h2>
+      <SectionTitle icon={Users} tone="green">{t("settings.trustedContact")}</SectionTitle>
       <p className="text-sm text-muted-foreground">{t("settings.trustedHelper")}</p>
       {q.isLoading ? <Skeleton className="h-16" label={t("common.loading")} /> : contacts.length === 0 ? <p>{t("settings.noContact")}</p> : (
         <ul className="space-y-2">
@@ -118,7 +118,7 @@ function TrustedContacts() {
               {!c.pending_removal_at && (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="primary"
                   onClick={async () => {
                     await api(`/api/me/trusted-contacts/${c.id}`, { method: "DELETE" });
                     qc.invalidateQueries({ queryKey: ["trusted"] });
@@ -152,7 +152,7 @@ function TrustedContacts() {
           </div>
         </form>
       ) : (
-        <Button variant="outline" icon={UserPlus} onClick={() => setAdding(true)}>
+        <Button variant={contacts.some((c) => c.is_active) ? "info" : "soft"} icon={UserPlus} onClick={() => setAdding(true)}>
           {contacts.some((c) => c.is_active) ? t("settings.changeContact") : t("settings.addContact")}
         </Button>
       )}
@@ -169,7 +169,7 @@ function CallDetection() {
   const status = signalProvider.kind === "browser" ? "browser" : perm === "granted" ? "native" : perm === "unavailable" ? "unavailable" : "denied";
   return (
     <Card className="space-y-2">
-      <h2 className="flex items-center gap-2 text-lg"><PhoneCall aria-hidden className="h-5 w-5" />{t("settings.callDetection")}</h2>
+      <SectionTitle icon={PhoneCall}>{t("settings.callDetection")}</SectionTitle>
       <p>{t("settings.callDetectionDesc")}</p>
       <p className="font-semibold">{t("settings.callDetectionStatus", { status: t(`settings.callStatus.${status}`) })}</p>
       {signalProvider.kind === "native" && perm !== "granted" && (
@@ -192,7 +192,7 @@ export function Settings() {
   return (
     <Screen title={t("settings.title")}>
       <Card className="space-y-5">
-        <h2 className="text-lg">{t("settings.display")}</h2>
+        <SectionTitle icon={SlidersHorizontal}>{t("settings.display")}</SectionTitle>
         <LanguageSelect id="lang-settings" showLabel />
         <Toggle
           id="easy"
@@ -223,11 +223,11 @@ export function Settings() {
       {user?.role === "trusted_contact" && <ContactCodeWords />}
       {customer && <CallDetection />}
       <Card className="space-y-3">
-        <h2 className="text-lg">{t("settings.account")}</h2>
+        <SectionTitle icon={UserRound} tone="neutral">{t("settings.account")}</SectionTitle>
         <p className="text-muted-foreground">{user?.display_name} ({user?.username})</p>
         {customer && (
           <Button
-            variant="outline"
+            variant="soft"
             icon={BookOpen}
             block
             onClick={() => {
@@ -239,7 +239,7 @@ export function Settings() {
           </Button>
         )}
         <Button
-          variant="outline"
+          variant="primary"
           icon={LogOut}
           block
           onClick={() => {

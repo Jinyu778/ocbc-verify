@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { PhoneIncoming, ChevronRight, Clock, Eye, EyeOff, MessageSquareWarning, Send, WifiOff } from "lucide-react";
-import { Banner, Button, Skeleton, api, cx, formatSGD, prefersReducedMotion } from "@/design";
+import { PhoneIncoming, ChevronRight, Clock, Eye, EyeOff, History, MessageSquareWarning, Repeat, Send, WifiOff } from "lucide-react";
+import { Banner, Button, SectionTitle, Skeleton, api, cx, formatSGD, prefersReducedMotion } from "@/design";
 import { useSession } from "../state/session";
 import { usePrefs } from "../state/prefs";
 import { Screen } from "../components/Screen";
@@ -164,7 +164,7 @@ export function Home() {
 
         {!easy && known.length > 0 && (
           <section style={order()} aria-labelledby="again-h" className="col-span-full rounded-tile border border-border bg-card p-4">
-            <h2 id="again-h" className="mb-3 text-xl">{t("home.payAgain")}</h2>
+            <SectionTitle id="again-h" icon={Repeat} className="mb-3 text-xl">{t("home.payAgain")}</SectionTitle>
             <ul className="flex flex-wrap gap-2">
               {known.map((p) => (
                 <li key={p.id}>
@@ -184,7 +184,7 @@ export function Home() {
         )}
 
         <section style={order()} aria-labelledby="recent-h" className="col-span-full overflow-hidden rounded-tile border border-border bg-card">
-          <h2 id="recent-h" className="px-4 pb-1 pt-4 text-xl">{t("home.recent")}</h2>
+          <SectionTitle id="recent-h" icon={History} tone="neutral" className="px-4 pb-1 pt-4 text-xl">{t("home.recent")}</SectionTitle>
           {activity.isLoading ? (
             <div className="space-y-2 p-4">
               {[0, 1, 2].map((i) => <Skeleton key={i} className="h-12" label={t("common.loading")} />)}
